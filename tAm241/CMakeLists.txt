@@ -40,7 +40,7 @@ target_link_libraries(rdecay01 ${Geant4_LIBRARIES} )
 # relies on these scripts being in the current working directory.
 #
 set(rdecay01_SCRIPTS
-	debug.mac vis.mac sim.mac
+	debug.mac vis.mac singleDecay.mac HistAm241.C
   )
 
 foreach(_script ${rdecay01_SCRIPTS})

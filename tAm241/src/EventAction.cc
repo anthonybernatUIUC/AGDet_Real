@@ -60,7 +60,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
   Run* run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
   run->EvisEvent(fEvisTot);
   
-  G4double tol = 0.00001;
+  G4double tol = 0.001;
   auto man = G4AnalysisManager::Instance();
   if (fEdep > tol) { 
     man->FillNtupleDColumn(0, 0, fEdep);

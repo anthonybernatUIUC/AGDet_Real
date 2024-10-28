@@ -13,4 +13,4 @@
 /rdecay01/fullChain true
 #
 /run/printProgress 10000  
-/run/beamOn 200000
+/run/beamOn 100000
