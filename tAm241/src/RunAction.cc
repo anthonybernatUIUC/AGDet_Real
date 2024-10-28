@@ -26,62 +26,45 @@
 /// \file RunAction.cc
 /// \brief Implementation of the RunAction class
 //
+
 #include "RunAction.hh"
-#include "Run.hh"
-#include "PrimaryGeneratorAction.hh"
-// #include "HistoManager.hh"
-#include "G4AnalysisManager.hh"
-
-#include "G4Run.hh"
-#include "G4UnitsTable.hh"
-#include "G4PhysicalConstants.hh"
-#include "G4SystemOfUnits.hh"
-#include <iomanip>
 
 
-RunAction::RunAction(PrimaryGeneratorAction* kin) :fPrimary(kin) {
+RunAction::RunAction(PrimaryGeneratorAction* kin) : G4UserRunAction(), fPrimary(kin), fRun(0) {
     
-    auto man = G4AnalysisManager::Instance();
-    man->CreateNtuple("SiScoring", "SiScoring");
-    man->CreateNtupleDColumn("fEdepSi");
-    man->FinishNtuple(0);
-
-    man->CreateNtuple("PartLocations", "PartLocations");
-    man->CreateNtupleIColumn("fEvent");
-    man->CreateNtupleDColumn("fX");
-    man->CreateNtupleDColumn("fY");
-    man->CreateNtupleDColumn("fZ");
-    man->CreateNtupleDColumn("fEdep");
-    man->FinishNtuple(1);
+  auto man = G4AnalysisManager::Instance();
+  man->CreateNtuple("DetScoring", "DetScoring");
+  man->CreateNtupleDColumn("fEdep");
+  man->FinishNtuple(0);
 }
 
 
-RunAction::~RunAction() { 
-    // delete fHistoManager;
-}
+RunAction::~RunAction() {}
 
 G4Run* RunAction::GenerateRun() { 
-    fRun = new Run();
-    return fRun;
+  
+  fRun = new Run();
+  return fRun;
 }
 
 void RunAction::BeginOfRunAction(const G4Run*) { 
-    
-    // keep run condition
-    if (fPrimary) { 
-        G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
-        G4double energy = fPrimary->GetParticleGun()->GetParticleEnergy();
-        fRun->SetPrimary(particle, energy);
-    }    
-      
-    G4AnalysisManager* man = G4AnalysisManager::Instance();
-    man->OpenFile("TestBKG.root");
+  // Keep run condition
+  if (fPrimary) { 
+    G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
+    G4double energy = fPrimary->GetParticleGun()->GetParticleEnergy();
+    fRun->SetPrimary(particle, energy);
+  }    
+     
+  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  man->OpenFile("Am241.root");
 }
 
 void RunAction::EndOfRunAction(const G4Run*) {
-    if (isMaster) fRun->EndOfRun();
+ 
+  if (isMaster) fRun->EndOfRun();
             
-    auto man = G4AnalysisManager::Instance();
-    man->Write();
-    man->CloseFile();
+  auto man = G4AnalysisManager::Instance();
+  man->Write();
+  man->CloseFile();
 }
+

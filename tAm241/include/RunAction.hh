@@ -25,31 +25,44 @@
 //
 /// \file RunAction.hh
 /// \brief Definition of the RunAction class
-
+//
+// 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #ifndef RunAction_h
 #define RunAction_h 1
 
+#include "DetectorConstruction.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "Run.hh"
+
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include "G4AnalysisManager.hh"
+#include "G4Run.hh"
+#include "G4UnitsTable.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+#include <iomanip>
 
 class Run;
-class HistoManager;
 class PrimaryGeneratorAction;
 
-class RunAction : public G4UserRunAction {
+class RunAction : public G4UserRunAction
+{
     public:
         RunAction(PrimaryGeneratorAction*);
-        ~RunAction() override;
+        ~RunAction();
 
-        G4Run* GenerateRun() override;   
-        void BeginOfRunAction(const G4Run*) override;
-        void EndOfRunAction(const G4Run*) override;
+        virtual G4Run* GenerateRun();   
+        virtual void BeginOfRunAction(const G4Run*);
+        virtual void   EndOfRunAction(const G4Run*);
     
     private:
-        PrimaryGeneratorAction* fPrimary = nullptr;
-        Run* fRun = nullptr;
-        
+        PrimaryGeneratorAction* fPrimary;
+        DetectorConstruction* fDetConst;  
+        Run* fRun;
 };
 
 #endif

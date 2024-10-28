@@ -37,17 +37,12 @@
 #include "TrackingAction.hh"
 #include "stepping.hh"
 
-/// Action initialization class.
-///
-
-class ActionInitialization : public G4VUserActionInitialization
-{
+class ActionInitialization : public G4VUserActionInitialization {
   public:
-    ActionInitialization() = default;
-   ~ActionInitialization() override = default;
-
-    void BuildForMaster() const override;
-    void Build() const override;
+    ActionInitialization();
+    virtual ~ActionInitialization();
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
 
 };
 

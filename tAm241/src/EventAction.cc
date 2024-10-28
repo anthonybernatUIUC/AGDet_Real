@@ -28,30 +28,70 @@
 
 #include "EventAction.hh"
 
-EventAction::EventAction() {}
+EventAction::EventAction() : G4UserEventAction(), fEvisTot(0.) {
+  G4RunManager::GetRunManager()->SetPrintProgress(10000);
+}
+
+EventAction::~EventAction() {}
 
 void EventAction::BeginOfEventAction(const G4Event*) {
-    fDecayChain = G4String(" ");
-    fEvisTot = 0.;
-    fEdepSi = 0;
+ 
+  fDecayChain = G4String(" ");
+  fEvisTot = 0.;
+
+  fEdep = 0.;
+  fEdepSi = 0.;
+  fEdepAlpha = 0.;
+  fEdepLi7 = 0.;
+  fEdepSiElec = 0.;
+  fEdepGeElec = 0.;
+  fIncident = false;
 }
 
 void EventAction::EndOfEventAction(const G4Event* evt) {
-    G4int evtNb = evt->GetEventID(); 
-    G4int printProgress = G4RunManager::GetRunManager()->GetPrintProgress();
   
-    // printing survey
-    if (evtNb % printProgress == 0) 
-        G4cout << "    End of event. Decay chain:" << fDecayChain << G4endl << G4endl;
+  G4int evtNb = evt->GetEventID(); 
+  G4int printProgress = G4RunManager::GetRunManager()->GetPrintProgress();
+  if (evtNb % printProgress == 0) {
+   G4cout << "    End of event. Decay chain:" << fDecayChain 
+          << G4endl << G4endl;
+  }
  
-    Run* run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-    run->EvisEvent(fEvisTot);
-
-    G4double tol = 0.0001;
-    auto man = G4AnalysisManager::Instance();
-    if (fEdepSi > tol) {
-        man->FillNtupleDColumn(0, 0, fEdepSi);
-        man->AddNtupleRow(0);
-    }
+  Run* run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+  run->EvisEvent(fEvisTot);
+  
+  G4double tol = 0.00001;
+  auto man = G4AnalysisManager::Instance();
+  if (fEdep > tol) { 
+    man->FillNtupleDColumn(0, 0, fEdep);
+    man->AddNtupleRow(0);
+  } 
+  // if (fEdepSi > tol) {
+  //   man->FillNtupleDColumn(1, 0, fEdepSi);
+  //   man->AddNtupleRow(1);
+  // }
+  // if (fEdepGamma > tol) {
+  //   man->FillNtupleDColumn(2, 4, fEdepGamma);
+  //   man->AddNtupleRow(2);
+  // }
+  // if (fEdepAlpha > tol) {
+  //   man->FillNtupleDColumn(4, 0, fEdepAlpha);
+  //   man->AddNtupleRow(4);
+  // }
+  // if (fEdepLi7 > tol) {
+  //   man->FillNtupleDColumn(5, 0, fEdepLi7);
+  //   man->AddNtupleRow(5);
+  // }
+  // if (fEdepSiElec > tol) {
+  //   man->FillNtupleDColumn(6, 0, fEdepSiElec);
+  //   man->AddNtupleRow(6);
+  // }
+  // if (fEdepGeElec > tol) {
+  //   man->FillNtupleDColumn(7, 0, fEdepGeElec);
+  //   man->AddNtupleRow(7);
+  // }
 }
+
+
+
 

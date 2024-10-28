@@ -31,27 +31,44 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "Run.hh"
 #include "G4AnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include <iomanip>
 
+#include "Run.hh"
+
 class EventAction : public G4UserEventAction {
-    public:
-        EventAction();
-        ~EventAction() override = default;
-        void BeginOfEventAction(const G4Event*) override;
-        void EndOfEventAction(const G4Event*) override;
+  
+  public:
+    EventAction();
+    ~EventAction();
+    void AddDecayChain(G4String val) { fDecayChain += val; };
+    void AddEvisible(G4double val) { fEvisTot += val; };
+    void AddEdep(G4double edep) { fEdep += edep; }; 
+    void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
+    void AddEdepAlpha(G4double edep) { fEdepAlpha += edep; }; 
+    void AddEdepGamma(G4double edep) { fEdepGamma += edep; }; 
+    void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
+    void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
+    void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; }; 
+
+    void IncidentIndicator() { fIncident = true; };
+
+    virtual void BeginOfEventAction(const G4Event*);
+    virtual void EndOfEventAction(const G4Event*);
     
-        void AddDecayChain(G4String val) { fDecayChain += val; };
-        void AddEvisible(G4double val) { fEvisTot += val; };
-        void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
-    
-    private:
-        G4String fDecayChain = " ";                   
-        G4double fEvisTot = 0.;
-        G4double fEdepSi = 0;
+  private:
+    G4String fDecayChain;                   
+    G4double fEvisTot;
+    G4double fEdep = 0;
+    G4double fEdepSi = 0;
+    G4double fEdepAlpha = 0;
+    G4double fEdepGamma = 0;
+    G4double fEdepLi7 = 0;
+    G4double fEdepSiElec = 0;
+    G4double fEdepGeElec = 0;
+    G4bool fIncident;
 };
 
 #endif

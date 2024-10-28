@@ -25,54 +25,37 @@
 //
 /// \file TrackingAction.cc
 /// \brief Implementation of the TrackingAction class
-//
-// 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "TrackingAction.hh"
-
-#include "HistoManager.hh"
 #include "Run.hh"
 #include "EventAction.hh"
 #include "TrackingMessenger.hh"
-
 #include "G4Track.hh"
 #include "G4ParticleTypes.hh"
 #include "G4IonTable.hh"
 #include "G4RunManager.hh"
-
+#include "G4AnalysisManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-TrackingAction::TrackingAction(EventAction* event)
-:fEvent(event)
- 
-{
-  fTrackMessenger = new TrackingMessenger(this);
+TrackingAction::TrackingAction(EventAction* EA) : 
+G4UserTrackingAction(), fEvent(EA),fTrackMessenger(0), fFullChain(true) {
+  fTrackMessenger = new TrackingMessenger(this);   
+  fTimeWindow1 = fTimeWindow2 = 0.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-TrackingAction::~TrackingAction()
-{
+TrackingAction::~TrackingAction() {
   delete fTrackMessenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void TrackingAction::SetTimeWindow(G4double t1, G4double dt)
-{
+void TrackingAction::SetTimeWindow(G4double t1, G4double dt) {
   fTimeWindow1 = t1;
   fTimeWindow2 = fTimeWindow1 + dt;
 }
+void TrackingAction::PreUserTrackingAction(const G4Track* track) {
+  auto man = G4AnalysisManager::Instance();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void TrackingAction::PreUserTrackingAction(const G4Track* track)
-{
   Run* run 
    = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
          
@@ -83,7 +66,7 @@ void TrackingAction::PreUserTrackingAction(const G4Track* track)
     
   G4double Ekin = track->GetKineticEnergy();
   G4int ID      = track->GetTrackID();
-  
+
   G4bool condition = false;
   
   // check LifeTime
@@ -106,55 +89,40 @@ void TrackingAction::PreUserTrackingAction(const G4Track* track)
   else if (fCharge > 2.) ih = 5;
   
   //Ion
-  //
   if (fCharge > 2.) {
     //build decay chain
     if (ID == 1) fEvent->AddDecayChain(name);
       else       fEvent->AddDecayChain(" ---> " + name);
-    // 
     //full chain: put at rest; if not: kill secondary      
     G4Track* tr = (G4Track*) track;
-    if (fFullChain) { tr->SetKineticEnergy(0.);
-                      tr->SetTrackStatus(fStopButAlive);}
-      else if (ID>1) tr->SetTrackStatus(fStopAndKill);
-    //
-    fTimeBirth = track->GetGlobalTime();
+    if (fFullChain) { 
+      tr->SetKineticEnergy(0.);
+      tr->SetTrackStatus(fStopButAlive);
+    } else if (ID>1) tr->SetTrackStatus(fStopAndKill);
+    fTime_birth = track->GetGlobalTime();
   }
   
-  //example of saving random number seed of this fEvent, under condition
-  //
-  ////condition = (ih == 3);
   if (condition) G4RunManager::GetRunManager()->rndmSaveThisEvent();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void TrackingAction::PostUserTrackingAction(const G4Track* track)
 {
   //keep only ions
-  //
   if (fCharge < 3. ) return;
   
-  Run* run 
-   = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-   
-  G4AnalysisManager* analysis = G4AnalysisManager::Instance();
+  Run* run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
   
   //get time
-  //   
   G4double time = track->GetGlobalTime();
   G4int ID = track->GetTrackID();
   if (ID == 1) run->PrimaryTiming(time);        //time of life of primary ion
-  fTimeEnd = time;
+  fTime_end = time;
       
   //energy and momentum balance (from secondaries)
-  //
-  const std::vector<const G4Track*>* secondaries 
-                              = track->GetStep()->GetSecondaryInCurrentStep();
+  const std::vector<const G4Track*>* secondaries = track->GetStep()->GetSecondaryInCurrentStep();
   size_t nbtrk = (*secondaries).size();
   if (nbtrk) {
     //there are secondaries --> it is a decay
-    //
     //balance    
     G4double EkinTot = 0., EkinVis = 0.;
     G4ThreeVector Pbalance = - track->GetMomentum();
@@ -175,24 +143,21 @@ void TrackingAction::PostUserTrackingAction(const G4Track* track)
   }
   
   //no secondaries --> end of chain    
-  //  
   if (!nbtrk) {
-    run->EventTiming(time);                     //total time of life
+    run->EventTiming(time);
     G4double weight = track->GetWeight();
-    fTimeEnd = DBL_MAX;
+    fTime_end = DBL_MAX;
   }
   
-  //count activity in time window
-  //
+  //,count activity in time window
   run->SetTimeWindow(fTimeWindow1, fTimeWindow2);
   
   G4String name   = track->GetDefinition()->GetParticleName();
   G4bool life1(false), life2(false), decay(false);
-  if ((fTimeBirth <= fTimeWindow1)&&(fTimeEnd > fTimeWindow1)) life1 = true;
-  if ((fTimeBirth <= fTimeWindow2)&&(fTimeEnd > fTimeWindow2)) life2 = true;
-  if ((fTimeEnd   >  fTimeWindow1)&&(fTimeEnd < fTimeWindow2)) decay = true;
-  if (life1||life2||decay) run->CountInTimeWindow(name,life1,life2,decay);
+  if ((fTime_birth <= fTimeWindow1) && (fTime_end > fTimeWindow1)) life1 = true;
+  if ((fTime_birth <= fTimeWindow2) && (fTime_end > fTimeWindow2)) life2 = true;
+  if ((fTime_end   >  fTimeWindow1) && (fTime_end < fTimeWindow2)) decay = true;
+  if (life1 || life2 || decay) run->CountInTimeWindow(name, life1, life2, decay);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

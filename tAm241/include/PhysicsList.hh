@@ -25,33 +25,21 @@
 //
 /// \file PhysicsList.hh
 /// \brief Definition of the PhysicsList class
-//
-// 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 
-#ifndef PhysicsList_h
-#define PhysicsList_h 1
+#pragma once
 
 #include "G4VUserPhysicsList.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class PhysicsList: public G4VUserPhysicsList {
+    public:
+        PhysicsList();
+        ~PhysicsList() override = default;
 
-class PhysicsList: public G4VUserPhysicsList
-{
-  public:
-    PhysicsList();
-   ~PhysicsList() override = default;
-
-  protected:
-    // Construct particle and physics
-    void ConstructParticle() override;
-    void ConstructProcess()  override;
+    protected:
+        void ConstructParticle() override;
+        void ConstructProcess()  override;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#endif
 
 
 

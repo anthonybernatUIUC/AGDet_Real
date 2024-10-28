@@ -15,3 +15,14 @@ class MySiDet : public G4VSensitiveDetector {
         virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
 };
+
+class MyGeDet : public G4VSensitiveDetector {
+
+    public:
+        MyGeDet(G4String);
+        ~MyGeDet();
+    
+    private:
+        virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+
+};

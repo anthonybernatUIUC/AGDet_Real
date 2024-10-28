@@ -26,42 +26,47 @@
 /// \file DetectorConstruction.hh
 /// \brief Definition of the DetectorConstruction class
 
-#ifndef DetectorConstruction_h
-#define DetectorConstruction_h 1
-
-#include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
-#include "G4Tubs.hh"
-#include "G4Box.hh"
-#include "G4LogicalVolume.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4NistManager.hh"
-#include "G4SystemOfUnits.hh"
+#pragma once
 
 #include "detector.hh"
 
+#include "G4VUserDetectorConstruction.hh"
+#include "globals.hh"
+#include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4Sphere.hh"
+#include "G4LogicalVolume.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4GenericMessenger.hh"
+#include "G4NistManager.hh"
+#include "G4PVPlacement.hh"
+#include "G4PVPlacement.hh"
+
 class DetectorConstruction : public G4VUserDetectorConstruction {
-    public:
-        DetectorConstruction();
-        ~DetectorConstruction() override = default;
-        G4VPhysicalVolume* Construct() override;            
-        G4double GetWorldSize() { return fWorldSize; }
-        G4LogicalVolume* GetSiScoringVolume() const { return fSiScoringVolume; }
-        virtual void ConstructSDandField();
+  public:
+  
+    DetectorConstruction();
+    ~DetectorConstruction() override = default;
+    
+    G4VPhysicalVolume* Construct() override;              
+    G4double GetWorldSize() { return fWorldSize; }; 
+    G4LogicalVolume* GetSiScoringVolume() const { return fSiScoringVolume; }
 
-    private:
-        G4NistManager *man;
-        G4double fWorldSize = 0, dDiameterSi, zLengthSi, distDet;
-        G4Material *Galactic, *Si;
-        G4Box *solidWorld;
-        G4Tubs *solidSiDet;
-        G4LogicalVolume *logicWorld, *logicSiDet, *fSiScoringVolume;
-        G4VPhysicalVolume *physWorld, *physSiDet;
+  private:
+  
+    G4double fWorldSize, distDet, zLengthSi, dDiameterSi;
+    G4NistManager *man;
+    G4Material *Galactic, *Ge, *BC, *Si, *Al, *Air;
+    G4Box *solidWorld;
+    G4Tubs *solidSiDet;
+    G4LogicalVolume *logicWorld, *logicSiDet, *fSiScoringVolume;
+    G4PVPlacement *physWorld, *physSiDet;
 
-        void DefineMaterials();
-        void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+    void DefineMaterials();
+    void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+    void ConstructSDandField();
+
 };
-
-#endif
 

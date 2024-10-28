@@ -26,27 +26,34 @@
 /// \file PrimaryGeneratorAction.hh
 /// \brief Definition of the PrimaryGeneratorAction class
 
-
 #ifndef PrimaryGeneratorAction_h
 #define PrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
+#include "G4Event.hh"
+#include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
+#include "G4Geantino.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
 
 class G4Event;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
-    public:
-        PrimaryGeneratorAction();    
-        ~PrimaryGeneratorAction() override;
+	public:
+		PrimaryGeneratorAction();    
+		~PrimaryGeneratorAction();
 
-        void GeneratePrimaries(G4Event*) override;
-        G4ParticleGun* GetParticleGun() { return fParticleGun; };
-            
-    private:
-        G4ParticleGun* fParticleGun = nullptr;
+		virtual void GeneratePrimaries(G4Event*);
+		G4ParticleGun* GetParticleGun() { return fParticleGun; }
+		G4int Z, A;
+		G4double RandNo;
+          
+	private:
+    	G4ParticleGun* fParticleGun;
 };
-
 
 #endif

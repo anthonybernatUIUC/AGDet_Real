@@ -1,19 +1,26 @@
 #
-# Macro file for the initialization phase of "radioActiv.cc"
-#
 # Sets some default verbose
 # and initializes the graphic.
 #
-/control/verbose 2
-/run/verbose 2
-/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+/control/verbose 1
+/run/verbose 1
 #
 /run/initialize
 #
-# Open a viewer
-/vis/open OGLI
-# This opens the default viewer - see examples/basic/B1/vis.mac for a
-# more comprehensive overview of options. Also the documentation.
+# Use this open statement to create an OpenGL view:
+/vis/open OGLI 800x800-0+0
+#
+# Use this open statement to create a .prim file suitable for
+# viewing in DAWN:
+#/vis/open DAWNFILE
+#
+# Use this open statement to create a .heprep file suitable for
+# viewing in HepRApp:
+#/vis/open HepRepFile
+#
+# Use this open statement to create a .wrl file suitable for
+# viewing in a VRML viewer:
+#/vis/open VRML2FILE
 #
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
@@ -28,6 +35,9 @@
 #
 # Specify zoom value:
 /vis/viewer/zoom 1.5
+#
+# Specify background color:
+/vis/viewer/set/background 0.0 0.0 0.0
 #
 # Specify style (surface or wireframe):
 #/vis/viewer/set/style wireframe
@@ -63,11 +73,23 @@
 /vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e white
 /vis/modeling/trajectories/drawByParticleID-0/set geantino white
 /vis/modeling/trajectories/drawByParticleID-0/set gamma green
-/vis/modeling/trajectories/drawByParticleID-0/set alpha yellow
+/vis/modeling/trajectories/drawByParticleID-0/set alpha red
 /vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
 #
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate
+
+# Make World Invisible and color geometry
+/vis/geometry/set/visibility World 0 false
+#/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
+#/vis/geometry/set/colour logicAl1 0 0 0 1 		#Blue
+#/vis/geometry/set/colour logicAl2 0 0 0 1		#Blue
+#/vis/geometry/set/colour logicIsoSphere 0 0 1 1		#Teal
+#/vis/geometry/set/colour logicShield1 0 0.5 0.5 0.5	#Grey
+#/vis/geometry/set/colour logicShield2 0 0.7 0.4 0.2	#Copper
+#/vis/geometry/set/colour logicShield3 0 0.5 0.5 0.5	#Grey
+#/vis/geometry/set/colour logicTarget  0 0.35 0.2 0.1    #Brown
+
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true

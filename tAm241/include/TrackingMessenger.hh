@@ -46,14 +46,14 @@ class TrackingMessenger: public G4UImessenger
 {
   public:
     TrackingMessenger(TrackingAction*);
-   ~TrackingMessenger() override;
+   ~TrackingMessenger();
     
-    void SetNewValue(G4UIcommand*, G4String) override;
+    virtual void SetNewValue(G4UIcommand*, G4String);
     
   private:
-    TrackingAction*   fTrackingAction = nullptr;    
-    G4UIcmdWithABool* fTrackingCmd    = nullptr;
-    G4UIcommand*      fTimeWindowCmd  = nullptr;
+    TrackingAction*   fTrackingAction;    
+    G4UIcmdWithABool* fTrackingCmd;
+    G4UIcommand*      fTimeWindowCmd;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

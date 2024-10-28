@@ -26,26 +26,25 @@
 /// \file DetectorConstruction.cc
 /// \brief Implementation of the DetectorConstruction class
 
-
 #include "DetectorConstruction.hh"
-#include "detector.hh"
 
 DetectorConstruction::DetectorConstruction() {
-    fWorldSize = 1*m;
-    dDiameterSi = 20*cm;
-	zLengthSi = 30000*um;
-    distDet = 20*cm;
-
-	logicSiDet = nullptr;
-
-    DefineMaterials();
+	fWorldSize = 20*mm;
+	zLengthSi = 300*um;
+	distDet = 7*mm;
+	dDiameterSi = 7.5*mm;
+	DefineMaterials();
 }
 
 void DetectorConstruction::DefineMaterials() {
 	
-    man = G4NistManager::Instance();
+	man = G4NistManager::Instance();
 	Galactic = man->FindOrBuildMaterial("G4_Galactic");
+	Air = man->FindOrBuildMaterial("G4_AIR");
+	Ge = man->FindOrBuildMaterial("G4_Ge");
 	Si = man->FindOrBuildMaterial("G4_Si");
+	BC = man->FindOrBuildMaterial("G4_BORON_CARBIDE");
+	Al = man->FindOrBuildMaterial("G4_Al");
 }
 
 void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
@@ -60,19 +59,16 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
-    
-    solidWorld = new G4Box("World", fWorldSize / 2,fWorldSize / 2,fWorldSize / 2);
-    logicWorld = new G4LogicalVolume(solidWorld, Galactic, "World");
-    physWorld = new G4PVPlacement(
-        0, G4ThreeVector(), logicWorld, "World", 0, false, 0);
+  
+	solidWorld = new G4Box("solidWorld", fWorldSize / 2, fWorldSize / 2, fWorldSize / 2); 
+	logicWorld = new G4LogicalVolume(solidWorld, Galactic, "logicWorld");
+	physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, "physWorld", 0, false, 0);
 
-    // G4RotateY3D rotThetaSi(45*deg);
-	// G4RotateZ3D rotPhiSi(-45*deg);
 	G4RotateY3D rotThetaSi(0*deg);
 	G4RotateZ3D rotPhiSi(0*deg);
 	ConstructSiDetector(rotThetaSi, rotPhiSi);
- 
-    return physWorld;
+
+	return physWorld;
 }
 
 void DetectorConstruction::ConstructSDandField() {
@@ -83,3 +79,5 @@ void DetectorConstruction::ConstructSDandField() {
 		logicSiDet->SetSensitiveDetector(sensDetSi);
 	}
 }
+
+

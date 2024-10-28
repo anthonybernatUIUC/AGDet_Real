@@ -29,25 +29,28 @@
 
 #include "ActionInitialization.hh"
 
+ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
+
+ActionInitialization::~ActionInitialization() {}
+
 void ActionInitialization::BuildForMaster() const {
-    RunAction* runAction = new RunAction(nullptr);
-    SetUserAction(runAction);
+  RunAction* runAction = new RunAction(0);
+  SetUserAction(runAction);
 }
 
 void ActionInitialization::Build() const {
-    PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
-    SetUserAction(primary);
+  PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
+  SetUserAction(primary);
+    
+  RunAction* runAction = new RunAction(primary);
+  SetUserAction(runAction);
+  
+  EventAction* eventAction = new EventAction();
+  SetUserAction(eventAction);
 
-    RunAction* runAction = new RunAction(primary);
-    SetUserAction(runAction);
+  MySteppingAction *steppingAction = new MySteppingAction(eventAction);
+  SetUserAction(steppingAction);
 
-    EventAction* eventAction = new EventAction();
-    SetUserAction(eventAction);
-
-    MySteppingAction *steppingAction = new MySteppingAction(eventAction);
-    SetUserAction(steppingAction);
-
-    TrackingAction* trackingAction = new TrackingAction(eventAction);
-    SetUserAction(trackingAction);
+  TrackingAction* trackingAction = new TrackingAction(eventAction);
+  SetUserAction(trackingAction);
 }  
-
