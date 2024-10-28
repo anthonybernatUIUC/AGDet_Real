@@ -1,0 +1,11 @@
+/run/initialize
+/run/reinitializeGeometry
+
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 1
+/run/verbose 1
+
+/tracking/verbose 0
+
+/run/printProgress 200000
+/run/beamOn 1000000

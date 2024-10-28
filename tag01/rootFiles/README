@@ -1,0 +1,5 @@
+TFiles generated from TestBKG2 are placed here.
+
+The different tests I ran are placed in separate subdirectories, along with the TFiles I used and a list of parameters.
+
+Root files in each subdirectory are modified from the two provided in this directory. Each are made to produce the specific graph I needed from each data set.

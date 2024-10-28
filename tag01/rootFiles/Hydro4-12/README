@@ -1,0 +1,12 @@
+Parameters (DetectorConstruction.cc)
+
+isShielded = false
+isHydrogen = true
+rThickness = 5
+dDiameter = 8
+zLength = 3
+outerShieldDiameter = 8
+halfShell = false;                                                          
+useTarget = false;
+
+Events: 50M
