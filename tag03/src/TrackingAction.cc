@@ -88,19 +88,22 @@ void TrackingAction::PreUserTrackingAction(const G4Track* track) {
   else if (particle == G4Alpha::Alpha()) ih = 4;
   else if (fCharge > 2.) ih = 5;
   
-  //Ion
-  if (fCharge > 2.) {
-    //build decay chain
-    if (ID == 1) fEvent->AddDecayChain(name);
-      else       fEvent->AddDecayChain(" ---> " + name);
-    //full chain: put at rest; if not: kill secondary      
-    G4Track* tr = (G4Track*) track;
-    if (fFullChain) { 
-      tr->SetKineticEnergy(0.);
-      tr->SetTrackStatus(fStopButAlive);
-    } else if (ID>1) tr->SetTrackStatus(fStopAndKill);
-    fTime_birth = track->GetGlobalTime();
-  }
+  	//Ion
+	if (fCharge > 2.) {
+    	//build decay chain
+    	if (ID == 1) fEvent->AddDecayChain(name);
+      	else       fEvent->AddDecayChain(" ---> " + name);
+
+    	//full chain: put at rest; if not: kill secondary      
+    	G4Track* tr = (G4Track*) track;
+    	if (fFullChain) { 
+    	  // tr->SetKineticEnergy(0.);
+    	  // tr->SetTrackStatus(fStopButAlive);
+    	} else if (ID>1) { 
+			// tr->SetTrackStatus(fStopAndKill); 
+		}
+    	fTime_birth = track->GetGlobalTime();
+  	}
   
   if (condition) G4RunManager::GetRunManager()->rndmSaveThisEvent();
 }

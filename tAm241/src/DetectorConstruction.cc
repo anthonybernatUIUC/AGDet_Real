@@ -29,7 +29,7 @@
 #include "DetectorConstruction.hh"
 
 DetectorConstruction::DetectorConstruction() {
-	fWorldSize = 20*mm;
+	fWorldSize = 20*cm;
 	zLengthSi = 300*um;
 	distDet = 7*mm;
 	dDiameterSi = 7.5*mm;

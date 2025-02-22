@@ -29,11 +29,28 @@
 #include "DetectorConstruction.hh"
 #include "detector.hh"
 
+#include "G4Isotope.hh"
+#include "G4Material.hh"
+#include "G4Element.hh"
+
 DetectorConstruction::DetectorConstruction() {
+	
+	fMessenger = new G4GenericMessenger(this, "/target/", "target control");
+	auto& armAngleCmd = fMessenger->DeclareMethod(
+		"setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width.");
+		
+	DefineParameters();
+	DefineMaterials();
+}
+
+DetectorConstruction::~DetectorConstruction() {}
+
+void DetectorConstruction::DefineParameters() {
+
 	fWorldSize = 1*m;
 	distDet = 10*cm;
 	TarLength = 10*cm;
-	TarWidth = 2*um;
+	TarWidth = 106*nm;
 	dDiameterGe = 8*cm;
 	// dDiameterSi = 2.76*cm;
 	dDiameterSi = 8*cm;
@@ -43,11 +60,7 @@ DetectorConstruction::DetectorConstruction() {
 	logicGeDet = nullptr;
 	logicSiDet = nullptr;
 	logicSiSph = nullptr;
-
-	DefineMaterials();
 }
-
-DetectorConstruction::~DetectorConstruction() {}
 
 void DetectorConstruction::DefineMaterials() {
 	

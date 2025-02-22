@@ -28,15 +28,11 @@
 //
 // 
 
-#ifndef RunAction_h
-#define RunAction_h 1
+#pragma once
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include "DetectorConstruction.hh"
-#include "Run.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "G4AnalysisManager.hh"
 
 #include "G4Run.hh"
 #include "G4UnitsTable.hh"
@@ -47,24 +43,19 @@
 class Run;
 class PrimaryGeneratorAction;
 
+class RunAction : public G4UserRunAction {
+  	public:
+    	RunAction(PrimaryGeneratorAction*);
+   		~RunAction();
 
-class RunAction : public G4UserRunAction
-{
-  public:
-    RunAction(PrimaryGeneratorAction*);
-   ~RunAction();
-
-    virtual G4Run* GenerateRun();   
-    virtual void BeginOfRunAction(const G4Run*);
-    virtual void   EndOfRunAction(const G4Run*);
+    	virtual G4Run* GenerateRun();   
+    	virtual void BeginOfRunAction(const G4Run*);
+    	virtual void EndOfRunAction(const G4Run*);
     
-  private:
-    PrimaryGeneratorAction* fPrimary;
-    DetectorConstruction* fDetConst;  
-    Run* fRun;
+  	private:
+    	PrimaryGeneratorAction* fPrimary;
+    	DetectorConstruction* fDetConst;  
+    	Run* fRun;
 };
 
-
-
-#endif
 

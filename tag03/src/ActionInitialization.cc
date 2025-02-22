@@ -28,29 +28,34 @@
 /// \brief Implementation of the ActionInitialization class
 
 #include "ActionInitialization.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
+#include "EventAction.hh"
+#include "TrackingAction.hh"
+#include "stepping.hh"
 
 ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
 
 ActionInitialization::~ActionInitialization() {}
 
 void ActionInitialization::BuildForMaster() const {
-  RunAction* runAction = new RunAction(0);
-  SetUserAction(runAction);
+	RunAction* runAction = new RunAction(0);
+	SetUserAction(runAction);
 }
 
 void ActionInitialization::Build() const {
-  PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
-  SetUserAction(primary);
-    
-  RunAction* runAction = new RunAction(primary);
-  SetUserAction(runAction);
-  
-  EventAction* eventAction = new EventAction();
-  SetUserAction(eventAction);
+	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
+	SetUserAction(primary);
+		
+	RunAction* runAction = new RunAction(primary);
+	SetUserAction(runAction);
+	
+	EventAction* eventAction = new EventAction();
+	SetUserAction(eventAction);
 
-  MySteppingAction *steppingAction = new MySteppingAction(eventAction);
-  SetUserAction(steppingAction);
+	MySteppingAction *steppingAction = new MySteppingAction(eventAction);
+	SetUserAction(steppingAction);
 
-  TrackingAction* trackingAction = new TrackingAction(eventAction);
-  SetUserAction(trackingAction);
+	TrackingAction* trackingAction = new TrackingAction(eventAction);
+	SetUserAction(trackingAction);
 }  

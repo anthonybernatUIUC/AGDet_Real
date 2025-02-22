@@ -1,3 +1,12 @@
+#include <string> 
+#include <iostream>
+#include <TCanvas.h>
+#include <TH1.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TLeaf.h>
+#include "TROOT.h"
+
 void HistAm241() {
 
     TString title1 = "Simulated Energy Spectrum of Am241 Decay";
@@ -20,15 +29,23 @@ void HistAm241() {
     
     double fEdepMax = INT_MIN;
     double fEdepMin = INT_MAX;
+    int counts = 0;
     TH1F *hist1 = new TH1F("hist1", title1, binNo, xMin, xMax);
     for (int i = 0; i < entries1; i++) {
         tree1->GetEntry(i);
         hist1->Fill(fEdep);
         if (fEdep > fEdepMax) fEdepMax = fEdep;
         if (fEdep < fEdepMin) fEdepMin = fEdep;
+
+        
     }
+    std::cout << "Integral: " << hist1->Integral() << std::endl;
     for (int i = 0; i < binNo; i++) {
-        std:cout << " | " << hist1->GetBinContent(i);
+        double binSpacing = fEdepMax / binNo;
+        double start = 4.5;
+        double end = 5.5;
+
+        std::cout << " | " << hist1->GetBinContent(i);
     }
     std::cout << " |" << std::endl;
     std::cout << fEdepMax << std::endl;

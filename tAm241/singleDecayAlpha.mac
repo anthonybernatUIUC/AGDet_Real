@@ -7,13 +7,10 @@
 # Set a very high time threshold to allow all decays to happen
 /process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
 #
-#/gun/particle ion
-#/gun/ion 95 241
-#
- 
-/rdecay01/fullChain true
-/process/had/rdm/nucleusLimits 241 241 95 95
+/gun/particle ion
+/gun/ion 2 4
+/gun/energy 1.776 MeV
 
 #
-/run/printProgress 10000  
-/run/beamOn 10000
+#/run/printProgress 10000  
+/run/beamOn 100000

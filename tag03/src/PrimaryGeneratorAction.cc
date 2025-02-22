@@ -38,32 +38,25 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction() : 
 G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
   
-  G4int n_particle = 1;
-  fParticleGun = new G4ParticleGun(n_particle);
+	G4int n_particle = 1;
+	fParticleGun = new G4ParticleGun(n_particle);
 
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  fParticleGun->SetParticleDefinition(
-               particleTable->FindParticle(particleName = "neutron"));
+	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+	G4String particleName;
+	fParticleGun->SetParticleDefinition(
+    	particleTable->FindParticle(particleName = "neutron"));
 
-  // fParticleGun->SetParticleEnergy(0.003325*eV);
-  fParticleGun->SetParticleEnergy(0.0001*eV);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
-  // fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,  1., -1.));
+	// fParticleGun->SetParticleEnergy(0.003325*eV);
+	fParticleGun->SetParticleEnergy(0.0001*eV);
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
-  delete fParticleGun;
+	delete fParticleGun;
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
-  
-  // G4double ShellRadius = (18.52 - 1);
-  // G4double zLength = 3;
-  // G4bool halfShell = true;
-  // G4bool useTarget = true;
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 5*cm));
-  fParticleGun->GeneratePrimaryVertex(anEvent);
-   
+	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 5*cm));
+	fParticleGun->GeneratePrimaryVertex(anEvent);
 }

@@ -40,50 +40,64 @@
 #include "G4PhysicalConstants.hh"
 #include "G4GenericMessenger.hh"
 #include "G4NistManager.hh"
+#include "G4RunManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4Isotope.hh"
+#include "G4Material.hh"
+#include "G4Element.hh"
+
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
   
-  public:
+	public:
   
-    DetectorConstruction();
-    ~DetectorConstruction();
+		DetectorConstruction();
+		~DetectorConstruction();
 
-    G4LogicalVolume* GetGeScoringVolume() const { return fGeScoringVolume; }
-    G4LogicalVolume* GetSiScoringVolume() const { return fSiScoringVolume; }
+		G4LogicalVolume* GetGeScoringVolume() const { return fGeScoringVolume; }
+		G4LogicalVolume* GetSiScoringVolume() const { return fSiScoringVolume; }
+		G4LogicalVolume* GetTargetVolume() const { return logicTargetCyl; }
+		G4double GetTargetWidth() { return TarWidth; }
+		void ScaleTargetWidth(G4double scale) { 
+			TarWidth *= scale; 
+			G4RunManager::GetRunManager()->GeometryHasBeenModified();
+		}
 
-    virtual G4VPhysicalVolume* Construct();                 
-    virtual G4double GetWorldSize() { return fWorldSize; } 
-    virtual void ConstructSDandField();
-    
-  private:
+		virtual G4VPhysicalVolume* Construct();                 
+		virtual G4double GetWorldSize() { return fWorldSize; } 
+		virtual void ConstructSDandField();
+		
+  	private:
  
-    G4NistManager *man;
-    G4double fWorldSize, zLengthGe, zLengthSi, dDiameterGe, dDiameterSi, TarLength, TarWidth, distDet;
-    G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10;
-    G4Element *elB10;
-    G4Isotope *B10Iso;
+		G4NistManager *man;
+		G4double fWorldSize, distDet, TarLength, TarWidth, dDiameterGe, dDiameterSi, zLengthGe, zLengthSi;
+		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10;
+		G4Element *elB10;
+		G4Isotope *B10Iso;
 
-    G4Box *solidWorld, *solidTarget;
-    G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidCollimator;
-    G4Sphere *solidSiSph;
-    
-    G4LogicalVolume *logicWorld, *logicGeDet, *fGeScoringVolume, *fSiScoringVolume, *logicTarget, 
-    *logicTargetCyl, *logicSiDet, *logicCollimator, *logicSiSph;
+		G4Box *solidWorld, *solidTarget;
+		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidCollimator;
+		G4Sphere *solidSiSph;
+		
+		G4LogicalVolume *logicWorld, *logicGeDet, *fGeScoringVolume, *fSiScoringVolume, *logicTarget, 
+		*logicTargetCyl, *logicSiDet, *logicCollimator, *logicSiSph;
 
-    G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physSiSph, *physTarget, *physTargetCyl, *physCollimator;
+		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physSiSph, *physTarget, 
+		*physTargetCyl, *physCollimator;
 
-    void DefineMaterials();
-    void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructAlShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructIsoSphere(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructShielding(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-    void ConstructTarget();
+		G4GenericMessenger* fMessenger = nullptr;
+
+		void DefineMaterials();
+		void DefineParameters();
+		void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructAlShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructIsoSphere(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructShielding(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructTarget();
   
 };
 

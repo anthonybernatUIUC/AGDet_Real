@@ -25,50 +25,49 @@
 //
 /// \file EventAction.hh
 /// \brief Definition of the EventAction class
-//
-// 
-#ifndef EventAction_h
-#define EventAction_h 1
+
+#pragma once
 
 #include "G4UserEventAction.hh"
+#include "G4AnalysisManager.hh"
+#include "G4RunManager.hh"
+#include "G4Event.hh"
 #include "globals.hh"
 #include "Run.hh"
-#include "G4AnalysisManager.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
 #include <iomanip>
+#include <set>
 
 class EventAction : public G4UserEventAction {
   
-  public:
-    EventAction();
-    ~EventAction();
-    void AddDecayChain(G4String val) { fDecayChain += val; };
-    void AddEvisible(G4double val) { fEvisTot += val; };
-    void AddEdepGe(G4double edep) { fEdepGe += edep; }; 
-    void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
-    void AddEdepAlpha(G4double edep) { fEdepAlpha += edep; }; 
-    void AddEdepGamma(G4double edep) { fEdepGamma += edep; }; 
-    void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
-    void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
-    void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; }; 
+	public:
+		EventAction();
+		~EventAction();
+		void AddDecayChain(G4String val) { fDecayChain += val; };
+		void AddEvisible(G4double val) { fEvisTot += val; };
+		void AddEdepGe(G4double edep) { fEdepGe += edep; }; 
+		void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
+		void AddEdepAlpha(G4double edep) { fEdepAlpha += edep; }; 
+		void AddEdepGamma(G4double edep) { fEdepGamma += edep; }; 
+		void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
+		void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
+		void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; };
+		std::set<G4String> GetLi7Set() { return Li7Vols; } 
 
-    void IncidentIndicator() { fIncident = true; };
+		void IncidentIndicator() { fIncident = true; };
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+		virtual void BeginOfEventAction(const G4Event*);
+      	virtual void EndOfEventAction(const G4Event*);
     
-  private:
-    G4String fDecayChain;                   
-    G4double fEvisTot;
-    G4double fEdepGe = 0;
-    G4double fEdepSi = 0;
-    G4double fEdepAlpha = 0;
-    G4double fEdepGamma = 0;
-    G4double fEdepLi7 = 0;
-    G4double fEdepSiElec = 0;
-    G4double fEdepGeElec = 0;
-    G4bool fIncident;
+  	private:
+		G4String fDecayChain;                   
+		G4double fEvisTot;
+		G4double fEdepGe = 0;
+		G4double fEdepSi = 0;
+		G4double fEdepAlpha = 0;
+		G4double fEdepGamma = 0;
+		G4double fEdepLi7 = 0;
+		G4double fEdepSiElec = 0;
+		G4double fEdepGeElec = 0;
+		std::set<G4String> Li7Vols;
+		G4bool fIncident;
 };
-
-#endif

@@ -37,20 +37,17 @@
 
 class G4Event;
 
-class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
-{
-  public:
-    PrimaryGeneratorAction();    
-   ~PrimaryGeneratorAction();
+class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
+  	public:
+  		PrimaryGeneratorAction();    
+   		~PrimaryGeneratorAction();
+    	virtual void GeneratePrimaries(G4Event*);
+    	G4ParticleGun* GetParticleGun() { return fParticleGun; };
 
-  public:
-    virtual void GeneratePrimaries(G4Event*);
-    G4ParticleGun* GetParticleGun() { return fParticleGun; };
-    G4int Z, A;
-    G4double RandNo;
+    	G4int Z, A;
             
-  private:
-    G4ParticleGun* fParticleGun;
+  	private:
+    	G4ParticleGun* fParticleGun;
 };
 
 #endif

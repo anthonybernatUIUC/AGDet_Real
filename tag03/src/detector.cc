@@ -9,8 +9,8 @@ MySiDet::~MySiDet() {}
 MyGeDet::~MyGeDet() {}
 
 G4bool MySiDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
-    // G4Track* track = aStep->GetTrack();
-    // track->SetTrackStatus(fStopAndKill);
+
+    // std::cout << aStep->GetTrack()->GetDefinition()->GetParticleName();
 
     // Alphas position/momentum
     G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
@@ -35,8 +35,6 @@ G4bool MySiDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
 }
 
 G4bool MyGeDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
-    // G4Track* track = aStep->GetTrack();
-    // track->SetTrackStatus(fStopAndKill);
 
     // Photon positions/momentum
     G4StepPoint* preStepPoint = aStep->GetPreStepPoint();

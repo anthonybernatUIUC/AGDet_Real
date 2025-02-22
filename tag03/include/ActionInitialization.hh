@@ -27,15 +27,9 @@
 /// \file ActionInitialization.hh
 /// \brief Definition of the ActionInitialization class
 
-#ifndef ActionInitialization_h
-#define ActionInitialization_h 1
+#pragma once
 
 #include "G4VUserActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-#include "EventAction.hh"
-#include "TrackingAction.hh"
-#include "stepping.hh"
 
 class ActionInitialization : public G4VUserActionInitialization {
   public:
@@ -45,7 +39,4 @@ class ActionInitialization : public G4VUserActionInitialization {
     virtual void Build() const;
 
 };
-
-#endif
-
     

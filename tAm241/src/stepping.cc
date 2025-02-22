@@ -15,7 +15,6 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 	G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 	G4ParticleDefinition* part = step->GetTrack()->GetDefinition();
 	G4double edep = step->GetTotalEnergyDeposit();
-	// G4cout << "HELLOOOOOOOOOOO" << G4endl;
 	
 	if (volume == fSiScoringVolume) {
 		fEventAction->AddEdep(edep);

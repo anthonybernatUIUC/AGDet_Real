@@ -16,12 +16,16 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 
 	G4LogicalVolume* fGeScoringVolume = detectorConstruction->GetGeScoringVolume();
 	G4LogicalVolume* fSiScoringVolume = detectorConstruction->GetSiScoringVolume();
+	G4LogicalVolume* fTarget = detectorConstruction->GetTargetVolume();
 	G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 	G4ParticleDefinition* part = step->GetTrack()->GetDefinition();
 	G4double edep = step->GetTotalEnergyDeposit();
+
+	
+
 	
 	if (volume == fGeScoringVolume) {
-		if (part == G4Alpha::Alpha()) {
+		if (part == G4Alpha::Alpha() || part->GetParticleName() == "Li7") {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
 		if (part == G4Gamma::Gamma()) {
@@ -37,6 +41,11 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 		if (part == G4Gamma::Gamma()) {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
+		if (part->GetParticleName() == "Li7") {
+			// std::cout << "|Hit Si";
+			fEventAction->AddEdepLi7(edep);
+			fEventAction->AddEdepSi(edep);
+		}
 		if (part == G4Alpha::Alpha()) {
 			fEventAction->AddEdepAlpha(edep);
 			fEventAction->AddEdepSi(edep);
@@ -46,10 +55,14 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 			fEventAction->AddEdepSi(edep);
 		}
 	}
-	if (part->GetParticleName() == "Li7") {
-		G4double edep = step->GetTrack()->GetVertexKineticEnergy();
-		fEventAction->AddEdepLi7(edep);
-	}
+
+	// if (part->GetParticleName() == "Li7") {
+	// 	// G4cout << volume->GetName();
+	// 	fEventAction->GetLi7Set().insert(volume->GetName());
+	// 	G4double edep = step->GetTrack()->GetVertexKineticEnergy();
+	// 	fEventAction->AddEdepLi7(edep);
+	// }
+
 }
 
 

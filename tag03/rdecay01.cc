@@ -44,7 +44,7 @@
 #include "G4UIExecutive.hh"
 #include "G4VisExecutive.hh"
 
-int main(int argc,char** argv) {
+int main(int argc, char** argv) {
 
   // detect interactive mode (if no arguments) and define UI session
   G4UIExecutive* ui = nullptr;
@@ -73,7 +73,7 @@ int main(int argc,char** argv) {
     visManager = new G4VisExecutive;
     visManager->Initialize();
     UImanager->ApplyCommand("/control/execute vis.mac");
-    UImanager->ApplyCommand("/vis/scene/add/axes");
+    // UImanager->ApplyCommand("/vis/scene/add/axes");
     UImanager->ApplyCommand("/vis/scene/add/scale 10 cm");
     ui->SessionStart();
     delete ui;

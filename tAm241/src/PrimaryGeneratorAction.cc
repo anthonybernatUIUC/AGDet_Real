@@ -36,7 +36,7 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 
   fParticleGun->SetParticleEnergy(0*eV);
   fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1., 0., 0.));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
