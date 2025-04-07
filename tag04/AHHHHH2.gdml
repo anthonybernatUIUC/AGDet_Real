@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <constant name="HALFPI" value="pi/2"/>
+    <constant name="PI" value="1*pi"/>
+    <constant name="TWOPI" value="2*pi"/>
+  </define>
+  <materials/>
+  <solids/>
+  <structure>
+    <assembly name="hn-0800-long_Anthony"/>
+    <assembly name="hn-0800-long_1_Anthony"/>
+    <assembly name="hn-0800-long_2_Anthony"/>
+    <assembly name="hn-0800-long_3_Anthony"/>
+    <assembly name="hn-0800-long_4_Anthony"/>
+    <assembly name="hn-0800-long_5_Antony"/>
+    <assembly name="Anthony-Reduced-Chamber">
+      <physvol name="PV_hn-0800-long_Anthony">
+        <volumeref ref="hn-0800-long_Anthony"/>
+        <position name="P-hn-0800-long_Anthony1" unit="mm" x="-5.3371901952113665e-14" y="262.20849289377384" z="312.4879134148663"/>
+        <rotation name="R-hn-0800-long_Anthony1" unit="deg" x="40.000000000000206" y="-7.784069479856154e-13" z="-2.9024381654095213e-16"/>
+      </physvol>
+      <physvol name="PV_hn-0800-long_1_Anthony">
+        <volumeref ref="hn-0800-long_1_Anthony"/>
+        <position name="P-hn-0800-long_1_Anthony2" unit="mm" x="227.0792159340408" y="-131.10424644688567" z="312.4879134148612"/>
+        <rotation name="R-hn-0800-long_1_Anthony2" unit="deg" x="-22.760476274617137" y="-33.82584497057064" z="127.00450198595155"/>
+      </physvol>
+      <physvol name="PV_hn-0800-long_2_Anthony">
+        <volumeref ref="hn-0800-long_2_Anthony"/>
+        <position name="P-hn-0800-long_2_Anthony3" unit="mm" x="-227.07921593403773" y="-131.10424644688794" z="312.48791341486884"/>
+        <rotation name="R-hn-0800-long_2_Anthony3" unit="deg" x="-22.760476274616494" y="33.82584497056914" z="-127.00450198594953"/>
+      </physvol>
+      <physvol name="PV_hn-0800-long_3_Anthony">
+        <volumeref ref="hn-0800-long_3_Anthony"/>
+        <position name="P-hn-0800-long_3_Anthony4" unit="mm" x="-1.0684990582435378e-11" y="-262.20849289377384" z="-312.4879134148612"/>
+        <rotation name="R-hn-0800-long_3_Anthony4" unit="deg" x="-139.9999999999998" y="4.052407560729117e-13" z="-4.464481318477846e-13"/>
+      </physvol>
+      <physvol name="PV_hn-0800-long_4_Anthony">
+        <volumeref ref="hn-0800-long_4_Anthony"/>
+        <position name="P-hn-0800-long_4_Anthony5" unit="mm" x="227.07921593404586" y="131.10424644687828" z="-312.4879134148612"/>
+        <rotation name="R-hn-0800-long_4_Anthony5" unit="deg" x="157.23952372538366" y="-33.82584497057011" z="127.00450198594986"/>
+      </physvol>
+      <physvol name="PV_hn-0800-long_5_Antony">
+        <volumeref ref="hn-0800-long_5_Antony"/>
+        <position name="P-hn-0800-long_5_Antony6" unit="mm" x="-227.07921593403495" y="131.10424644689684" z="-312.4879134148612"/>
+        <rotation name="R-hn-0800-long_5_Antony6" unit="deg" x="157.23952372538278" y="33.82584497056962" z="-127.0045019859512"/>
+      </physvol>
+    </assembly>
+  </structure>
+  <setup name="Default" version="1.0">
+    <world ref="Anthony-Reduced-Chamber"/>
+  </setup>
+</gdml>

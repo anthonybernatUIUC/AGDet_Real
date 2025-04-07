@@ -33,10 +33,11 @@
 #include "G4Material.hh"
 #include "G4Element.hh"
 
+
 DetectorConstruction::DetectorConstruction() {
 	
 	fMessenger = new G4GenericMessenger(this, "/target/", "target control");
-	auto& armAngleCmd = fMessenger->DeclareMethod(
+	auto& targetWidthCmd = fMessenger->DeclareMethod(
 		"setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width.");
 		
 	DefineParameters();

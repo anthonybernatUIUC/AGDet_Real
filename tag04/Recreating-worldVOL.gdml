@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <constant name="HALFPI" value="pi/2"/>
+    <constant name="PI" value="1*pi"/>
+    <constant name="TWOPI" value="2*pi"/>
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <rotation name="identity" x="0" y="0" z="0"/>
+  </define>
+  <materials/>
+  <solids>
+    <box name="WorldBox" x="1000.0" y="1000.0" z="1000.0" lunit="mm"/>
+    <sphere name="GDMLSphere" rmin="45.0" rmax="45.72" startphi="0.0" deltaphi="3.02" starttheta="0.0" deltatheta="8.02" aunit="rad" lunit="cm"/>
+    <eltube name="GDMLElTube" dx="10.16" dy="10.16" dz="30.0" lunit="cm"/>
+    <subtraction name="Cut">
+      <first ref="GDMLSphere"/>
+      <second ref="GDMLElTube"/>
+      <position name="P-GDMLElTube1" unit="mm" x="-1.43290563010628e-13" y="596.0" z="-1.3233858453531866e-13"/>
+      <rotation name="R-GDMLElTube1" unit="deg" x="89.99999999999999" y="1.3775074672084514e-14" z="-180.0"/>
+    </subtraction>
+  </solids>
+  <structure>
+    <volume name="LV_EllipticalTube">
+      <materialref ref="G4_A-150_TISSUE"/>
+      <solidref ref="Cut"/>
+      <auxiliary auxtype="Color" auxvalue="#72798080"/>
+    </volume>
+    <volume name="worldVOL">
+      <materialref ref="G4_Galactic"/>
+      <solidref ref="WorldBox"/>
+      <physvol name="PV_LV_EllipticalTube">
+        <volumeref ref="LV_EllipticalTube"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>
