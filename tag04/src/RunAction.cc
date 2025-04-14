@@ -32,7 +32,8 @@
 #include "G4AnalysisManager.hh"
 #include "Run.hh"
 
-RunAction::RunAction(PrimaryGeneratorAction* kin) : G4UserRunAction(), fPrimary(kin), fRun(0) {
+RunAction::RunAction(PrimaryGeneratorAction* kin, bool uiMode) : 
+G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	
 	auto man = G4AnalysisManager::Instance();
 	man->SetDefaultFileType("root");
@@ -87,19 +88,22 @@ G4Run* RunAction::GenerateRun() {
 }
 
 void RunAction::BeginOfRunAction(const G4Run*) { 
-  	// Keep run condition
+  	
+	// Keep run condition
   	if (fPrimary) { 
 		G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
 		G4double energy = fPrimary->GetParticleGun()->GetParticleEnergy();
 		fRun->SetPrimary(particle, energy);
-  	}    
-	
-	
-	G4AnalysisManager* man = G4AnalysisManager::Instance();
-	// man->SetDefaultFileType("root");
-	// man->OpenFile("TestBKG.root");
-	man->OpenFile();
-	
+  	}   
+	G4AnalysisManager* man = G4AnalysisManager::Instance(); 
+	if (uiMode) { // uiMode data capture // 
+		G4cout << "UI MODE" << G4endl; 
+		man->SetDefaultFileType("root");
+		man->OpenFile("TestBKGUI.root");
+	} else { // sim.mac, genSim.mac data capture //
+		G4cout << "MACRO MODE" << G4endl; 
+		man->OpenFile();
+	}
 }
 
 void RunAction::EndOfRunAction(const G4Run*) {

@@ -84,15 +84,15 @@
 /vis/scene/endOfEventAction accumulate
 
 # Make World Invisible and color geometry
-/vis/geometry/set/visibility World 0 false
+/vis/geometry/set/visibility WorldBox 0 false
 #/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
 #/vis/geometry/set/colour logicAl1 0 0 0 1 		#Blue
 /vis/geometry/set/colour logicGeDet 0 0 0 1		#Blue
-#/vis/geometry/set/colour logicSiDet 0 0 1 1		#Teal
+/vis/geometry/set/colour logicSiDet 0 0 1 1		#Teal
 #/vis/geometry/set/colour logicShield1 0 0.5 0.5 0.5	#Grey
 #/vis/geometry/set/colour logicShield2 0 0.7 0.4 0.2	#Copper
 #/vis/geometry/set/colour logicShield3 0 0.5 0.5 0.5	#Grey
-/vis/geometry/set/colour logicTargetCyl  0 0 1 1    #Teal
+/vis/geometry/set/colour logicTargetCyl  0 0.7 0.4 0.2    #Teal
 
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true

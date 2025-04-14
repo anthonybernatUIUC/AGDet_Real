@@ -71,7 +71,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   	private:
  
 		G4NistManager *man;
-		G4double fWorldSize, distDet, TarLength, TarWidth, dDiameterGe, dDiameterSi, zLengthGe, zLengthSi;
+		G4double fWorldSize, distDetGe, distDetSi, TarLength, TarWidth, 
+		dDiameterGe, dDiameterSi, zLengthGe, zLengthSi;
 		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10;
 		G4Element *elB10;
 		G4Isotope *B10Iso;

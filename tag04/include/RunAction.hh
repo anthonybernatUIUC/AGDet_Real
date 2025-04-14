@@ -45,7 +45,7 @@ class PrimaryGeneratorAction;
 
 class RunAction : public G4UserRunAction {
   	public:
-    	RunAction(PrimaryGeneratorAction*);
+    	RunAction(PrimaryGeneratorAction*, bool uiMode);
    		~RunAction();
 
     	virtual G4Run* GenerateRun();   
@@ -54,8 +54,8 @@ class RunAction : public G4UserRunAction {
     
   	private:
     	PrimaryGeneratorAction* fPrimary;
-    	DetectorConstruction* fDetConst;  
     	Run* fRun;
+		bool uiMode;
 };
 
 

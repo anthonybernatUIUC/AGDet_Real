@@ -48,14 +48,14 @@ DetectorConstruction::~DetectorConstruction() {}
 void DetectorConstruction::DefineParameters() {
 
 	fWorldSize = 1*m;
-	distDet = 45.72*cm;
+	distDetGe = 45.72*cm;
+	distDetSi = 38*cm;
 	TarLength = 10*cm;
 	TarWidth = 106*nm;
 	dDiameterGe = 10*cm;
-	// dDiameterSi = 2.76*cm;
 	dDiameterSi = 8*cm;
 	zLengthGe = 3*cm;
-	zLengthSi = 300*10*um;
+	zLengthSi = 3*cm;
 
 	logicGeDet = nullptr;
 	logicSiDet = nullptr;
@@ -96,7 +96,7 @@ void DetectorConstruction::ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rot
 
 void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
 
-	G4Translate3D shiftZSiDet(0, 0, distDet + zLengthSi / 2);
+	G4Translate3D shiftZSiDet(0, 0, distDetSi + zLengthSi / 2);
 	G4Transform3D transformSiDet = rotPhi * rotTheta * shiftZSiDet;
 	solidSiDet = new G4Tubs("solidSiDet", 0, dDiameterSi / 2, zLengthSi / 2, 0*deg, 360*deg);
 	logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet");
@@ -108,7 +108,7 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 void DetectorConstruction::ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
 
 	G4Transform3D transformSiSph = rotPhi * rotTheta;
-	solidSiSph = new G4Sphere("solidSiSph", 2*distDet, 2*distDet + zLengthSi / 2, 0*deg, 90*deg, 0*deg, 90*deg);
+	solidSiSph = new G4Sphere("solidSiSph", 2*distDetSi, 2*distDetSi + zLengthSi / 2, 0*deg, 90*deg, 0*deg, 90*deg);
 	// solidSiSph = new G4Sphere("solidSiSph", 2*distDet, 2*distDet + zLengthSi / 2, 0*deg, 360*deg, 0*deg, 180*deg);
 	// solidSiSph = new G4Sphere(
 	// 	"solidSiSph", 2*distDet, 2*distDet + zLengthSi / 2, 0*deg, 360*deg, 0*deg, atan(dDiameterSi/(2*distDet))*rad);
@@ -121,7 +121,7 @@ void DetectorConstruction::ConstructSiSphDetector(G4RotateY3D rotTheta, G4Rotate
 void DetectorConstruction::ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
 
 	G4int zLengthCollimator = 1*cm;
-	G4Translate3D shiftZCollimator(0, 0, distDet - zLengthSi / 2 - zLengthCollimator / 2 - .5*cm);
+	G4Translate3D shiftZCollimator(0, 0, distDetSi - zLengthSi / 2 - zLengthCollimator / 2 - .5*cm);
 	G4Transform3D transformCollimator = rotPhi * rotTheta * shiftZCollimator;
 	solidCollimator = new G4Tubs("solidCollimator", 1*cm, dDiameterSi / 2, zLengthCollimator / 2, 0*deg, 360*deg);
 	logicCollimator = new G4LogicalVolume(solidCollimator, Al, "logicCollimator");
@@ -131,7 +131,7 @@ void DetectorConstruction::ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D
 
 void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
 	
-	G4Translate3D shiftZGeDet(0, 0, distDet + zLengthGe / 2);
+	G4Translate3D shiftZGeDet(0, 0, distDetGe + zLengthGe / 2);
 	G4Transform3D transformGeDet1 = rotPhi * rotTheta * shiftZGeDet;
 	solidGeDet = new G4Tubs("solidGeDet", 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
 	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet");
@@ -141,7 +141,7 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 
 void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ) {
 	
-	G4Translate3D shiftZGeDet(0, 0, distDet + zLengthGe / 2);
+	G4Translate3D shiftZGeDet(0, 0, distDetGe + zLengthGe / 2);
 	G4Transform3D transformGeDet1 = rotX * rotY * rotZ * shiftZGeDet;
 	solidGeDet = new G4Tubs("solidGeDet", 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
 	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet");
@@ -155,34 +155,68 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// logicWorld = new G4LogicalVolume(solidWorld, Galactic, "World");
 	// physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, "World", 0, false, 5);
 
-	// G4RotateY3D rotThetaSi(45*deg);
-	// G4RotateZ3D rotPhiSi(-45*deg);
-	// G4RotateY3D rotThetaSi(0*deg);
-	// G4RotateZ3D rotPhiSi(0*deg);
-	// ConstructTarget(rotThetaSi, rotPhiSi);
-	// ConstructSiDetector(rotThetaSi, rotPhiSi);
-	// ConstructSiSphDetector(rotThetaSi, rotPhiSi);
-	
-	
-	// G4RotateY3D rotThetaHPGe1(90*deg);
-	// G4RotateZ3D rotPhiHPGe1(90*deg);
-	// ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1);
-	// ConstructCollimator(rotThetaSi, rotPhiSi);
-
-	G4GDMLParser* fParser = new G4GDMLParser();
 	std::cout << "Loading GDML file..." << std::endl;
 
-	// fParser->Read("/home/anthony/software/AGDet_Real/tag04/AHHHHH8.gdml");
+	G4GDMLParser* fParser = new G4GDMLParser();
 	fParser->Read("/home/anthony/software/AGDet_Real/tag04/thevoicesaregettinglouder2.gdml");
 	physWorld = fParser->GetWorldVolume();  
 	logicWorld = physWorld->GetLogicalVolume();
 	
 	std::cout << "gurt tingle " << physWorld << std::endl;
 
-	G4RotateX3D rotX(-40*deg);
-	G4RotateY3D rotY(0*deg);
-	G4RotateZ3D rotZ(0*deg);
-	ConstructHPGeDetectorXYZ(rotX, rotY, rotZ);
+	G4RotateX3D rotX1(-40*deg);
+	G4RotateY3D rotY1(0*deg);
+	G4RotateZ3D rotZ1(0*deg);
+	ConstructHPGeDetectorXYZ(rotX1, rotY1, rotZ1);
+
+	G4RotateX3D rotX2(-220*deg);
+	G4RotateY3D rotY2(0*deg);
+	G4RotateZ3D rotZ2(0*deg);
+	ConstructHPGeDetectorXYZ(rotX2, rotY2, rotZ2);
+
+	G4RotateY3D rotThetaHPGe1(40*deg);
+	G4RotateZ3D rotPhiHPGe1(-30*deg);
+	ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1);
+
+	G4RotateY3D rotThetaHPGe2(40*deg);
+	G4RotateZ3D rotPhiHPGe2(-150*deg);
+	ConstructHPGeDetector(rotThetaHPGe2, rotPhiHPGe2);
+
+	G4RotateY3D rotThetaHPGe3(140*deg);
+	G4RotateZ3D rotPhiHPGe3(30*deg);
+	ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3);
+
+	G4RotateY3D rotThetaHPGe4(140*deg);
+	G4RotateZ3D rotPhiHPGe4(150*deg);
+	ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4);
+
+	G4RotateY3D rotThetaSi1(50*deg);
+	G4RotateZ3D rotPhiSi1(-90*deg);
+	ConstructSiDetector(rotThetaSi1, rotPhiSi1);
+
+	G4RotateY3D rotThetaSi2(50*deg);
+	G4RotateZ3D rotPhiSi2(30*deg);
+	ConstructSiDetector(rotThetaSi2, rotPhiSi2);
+
+	G4RotateY3D rotThetaSi3(50*deg);
+	G4RotateZ3D rotPhiSi3(150*deg);
+	ConstructSiDetector(rotThetaSi3, rotPhiSi3);
+
+	G4RotateY3D rotThetaSi4(67.24*deg);
+	G4RotateZ3D rotPhiSi4(90*deg);
+	ConstructSiDetector(rotThetaSi4, rotPhiSi4);
+
+	G4RotateY3D rotThetaSi5(67.24*deg);
+	G4RotateZ3D rotPhiSi5(210*deg);
+	ConstructSiDetector(rotThetaSi5, rotPhiSi5);
+
+	G4RotateY3D rotThetaSi6(67.24*deg);
+	G4RotateZ3D rotPhiSi6(-30*deg);
+	ConstructSiDetector(rotThetaSi6, rotPhiSi6);
+
+	G4RotateY3D rotThetaTar(0*deg);
+	G4RotateZ3D rotPhiTar(0*deg);
+	ConstructTarget(rotThetaTar, rotPhiTar);
 
 	delete fParser;
 	return physWorld;
@@ -193,7 +227,7 @@ void DetectorConstruction::ConstructSDandField() {
 	MySiDet* sensDetSi = new MySiDet("SiSensDet");
 	MyGeDet* sensDetGe = new MyGeDet("GeSensDet");
 	if (logicGeDet) {
-		G4cout << "perspective" << G4endl;
+		G4cout << "dawn in the adan" << G4endl;
 		logicGeDet->SetSensitiveDetector(sensDetGe);
 	}
 	if (logicSiSph) {

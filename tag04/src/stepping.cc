@@ -20,9 +20,6 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 	G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 	G4ParticleDefinition* part = step->GetTrack()->GetDefinition();
 	G4double edep = step->GetTotalEnergyDeposit();
-
-	
-
 	
 	if (volume == fGeScoringVolume) {
 		if (part == G4Alpha::Alpha() || part->GetParticleName() == "Li7") {
@@ -42,7 +39,6 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
 		if (part->GetParticleName() == "Li7") {
-			// std::cout << "|Hit Si";
 			fEventAction->AddEdepLi7(edep);
 			fEventAction->AddEdepSi(edep);
 		}

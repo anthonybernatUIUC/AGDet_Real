@@ -36,18 +36,21 @@
 
 ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
 
+ActionInitialization::ActionInitialization(bool uiMode) : uiMode(uiMode) {}
+
 ActionInitialization::~ActionInitialization() {}
 
 void ActionInitialization::BuildForMaster() const {
-	RunAction* runAction = new RunAction(0);
+	RunAction* runAction = new RunAction(0, false);
 	SetUserAction(runAction);
 }
 
 void ActionInitialization::Build() const {
+	
 	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
 	SetUserAction(primary);
 		
-	RunAction* runAction = new RunAction(primary);
+	RunAction* runAction = new RunAction(primary, uiMode);
 	SetUserAction(runAction);
 	
 	EventAction* eventAction = new EventAction();
