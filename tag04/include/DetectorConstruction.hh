@@ -92,13 +92,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
 		void DefineMaterials();
 		void DefineParameters();
-		void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-		void ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ);
+		void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
+		void ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo);
 		void ConstructAlShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructIsoSphere(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructShielding(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
+		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
 		void ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructTarget();

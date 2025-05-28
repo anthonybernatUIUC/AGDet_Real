@@ -16,7 +16,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 	G4ParticleDefinition* part = step->GetTrack()->GetDefinition();
 	G4double edep = step->GetTotalEnergyDeposit();
 	
-	if (volume == fSiScoringVolume) {
+	if (volume == fSiScoringVolume/* && part != G4Electron::Definition()*/) {
 		fEventAction->AddEdep(edep);
 	}
 	

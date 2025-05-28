@@ -46,6 +46,7 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
+	CLHEP::HepRandom::setTheSeed((unsigned)clock());
 	
 	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
 	SetUserAction(primary);

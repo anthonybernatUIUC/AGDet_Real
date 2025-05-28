@@ -1,89 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gdml_simple_extension xmlns:gdml_simple_extension="http://www.example.org"
-		       xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"          
-		       xs:noNamespaceSchemaLocation="./SimpleExtensionSchema/SimpleExtension.xsd"> 
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd">
+  <define>
+    <position name="hole_pos" x="0" y="0" z="15"/> <!-- Carving tube -->
+    <position name="tube_pos" x="0" y="0" z="35"/> <!-- Protruding tube -->
 
-    <extension>
-      <color name="test_color"  R="0.1"  G="0.2"  B="0.3"  A="1.0" />	
-    </extension>
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <rotation name="identity" x="0" y="0" z="0"/>
+  </define>
 
-    <define>      
-      <!-- world -->
-      <constant name="world_side" value="10000" />
-      <constant name="world_x" value="world_side" />
-      <constant name="world_y" value="world_side" />
-      <constant name="world_z" value="world_side" />
+  <solids>
+    <box name="WorldBox" x="752.7678592584085" y="830.9631198820621" z="936.7816899693787" lunit="mm"/>
+    <!-- Full sphere -->
+    <sphere name="sphere_raw" rmin="19" rmax="20" deltaphi="360" deltatheta = "720" aunit="deg" lunit="cm"/>
+    
+    <!-- Carving cylinder (solid shell, same size as tube) -->
+    <tube name="tube_hole" rmin="5" rmax="7" z="10" deltaphi="360" aunit="deg" lunit="cm"/>
 
-      <!-- test volume -->
-      <constant name="test_box_size" value="100.0"/>
-      <position name="test_position"/>
+    <!-- Sphere with hole subtracted -->
+    <subtraction name="carved_sphere">
+      <first ref="sphere_raw"/>
+      <second ref="tube_hole"/>
+      <positionref ref="hole_pos"/>
+    </subtraction>
 
-    </define>
+    <!-- Protruding tube (same as hole dimensions) -->
+    <tube name="protruding_tube" rmin="5" rmax="7" z="30" deltaphi="360" aunit="deg" lunit="cm"/>
 
-    <materials>
+    <!-- Final solid: carved sphere + protruding tube -->
+    <union name="sphere_with_tube">
+      <first ref="carved_sphere"/>
+      <second ref="protruding_tube"/>
+      <positionref ref="tube_pos"/>
+    </union>
+  </solids>
 
-      <!-- elements -->
-      <element name="Argon_e" Z="18.0" N="40" >
-	<atom type="A" unit="g/mol" value="39.9480" />
-      </element>
+  <structure>
+    <volume name="vol_sphere_with_tube">
+      <materialref ref="G4_Al"/>
+      <solidref ref="sphere_with_tube"/>
+    </volume>
+    <volume name="worldVOL">
+      <materialref ref="G4_Galactic"/>
+      <solidref ref="WorldBox"/>
+      <physvol name="PV_vol_sphere_with_tube">
+        <volumeref ref="vol_sphere_with_tube"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
 
-      <element  name="Nitrogen_e"  Z="7.0"  N="14" >
-	<atom type="A" unit="g/mol" value=" 14.0100" />
-      </element>
-
-      <element  name="Oxygen_e"  Z="8.0"  N="16" >
-	<atom type="A" unit="g/mol" value=" 16.0000" />
-      </element>
-
-      <!-- materials -->
-      <material  name="Air"  >
-	<D type="density" unit="g/cm3" value="0.0012"/>
-	<fraction n="0.7803"  ref="Nitrogen_e"/>
-	<fraction n="0.2103"  ref="Oxygen_e"/>
-	<fraction n="0.0094"  ref="Argon_e"/>
-      </material>
-    </materials>
-
-    <solids>
-
-      <!-- world -->
-      <box lunit="mm" 
-	   aunit="degree"
-	   name="world_box"
-	   x="world_x"  
-	   y="world_y"  
-	   z="world_z" />
-
-      <!-- test volume -->
-      <box lunit="mm"
-	   name="test_box"
-	   x="test_box_size"
-	   y="test_box_size"
-	   z="test_box_size"/>
-
-    </solids>
-
-    <structure>
-
-      <volume name="test_volume">
-	<materialref ref="Air"/>
-	<solidref ref="test_box"/>
-	<!-- color extension element -->	
-	<colorref ref="test_color"/> 
-      </volume>
-      
-      <volume name="world">
-	<materialref ref="Air"/>
-	<solidref ref="world_box"/>
-	<physvol>
-	  <volumeref ref="test_volume"/>
-	  <positionref ref="test_position"/>
-	</physvol>
-      </volume>
-    </structure>
-
-    <setup name="Default" version="1.0">
-      <world ref="world"/>
-    </setup>
-
-</gdml_simple_extension>
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>

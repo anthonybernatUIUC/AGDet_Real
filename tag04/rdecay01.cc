@@ -72,6 +72,7 @@ int main(int argc, char** argv) {
 		visManager->Initialize();
 		UImanager->ApplyCommand("/control/execute vis.mac");
 		UImanager->ApplyCommand("/vis/scene/add/scale 10 cm");
+		UImanager->ApplyCommand("/vis/scene/add/axes 0 0 0 10 cm");
 		ui->SessionStart();
 		delete ui;
   	} else  {

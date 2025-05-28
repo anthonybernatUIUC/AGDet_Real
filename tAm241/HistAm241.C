@@ -23,7 +23,7 @@ void HistAm241() {
     int entries1 = tree1->GetEntries();
 
     int yHeight = 500;
-    int binNo = 500;
+    int binNo = 300;
     double xMin  = 0;
     double xMax  = 6;
     
@@ -54,6 +54,8 @@ void HistAm241() {
     hist1->SetLineColorAlpha(kRed, 0.35);
     hist1->GetXaxis()->SetTitle("Energy / MeV");
     hist1->GetYaxis()->SetTitle("Counts");	
+    hist1->SetFillStyle(3002);
+    hist1->SetFillColor(kRed);
 	hist1->SetStats(0);	
 	hist1->Draw();
     // hist1->SaveAs("output.png");

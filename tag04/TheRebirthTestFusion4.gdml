@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <constant name="HALFPI" value="pi/2"/>
+    <constant name="PI" value="1*pi"/>
+    <constant name="TWOPI" value="2*pi"/>
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <rotation name="identity" x="0" y="0" z="0"/>
+  </define>
+  <materials/>
+  <solids>
+    <box name="WorldBox" x="1000.0" y="1000.0" z="1000.0" lunit="mm"/>
+    <tube name="GDMLTube014" rmin="0.0" rmax="4.5" startphi="0.0" deltaphi="360.0" aunit="deg" z="40.0" lunit="cm"/>
+    <tube name="GDMLTube013" rmin="0.0" rmax="7.1" startphi="0.0" deltaphi="360.0" aunit="deg" z="40.0" lunit="cm"/>
+    <tube name="GDMLTube012" rmin="0.0" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="15.0" lunit="cm"/>
+    <tube name="GDMLTube011" rmin="0.0" rmax="7.7" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <tube name="GDMLTube006" rmin="0.0" rmax="4.87" startphi="0.52" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <tube name="GDMLTube005" rmin="0.0" rmax="4.87" startphi="0.0" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <tube name="GDMLTube004" rmin="0.0" rmax="4.87" startphi="0.0" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <tube name="GDMLTube003" rmin="0.0" rmax="7.62" startphi="0.0" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <tube name="GDMLTube001" rmin="0.0" rmax="7.62" startphi="0.0" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <sphere name="GDMLSphere" rmin="22.0" rmax="22.86" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="cm"/>
+    <tube name="GDMLTube" rmin="0.0" rmax="4.87" startphi="0.0" deltaphi="360.0" aunit="deg" z="120.0" lunit="cm"/>
+    <subtraction name="Cut">
+      <first ref="GDMLSphere"/>
+      <second ref="GDMLTube"/>
+      <positionref ref="center"/>
+      <rotationref ref="identity"/>
+    </subtraction>
+    <subtraction name="Cut001">
+      <first ref="Cut"/>
+      <second ref="GDMLTube001"/>
+      <positionref ref="center"/>
+      <rotation name="R-GDMLTube0011" unit="deg" x="-39.99999999999997"/>
+    </subtraction>
+    <subtraction name="Cut002">
+      <first ref="Cut001"/>
+      <second ref="GDMLTube003"/>
+      <positionref ref="center"/>
+      <rotation name="R-GDMLTube0032" unit="deg" x="22.760476274616636" y="-33.82584497056974" z="127.00450198595043"/>
+    </subtraction>
+    <subtraction name="Cut003">
+      <first ref="Cut002"/>
+      <second ref="GDMLTube004"/>
+      <position name="P-GDMLTube0041" unit="mm" y="-160.8693330549854" z="134.98539803417324"/>
+      <rotation name="R-GDMLTube0043" unit="deg" x="50.00000000000001"/>
+    </subtraction>
+    <subtraction name="Cut004">
+      <first ref="Cut003"/>
+      <second ref="GDMLTube005"/>
+      <position name="P-GDMLTube0052" unit="mm" x="-192.39004496899216" y="111.07644425225186" z="186.4084068090964"/>
+      <rotation name="R-GDMLTube0054" unit="deg" x="-30.789733028832174" y="-41.560762570159355" z="48.06989481005914"/>
+    </subtraction>
+    <subtraction name="Cut005">
+      <first ref="Cut004"/>
+      <second ref="GDMLTube006"/>
+      <position name="P-GDMLTube0063" unit="mm" x="-247.56321166039453" y="-142.930686893577" z="119.9302921555725"/>
+      <rotation name="R-GDMLTube0065" unit="deg" x="50.000657375471306" y="-52.99576314021797" z="146.17468000265342"/>
+    </subtraction>
+    <union name="Fusion001">
+      <first ref="Cut005"/>
+      <second ref="GDMLTube011"/>
+      <position name="P-GDMLTube0114" unit="mm" x="171.45448296173728" y="98.98929189172709" z="-235.9416884806452"/>
+      <rotation name="R-GDMLTube0116" unit="deg" x="22.760476274616643" y="-33.82584497056974" z="37.004501985950434"/>
+    </union>
+    <union name="Fusion">
+      <first ref="Fusion001"/>
+      <second ref="GDMLTube012"/>
+      <position name="P-GDMLTube0125" unit="mm" x="233.18857356398453" y="134.63148571911128" z="-112.96659777234568"/>
+      <rotation name="R-GDMLTube0127" unit="deg" x="50.0006573754713" y="-52.99576314021796" z="56.17468000265342"/>
+    </union>
+    <subtraction name="Cut006">
+      <first ref="Fusion"/>
+      <second ref="GDMLTube013"/>
+      <position name="P-GDMLTube0136" unit="mm" x="188.15459493852975" y="108.63110603702513" z="-258.9230217742146"/>
+      <rotation name="R-GDMLTube0138" unit="deg" x="22.760476274616625" y="-33.82584497056972" z="-52.99549801404955"/>
+    </subtraction>
+    <subtraction name="Cut007">
+      <first ref="Cut006"/>
+      <second ref="GDMLTube014"/>
+      <position name="P-GDMLTube0147" unit="mm" x="196.4533873176033" y="113.42241605103207" z="-95.17048990409951"/>
+      <rotation name="R-GDMLTube0149" unit="deg" x="50.0006573754713" y="-52.99576314021793" z="-33.825319997346575"/>
+    </subtraction>
+  </solids>
+  <structure>
+    <volume name="LV_Tube014">
+      <materialref ref="G4_Pb"/>
+      <solidref ref="Cut007"/>
+      <auxiliary auxtype="Color" auxvalue="#ff160000"/>
+    </volume>
+    <volume name="worldVOL">
+      <materialref ref="G4_Galactic"/>
+      <solidref ref="WorldBox"/>
+      <physvol name="PV_LV_Tube014">
+        <volumeref ref="LV_Tube014"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>

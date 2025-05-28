@@ -31,10 +31,11 @@ def plotRootBranch(p, arr, n, **kwargs):
     plt.scatter(bins[leftEdgeIndex], counts[leftEdgeIndex], color = "green")
     plt.close()
 
-    plt.hist(arr, bins = 500, zorder = n - p + 1, color = cm[p], label = f"Thickness: {round(106*(1 + 0.2*p), 2)}nm")
+    plt.hist(arr, bins = 500, zorder = n - p + 1, color = cm[p], label = f"{round(106*(1 + 0.2*p), 2)}nm")
+    plt.tick_params(labelsize = 16)
     plt.xlim(0, 2.5)
-    plt.xlabel("MeV")
-    plt.ylabel("Counts")
+    plt.xlabel("MeV", fontsize = 20)
+    plt.ylabel("Counts", fontsize = 20)
     plt.yscale("log")
 
     return fig, fwhm, rangeLen
@@ -76,7 +77,7 @@ def testAllHist():
             except Exception as e:
                 print("empty tree or error", "\n", e)
 
-    plt.legend(bbox_to_anchor = (1, 1))    
+    plt.legend(bbox_to_anchor = (1, 1), title = "Target Thickness", fontsize = 20, title_fontsize = 20)    
 
     widthFig = plt.figure(p + 2)
     figArr.append(widthFig)

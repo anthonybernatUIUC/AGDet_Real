@@ -15,5 +15,5 @@
 /process/had/rdm/nucleusLimits 241 241 95 95
 
 #
-/run/printProgress 10000  
-/run/beamOn 10000
+/run/printProgress 100000
+/run/beamOn 3000000

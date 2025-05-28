@@ -49,7 +49,6 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 	// fParticleGun->SetParticleEnergy(0.003325*eV);
 	fParticleGun->SetParticleEnergy(0.0001*eV);
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-	// fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.5567, -0.3214, 0.766));
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {

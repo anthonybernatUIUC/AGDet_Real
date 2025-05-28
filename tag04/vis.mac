@@ -46,7 +46,7 @@
 /vis/viewer/set/style surface
 
 # Draw coordinate axes:
-/vis/scene/add/axes -5 -5 -5 10 cm
+# /vis/scene/add/axes -5 -5 -5 10 cm
 
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
@@ -70,8 +70,8 @@
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
 /vis/modeling/trajectories/create/drawByParticleID
-/vis/modeling/trajectories/drawByParticleID-0/set e- red
-/vis/modeling/trajectories/drawByParticleID-0/set e+ blue
+/vis/modeling/trajectories/drawByParticleID-0/set e- blue
+/vis/modeling/trajectories/drawByParticleID-0/set e+ brown
 /vis/modeling/trajectories/drawByParticleID-0/set nu_e white
 /vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e white
 /vis/modeling/trajectories/drawByParticleID-0/set geantino white
@@ -84,7 +84,7 @@
 /vis/scene/endOfEventAction accumulate
 
 # Make World Invisible and color geometry
-/vis/geometry/set/visibility WorldBox 0 false
+/vis/geometry/set/visibility worldVOL 0 false
 #/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
 #/vis/geometry/set/colour logicAl1 0 0 0 1 		#Blue
 /vis/geometry/set/colour logicGeDet 0 0 0 1		#Blue
