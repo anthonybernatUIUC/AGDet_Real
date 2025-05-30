@@ -12,9 +12,8 @@
 /geometry/test/tolerance 1 nm
 
 
-
 /analysis/setFileName TestBKG1    
-/run/printProgress 2000
+/run/printProgress 200000
 /run/initialize
-/run/beamOn 10000
+/run/beamOn 1000000
 

@@ -9,7 +9,7 @@
 # Use this open statement to create an OpenGL view:
 # My laptop will only have a visualizer with this specific OGL command, but for other
 # machines, I assume the regular "/vis/open OGL 800x800-0+0" command works
-/vis/open OGLI 800x800-0+0
+/vis/open OGL 800x800-0+0
 #/vis/open RayTracerX
 
 # Use this open statement to create a .prim file suitable for

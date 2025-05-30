@@ -23,7 +23,8 @@ G4bool MySiDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
 
     // Position of hit detector
     G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
-    // std::cout << "Alpha hit detector: " << copyNo << " at position: " << posDetector << std::endl;
+    std::cout << "Alpha hit detector: " << copyNo << " at position and event: " << posDetector << ", " << 
+    G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
 
     G4AnalysisManager* man = G4AnalysisManager::Instance();
     man->FillNtupleIColumn(3, 0, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
@@ -45,6 +46,8 @@ G4bool MyGeDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
     // Detector hit by photon
     const G4VTouchable* touchable = preStepPoint->GetTouchable();
     G4int copyNo = touchable->GetCopyNumber();
+    std::cout << "Photon hit detector: " << copyNo << " at position: " << posPhoton << ", " << 
+    G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
 
     // Position of hit detector
     G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
