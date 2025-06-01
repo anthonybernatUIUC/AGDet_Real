@@ -43,7 +43,6 @@ void EventAction::BeginOfEventAction(const G4Event*) {
 	fEdepLi7 = 0.;
 	fEdepSiElec = 0.;
 	fEdepGeElec = 0.;
-	fIncident = false;
 }
 
 void EventAction::EndOfEventAction(const G4Event* evt) {
@@ -59,35 +58,44 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 	run->EvisEvent(fEvisTot);
 
 	G4double tol = 0.0001;
+	G4double cats[7] = { fEdepGe, fEdepSi, fEdepGamma, fEdepAlpha, fEdepLi7, fEdepSiElec, fEdepGeElec };
 	auto man = G4AnalysisManager::Instance();
-	if (fEdepGe > tol) { 
-		man->FillNtupleDColumn(0, 0, fEdepGe);
-		man->AddNtupleRow(0);
-	} 
-	if (fEdepSi > tol) {
-		man->FillNtupleDColumn(1, 0, fEdepSi);
-		man->AddNtupleRow(1);
+
+	for (size_t i = 0; i < 7; ++i) {
+		if (cats[i] > tol) {
+			man->FillNtupleDColumn(i, 0, cats[i]);
+			man->AddNtupleRow(i);
+		}
 	}
-	if (fEdepGamma > tol) {
-		man->FillNtupleDColumn(2, 4, fEdepGamma);
-		man->AddNtupleRow(2);
-	}
-	if (fEdepAlpha > tol) {
-		man->FillNtupleDColumn(4, 0, fEdepAlpha);
-		man->AddNtupleRow(4);
-	}
-	if (fEdepLi7 > tol) {
-		man->FillNtupleDColumn(5, 0, fEdepLi7);
-		man->AddNtupleRow(5);
-	}
-	if (fEdepSiElec > tol) {
-		man->FillNtupleDColumn(6, 0, fEdepSiElec);
-		man->AddNtupleRow(6);
-	}
-	if (fEdepGeElec > tol) {
-		man->FillNtupleDColumn(7, 0, fEdepGeElec);
-		man->AddNtupleRow(7);
-	}
+
+	// if (fEdepGe > tol) { 
+	// 	man->FillNtupleDColumn(0, 0, fEdepGe);
+	// 	man->AddNtupleRow(0);
+	// } 
+	// if (fEdepSi > tol) {
+	// 	man->FillNtupleDColumn(1, 0, fEdepSi);
+	// 	man->AddNtupleRow(1);
+	// }
+	// if (fEdepGamma > tol) {
+	// 	man->FillNtupleDColumn(2, 0, fEdepGamma);
+	// 	man->AddNtupleRow(2);
+	// }
+	// if (fEdepAlpha > tol) {
+	// 	man->FillNtupleDColumn(3, 0, fEdepAlpha);
+	// 	man->AddNtupleRow(3);
+	// }
+	// if (fEdepLi7 > tol) {
+	// 	man->FillNtupleDColumn(4, 0, fEdepLi7);
+	// 	man->AddNtupleRow(4);
+	// }
+	// if (fEdepSiElec > tol) {
+	// 	man->FillNtupleDColumn(5, 0, fEdepSiElec);
+	// 	man->AddNtupleRow(5);
+	// }
+	// if (fEdepGeElec > tol) {
+	// 	man->FillNtupleDColumn(6, 0, fEdepGeElec);
+	// 	man->AddNtupleRow(6);
+	// }
 
 	// for (auto i : Li7Vols) {
 	// 	G4cout << i << ' ';		

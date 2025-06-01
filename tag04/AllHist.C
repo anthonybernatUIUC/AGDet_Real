@@ -11,7 +11,7 @@
 
 void AllHist(std::string file) {
 
-    char *cfile = new char[file.length()+1];
+    char *cfile = new char[file.length() + 1];
     std::strcpy(cfile, file.c_str());
     TString title = "Simulated Energy Spectrum of ";
     std::cout << "Opening File: " << file << std::endl;
@@ -22,7 +22,7 @@ void AllHist(std::string file) {
     double xMin  = 0;
     double xMax  = 2.5;
 
-    for (int i = 0; i < input->GetListOfKeys()->GetEntries() - 2; ++i) { 
+    for (int i = 0; i < input->GetListOfKeys()->GetEntries(); ++i) { 
         
         TTree* tree = (TTree*)input->Get(input->GetListOfKeys()->At(i)->GetName());
         TCanvas* canvas = new TCanvas();
@@ -33,22 +33,21 @@ void AllHist(std::string file) {
         // std::cout << '\t' << tree->GetListOfBranches()->At(0)->GetName() << std::endl;
 
         TLeaf* l = (TLeaf*)tree->GetListOfLeaves()->At(0);
-        std::string type = l->GetTypeName();
-        // std::cout << l->GetTypeName() << std::endl;    
         TString branchName = tree->GetListOfBranches()->At(0)->GetName();
         double fEdep;
-        if (type != "Double_t") {
+
+        if (strcmp(l->GetTypeName(), "Double_t")) {
             delete canvas;
             continue;
         }
+
         tree->SetBranchAddress(branchName, &fEdep);
         int entries = tree->GetEntries();
-        TString str = std::to_string(i);
 
+        TH1F* hist = new TH1F(("hist" + std::to_string(i)).c_str(), title + branchName, binNo, xMin, xMax);
         double fEdepMax = INT_MIN;
         double fEdepMin = INT_MAX;
-        TH1F* hist = new TH1F("hist" + str, title + branchName, binNo, xMin, xMax);
-        
+
         for (int j = 0; j < entries; j++) {
             tree->GetEntry(j);
             hist->Fill(fEdep);
@@ -57,6 +56,7 @@ void AllHist(std::string file) {
         }
         std::cout << '\t' << "Max: " << fEdepMax << std::endl;
         std::cout << '\t' << "Min: " << fEdepMin << std::endl;
+
         int prevCount = 0;
         std::vector<int> bro;
         for (int i = 0; i < binNo; i++) {

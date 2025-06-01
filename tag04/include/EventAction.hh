@@ -51,23 +51,14 @@ class EventAction : public G4UserEventAction {
 		void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
 		void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
 		void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; };
-		std::set<G4String> GetLi7Set() { return Li7Vols; } 
-
-		void IncidentIndicator() { fIncident = true; };
-
+		std::set<G4String> GetLi7Set() { return Li7Vols; }; 
+		
 		virtual void BeginOfEventAction(const G4Event*);
       	virtual void EndOfEventAction(const G4Event*);
     
   	private:
 		G4String fDecayChain;                   
 		G4double fEvisTot;
-		G4double fEdepGe = 0;
-		G4double fEdepSi = 0;
-		G4double fEdepAlpha = 0;
-		G4double fEdepGamma = 0;
-		G4double fEdepLi7 = 0;
-		G4double fEdepSiElec = 0;
-		G4double fEdepGeElec = 0;
+		G4double fEdepGe, fEdepSi, fEdepAlpha, fEdepGamma, fEdepLi7, fEdepSiElec, fEdepGeElec;
 		std::set<G4String> Li7Vols;
-		G4bool fIncident;
 };

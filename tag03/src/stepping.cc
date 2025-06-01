@@ -42,7 +42,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
 		if (part->GetParticleName() == "Li7") {
-			// std::cout << "|Hit Si";
+			std::cout << "Li7 hit Si with E: " << edep << std::endl;
 			fEventAction->AddEdepLi7(edep);
 			fEventAction->AddEdepSi(edep);
 		}

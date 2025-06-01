@@ -4,6 +4,8 @@
 #include "G4AnalysisManager.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Gamma.hh"
+#include "G4ParticleTypes.hh"
 
 class MySiDet : public G4VSensitiveDetector {
 

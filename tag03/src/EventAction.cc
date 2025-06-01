@@ -79,6 +79,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 	if (fEdepLi7 > tol) {
 		man->FillNtupleDColumn(5, 0, fEdepLi7);
 		man->AddNtupleRow(5);
+		std::cout << "fEdepLi7: " << fEdepLi7 << G4endl;
 	}
 	if (fEdepSiElec > tol) {
 		man->FillNtupleDColumn(6, 0, fEdepSiElec);

@@ -46,36 +46,33 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fEdepSi");
 	man->FinishNtuple(1);
 
-	man->CreateNtuple("Photons", "Photons");
+	man->CreateNtuple("Gammas", "Gammas");
+	man->CreateNtupleDColumn("fEdepGammaOnly");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
-	man->CreateNtupleDColumn("fEdep");
 	man->FinishNtuple(2);
 
 	man->CreateNtuple("Alphas", "Alphas");
+	man->CreateNtupleDColumn("fEdepAlphaOnly");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(3);
 
-	man->CreateNtuple("AlphaE", "AlphaE");
-	man->CreateNtupleDColumn("fTotalE");
+	man->CreateNtuple("Li7E", "Li7E");
+	man->CreateNtupleDColumn("fEdepLi7");
 	man->FinishNtuple(4);
 
-	man->CreateNtuple("Li7E", "Li7E");
-	man->CreateNtupleDColumn("fTotalE");
+	man->CreateNtuple("Si e-", "Si e-");
+	man->CreateNtupleDColumn("fEdepSiElec");
 	man->FinishNtuple(5);
 
-	man->CreateNtuple("Si e-", "Si e-");
-	man->CreateNtupleDColumn("fTotalE");
-	man->FinishNtuple(6);
-
 	man->CreateNtuple("Ge e-", "Ge e-");
-	man->CreateNtupleDColumn("fTotalE");
-	man->FinishNtuple(7);
+	man->CreateNtupleDColumn("fEdepGeElec");
+	man->FinishNtuple(6);
 }
 
 

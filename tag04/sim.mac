@@ -15,5 +15,5 @@
 /analysis/setFileName TestBKG1    
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 1000000
+/run/beamOn 5000000
 

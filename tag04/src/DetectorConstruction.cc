@@ -38,7 +38,6 @@ DetectorConstruction::DetectorConstruction() {
 	auto& targetWidthCmd = fMessenger->DeclareMethod(
 		"setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width.");
 	
-	G4GDMLParser* fParser;
 	DefineParameters();
 	DefineMaterials();
 }
@@ -60,6 +59,10 @@ void DetectorConstruction::DefineParameters() {
 	logicGeDet = nullptr;
 	logicSiDet = nullptr;
 	logicSiSph = nullptr;
+
+	magenta = new G4VisAttributes(G4Color::Magenta());
+	cyan = new G4VisAttributes(G4Color::Cyan());
+	blue = new G4VisAttributes(G4Color::Blue());
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -99,12 +102,12 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 
 	G4Translate3D shiftZSiDet(0, 0, distDetSi + zLengthSi / 2);
 	G4Transform3D transformSiDet = rotPhi * rotTheta * shiftZSiDet;
-	solidSiDet = new G4Tubs("solidSiDet", 0, dDiameterSi / 2, zLengthSi / 2, 0*deg, 360*deg);
-	logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet");
+	solidSiDet = new G4Tubs("solidSiDet" + std::to_string(cpyNo), 0, dDiameterSi / 2, zLengthSi / 2, 0*deg, 360*deg);
+	logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet" + std::to_string(cpyNo));
 	physSiDet = new G4PVPlacement(
-		transformSiDet, logicSiDet, "physSiDet", logicWorld, false, cpyNo, false);
-	fSiScoringVolume = logicSiDet;
-	// logicSiDet->GetSolid()->DumpInfo();
+		transformSiDet, logicSiDet, "physSiDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	SiDets.insert(logicSiDet);
+	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
 }
 
@@ -136,10 +139,12 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 	
 	G4Translate3D shiftZGeDet(0, 0, distDetGe + zLengthGe / 2);
 	G4Transform3D transformGeDet1 = rotPhi * rotTheta * shiftZGeDet;
-	solidGeDet = new G4Tubs("solidGeDet", 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
-	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet");
-	fGeScoringVolume = logicGeDet;
-	physGeDet = new G4PVPlacement(transformGeDet1, logicGeDet, "physGeDet", logicWorld, false, cpyNo, false);
+	solidGeDet = new G4Tubs("solidGeDet" + std::to_string(cpyNo), 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
+	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet" + std::to_string(cpyNo));
+	physGeDet = new G4PVPlacement(
+		transformGeDet1, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	GeDets.insert(logicGeDet);
+	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
 }
 
@@ -147,10 +152,12 @@ void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3
 	
 	G4Translate3D shiftZGeDet(0, 0, distDetGe + zLengthGe / 2);
 	G4Transform3D transformGeDet1 = rotX * rotY * rotZ * shiftZGeDet;
-	solidGeDet = new G4Tubs("solidGeDet", 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
-	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet");
-	fGeScoringVolume = logicGeDet;
-	physGeDet = new G4PVPlacement(transformGeDet1, logicGeDet, "physGeDet", logicWorld, false, cpyNo, false);
+	solidGeDet = new G4Tubs("solidGeDet" + std::to_string(cpyNo), 0, dDiameterGe / 2, zLengthGe / 2, 0*deg, 360*deg);
+	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet" + std::to_string(cpyNo));
+	physGeDet = new G4PVPlacement(
+		transformGeDet1, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	GeDets.insert(logicGeDet);
+	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
 }
 
@@ -164,7 +171,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4GDMLParser* fParser = new G4GDMLParser();
 	// fParser->Read("/home/anthony/software/AGDet_Real/tag04/thevoicesaregettinglouder2.gdml");
-	// fParser->Read("/home/anthony/software/AGDet_Real/tag04/SpacedOut.gdml");
 	fParser->Read("/home/anthony/software/AGDet_Real/tag04/TheRebirthGDMLMain.gdml");
 	physWorld = fParser->GetWorldVolume();  
 	logicWorld = physWorld->GetLogicalVolume();
@@ -227,6 +233,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	G4RotateZ3D rotPhiTar(0*deg);
 	ConstructTarget(rotThetaTar, rotPhiTar, cpyNo);
 
+	for (auto& logicSiDet : SiDets) {
+		std::cout << "Si Detector: " << logicSiDet->GetName() << std::endl;
+	}
+
 	delete fParser;
 	return physWorld;
 }
@@ -235,17 +245,21 @@ void DetectorConstruction::ConstructSDandField() {
 	
 	MySiDet* sensDetSi = new MySiDet("SiSensDet");
 	MyGeDet* sensDetGe = new MyGeDet("GeSensDet");
-	if (logicGeDet) {
+	if (!GeDets.empty()) {
 		G4cout << "dawn in the adan" << G4endl;
-		logicGeDet->SetSensitiveDetector(sensDetGe);
+		for (auto& logicGeDet : GeDets) {
+			logicGeDet->SetSensitiveDetector(sensDetGe);
+		}
 	}
 	if (logicSiSph) {
 		G4cout << "kitsune maison" << G4endl;
 		logicSiSph->SetSensitiveDetector(sensDetSi);
 	}
-	if (logicSiDet) {
+	if (!SiDets.empty()) {
 		G4cout << "viva la vida" << G4endl;
-		logicSiDet->SetSensitiveDetector(sensDetSi);
+		for (auto& logicSiDet : SiDets) {
+			logicSiDet->SetSensitiveDetector(sensDetSi);
+		}
 	}
 }
 

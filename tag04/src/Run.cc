@@ -35,7 +35,7 @@
 #include "G4AnalysisManager.hh"
 
 Run::Run() : G4Run(), fParticle(0), fEkin(0.), fDecayCount(0), fTimeCount(0), 
-	fPrimaryTime(0.), fTimeWindow1(0.), fTimeWindow2(0.) {
+fPrimaryTime(0.), fTimeWindow1(0.), fTimeWindow2(0.) {
 
 	fEkinTot[0] = fPbalance[0] = fEventTime[0] = fEvisEvent[0] = 0.;
 	fEkinTot[1] = fPbalance[1] = fEventTime[1] = fEvisEvent[1] = DBL_MAX;
@@ -46,7 +46,6 @@ Run::Run() : G4Run(), fParticle(0), fEkin(0.), fDecayCount(0), fTimeCount(0),
 Run::~Run() {}
 
 void Run::SetPrimary(G4ParticleDefinition* particle, G4double energy) { 
-  
 	fParticle = particle;
 	fEkin = energy;
 } 
@@ -72,7 +71,6 @@ void Run::ParticleCount(G4String name, G4double Ekin, G4double meanLife) {
 }
 
 void Run::SetTimeWindow(G4double t1, G4double t2) {
-  
 	fTimeWindow1 = t1;
 	fTimeWindow2 = t2;
 }
@@ -86,8 +84,7 @@ void Run::CountInTimeWindow(G4String name, G4bool life1, G4bool life2, G4bool de
 		if (life2) n2 = 1;
 		if (decay) nd = 1;
 		fActivityMap[name] = ActivityData(n1, n2, nd);
-  	}
-  	else {
+  	} else {
 		ActivityData& data = it->second;
 		if (life1) data.fNlife_t1++;
 		if (life2) data.fNlife_t2++;

@@ -10,54 +10,50 @@ MyGeDet::~MyGeDet() {}
 
 G4bool MySiDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
 
-    // std::cout << aStep->GetTrack()->GetDefinition()->GetParticleName();
+    if (aStep->GetTrack()->GetDefinition() == G4Alpha::Alpha()) {
+        
+        // Alphas position/momentum
+        G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+        G4ThreeVector posAlpha = preStepPoint->GetPosition();
+        G4ThreeVector momAlpha = preStepPoint->GetMomentum();
 
-    // Alphas position/momentum
-    G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
-    G4ThreeVector posAlpha = preStepPoint->GetPosition();
-    G4ThreeVector momAlpha = preStepPoint->GetMomentum();
+        // Detector hit by alpha
+        const G4VTouchable* touchable = preStepPoint->GetTouchable();
+        G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
+        // std::cout << "Alpha hit detector: " << touchable->GetCopyNumber() << " at position and event: " << posDetector << ", " << 
+        // G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
 
-    // Detector hit by alpha
-    const G4VTouchable* touchable = preStepPoint->GetTouchable();
-    G4int copyNo = touchable->GetCopyNumber();
-
-    // Position of hit detector
-    G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
-    std::cout << "Alpha hit detector: " << copyNo << " at position and event: " << posDetector << ", " << 
-    G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
-
-    G4AnalysisManager* man = G4AnalysisManager::Instance();
-    man->FillNtupleIColumn(3, 0, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
-    man->FillNtupleDColumn(3, 1, posAlpha[0]);
-    man->FillNtupleDColumn(3, 2, posAlpha[1]);
-    man->FillNtupleDColumn(3, 3, posAlpha[2]);
-    man->AddNtupleRow(3);
+        G4AnalysisManager* man = G4AnalysisManager::Instance();
+        man->FillNtupleIColumn(3, 1, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
+        man->FillNtupleDColumn(3, 2, posAlpha[0]);
+        man->FillNtupleDColumn(3, 3, posAlpha[1]);
+        man->FillNtupleDColumn(3, 4, posAlpha[2]);
+    }
 
     return true;
 }
 
 G4bool MyGeDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
 
-    // Photon positions/momentum
-    G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
-    G4ThreeVector posPhoton = preStepPoint->GetPosition();
-    G4ThreeVector momPhoton = preStepPoint->GetMomentum();
+    if (aStep->GetTrack()->GetDefinition() == G4Gamma::Gamma()) {
+        
+        // Photon positions/momentum
+        G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+        G4ThreeVector posPhoton = preStepPoint->GetPosition();
+        G4ThreeVector momPhoton = preStepPoint->GetMomentum();
 
-    // Detector hit by photon
-    const G4VTouchable* touchable = preStepPoint->GetTouchable();
-    G4int copyNo = touchable->GetCopyNumber();
-    std::cout << "Photon hit detector: " << copyNo << " at position: " << posPhoton << ", " << 
-    G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
+        // Detector hit by photon and its position
+        const G4VTouchable* touchable = preStepPoint->GetTouchable();
+        G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
+        // std::cout << "Gamma hit detector: " << touchable->GetCopyNumber() << " at position: " << posPhoton << ", " << 
+        // G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
 
-    // Position of hit detector
-    G4ThreeVector posDetector = touchable->GetVolume()->GetTranslation();
-
-    G4AnalysisManager* man = G4AnalysisManager::Instance();
-    man->FillNtupleIColumn(2, 0, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
-    man->FillNtupleDColumn(2, 1, posPhoton[0]);
-    man->FillNtupleDColumn(2, 2, posPhoton[1]);
-    man->FillNtupleDColumn(2, 3, posPhoton[2]);
-    // man->AddNtupleRow(2);
-
+        G4AnalysisManager* man = G4AnalysisManager::Instance();
+        man->FillNtupleIColumn(2, 1, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
+        man->FillNtupleDColumn(2, 2, posPhoton[0]);
+        man->FillNtupleDColumn(2, 3, posPhoton[1]);
+        man->FillNtupleDColumn(2, 4, posPhoton[2]);
+    }
+    
     return true;
 }

@@ -45,6 +45,10 @@
 #include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4GDMLParser.hh"
+#include "G4VisAttributes.hh"
+#include "G4Color.hh"
+
+#include <set> 
 
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
@@ -54,8 +58,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		DetectorConstruction();
 		~DetectorConstruction();
 
-		G4LogicalVolume* GetGeScoringVolume() const { return fGeScoringVolume; }
-		G4LogicalVolume* GetSiScoringVolume() const { return fSiScoringVolume; }
+		std::set<G4LogicalVolume*> GetGeScoringVolumes() const { return GeDets; }
+		std::set<G4LogicalVolume*> GetSiScoringVolumes() const { return SiDets; }
 		G4LogicalVolume* GetTargetVolume() const { return logicTargetCyl; }
 		G4double GetTargetWidth() { return TarWidth; }
 
@@ -87,8 +91,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		*physTargetCyl, *physCollimator;
 
 		G4GenericMessenger* fMessenger = nullptr;
+		G4VisAttributes* magenta, cyan, blue;
 		G4GDMLParser* fParser;
-		
+
+		std::set<G4LogicalVolume*> GeDets, SiDets;		
 
 		void DefineMaterials();
 		void DefineParameters();

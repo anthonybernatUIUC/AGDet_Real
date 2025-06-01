@@ -14,41 +14,38 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 	const DetectorConstruction* detectorConstruction = static_cast<const DetectorConstruction*>(
 		G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 
-	G4LogicalVolume* fGeScoringVolume = detectorConstruction->GetGeScoringVolume();
-	G4LogicalVolume* fSiScoringVolume = detectorConstruction->GetSiScoringVolume();
-	G4LogicalVolume* fTarget = detectorConstruction->GetTargetVolume();
-	G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
+	std::set<G4LogicalVolume*> fGeScoringVolumes = detectorConstruction->GetGeScoringVolumes();
+	std::set<G4LogicalVolume*> fSiScoringVolumes = detectorConstruction->GetSiScoringVolumes();
+	G4LogicalVolume* volumeHit = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 	G4ParticleDefinition* part = step->GetTrack()->GetDefinition();
 	G4double edep = step->GetTotalEnergyDeposit();
 	
-	if (volume == fGeScoringVolume) {
+	if (fGeScoringVolumes.find(volumeHit) != fGeScoringVolumes.end()) {
 		if (part == G4Alpha::Alpha() || part->GetParticleName() == "Li7") {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-		}
-		if (part == G4Gamma::Gamma()) {
+		} else if (part == G4Gamma::Gamma()) {
 			fEventAction->AddEdepGe(edep);
 			fEventAction->AddEdepGamma(edep);
-		}
-		if (part == G4Electron::Definition()) {
+		} else if (part == G4Electron::Definition()) {
 			fEventAction->AddEdepGe(edep);
 			fEventAction->AddEdepGeElec(edep);
+		} else {
+			std::cout << part->GetParticleName() << " has hit a Ge det" << std::endl;
 		}
-	}
-	if (volume == fSiScoringVolume) {
+	} else if (fSiScoringVolumes.find(volumeHit) != fSiScoringVolumes.end()) {		
 		if (part == G4Gamma::Gamma()) {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-		}
-		if (part->GetParticleName() == "Li7") {
+		} else if (part->GetParticleName() == "Li7") {
 			fEventAction->AddEdepLi7(edep);
 			fEventAction->AddEdepSi(edep);
-		}
-		if (part == G4Alpha::Alpha()) {
+		} else if (part == G4Alpha::Alpha()) {
 			fEventAction->AddEdepAlpha(edep);
 			fEventAction->AddEdepSi(edep);
-		}
-		if (part == G4Electron::Definition()) {
+		} else if (part == G4Electron::Definition()) {
 			fEventAction->AddEdepSiElec(edep);
 			fEventAction->AddEdepSi(edep);
+		} else {
+			std::cout << part->GetParticleName() << " has hit a Si Det" << std::endl;
 		}
 	}
 
