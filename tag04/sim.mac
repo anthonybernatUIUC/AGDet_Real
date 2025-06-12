@@ -10,9 +10,11 @@
 /run/initialize
 /geometry/test/run
 /geometry/test/tolerance 1 nm
+#/run/setCut 10 cm
+/run/setCutForAGivenParticle gamma 10 cm
 
 
-/analysis/setFileName TestBKG1    
+/analysis/setFileName AGMACRO    
 /run/printProgress 200000
 /run/initialize
 /run/beamOn 5000000

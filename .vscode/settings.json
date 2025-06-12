@@ -76,6 +76,9 @@
         "variant": "cpp",
         "AllHist.C": "cpp",
         "unordered_set": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "GeHist.C": "cpp",
+        "plotHisto.C": "cpp",
+        "SiHist.C": "cpp"
     }
 }

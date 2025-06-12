@@ -94,11 +94,11 @@ void RunAction::BeginOfRunAction(const G4Run*) {
   	}   
 	G4AnalysisManager* man = G4AnalysisManager::Instance(); 
 	if (uiMode) { // uiMode data capture // 
-		G4cout << "UI MODE" << G4endl; 
+		G4cout << "===UI MODE===" << G4endl; 
 		man->SetDefaultFileType("root");
-		man->OpenFile("TestBKGUI.root");
+		man->OpenFile("AGUI.root");
 	} else { // sim.mac, genSim.mac data capture //
-		G4cout << "MACRO MODE" << G4endl; 
+		G4cout << "===MACRO MODE===" << G4endl; 
 		man->OpenFile();
 	}
 }

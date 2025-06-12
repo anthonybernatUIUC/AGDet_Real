@@ -24,20 +24,31 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 		if (part == G4Alpha::Alpha() || part->GetParticleName() == "Li7") {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		} else if (part == G4Gamma::Gamma()) {
+			// std::cout << "Kinetic Energy of Gamma: " 
+			// 	<< step->GetTrack()->GetVertexKineticEnergy() << std::endl;
 			fEventAction->AddEdepGe(edep);
 			fEventAction->AddEdepGamma(edep);
 		} else if (part == G4Electron::Definition()) {
 			fEventAction->AddEdepGe(edep);
 			fEventAction->AddEdepGeElec(edep);
+			// std::cout << "Step Edep with Parent: " << edep << ", " << step->GetTrack()->GetParentID() << std::endl;
 		} else {
 			std::cout << part->GetParticleName() << " has hit a Ge det" << std::endl;
+			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
+		// if (part == G4Gamma::Gamma()) {
+		// 	fEventAction->AddEdepGe(edep);
+		// 	fEventAction->AddEdepGamma(step->GetTrack()->GetVertexKineticEnergy());
+		// 	step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+		// } 
 	} else if (fSiScoringVolumes.find(volumeHit) != fSiScoringVolumes.end()) {		
 		if (part == G4Gamma::Gamma()) {
 			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		} else if (part->GetParticleName() == "Li7") {
 			fEventAction->AddEdepLi7(edep);
 			fEventAction->AddEdepSi(edep);
+			// std::cout << "Li7 Edep at Event: " << edep << " " << 
+			// G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << std::endl;
 		} else if (part == G4Alpha::Alpha()) {
 			fEventAction->AddEdepAlpha(edep);
 			fEventAction->AddEdepSi(edep);
@@ -46,6 +57,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step) {
 			fEventAction->AddEdepSi(edep);
 		} else {
 			std::cout << part->GetParticleName() << " has hit a Si Det" << std::endl;
+			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
 		}
 	}
 

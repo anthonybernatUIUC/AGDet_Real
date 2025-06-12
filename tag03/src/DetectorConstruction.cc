@@ -131,6 +131,7 @@ void DetectorConstruction::ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D
 }
 
 void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
+	
 	G4RotateZ3D rotPhiHPGe2(-90*deg);
 	G4Translate3D shiftZGeDet(0, 0, distDet + zLengthGe / 2);
 	G4Transform3D transformGeDet1 = rotPhi * rotTheta * shiftZGeDet;

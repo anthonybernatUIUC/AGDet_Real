@@ -34,9 +34,11 @@
 class ActionInitialization : public G4VUserActionInitialization {
   public:
     ActionInitialization();
+    ActionInitialization(bool uiMode);
     virtual ~ActionInitialization();
     virtual void BuildForMaster() const;
     virtual void Build() const;
+    bool uiMode;
 
 };
     

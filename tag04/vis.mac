@@ -10,6 +10,7 @@
 # My laptop will only have a visualizer with this specific OGL command, but for other
 # machines, I assume the regular "/vis/open OGL 800x800-0+0" command works
 /vis/open OGL 800x800-0+0
+
 #/vis/open RayTracerX
 
 # Use this open statement to create a .prim file suitable for
@@ -70,7 +71,7 @@
 # Many other options are available with /vis/modeling and /vis/filtering.
 # For example, to select colour by particle ID:
 /vis/modeling/trajectories/create/drawByParticleID
-/vis/modeling/trajectories/drawByParticleID-0/set e- blue
+/vis/modeling/trajectories/drawByParticleID-0/set e- magenta
 /vis/modeling/trajectories/drawByParticleID-0/set e+ brown
 /vis/modeling/trajectories/drawByParticleID-0/set nu_e white
 /vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e white
@@ -80,14 +81,22 @@
 /vis/modeling/trajectories/drawByParticleID-0/set Li7 blue
 /vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
 
+/run/printProgress 20
+
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate
 
 # Make World Invisible and color geometry
 /vis/geometry/set/visibility worldVOL 0 false
+#/vis/geometry/set/visibility AGDevice 0 false
+
+
+# Filter particles for debugging purposes
+/vis/filtering/trajectories/create/particleFilter
+/vis/filtering/trajectories/particleFilter-0/add Li7
+/vis/filtering/trajectories/particleFilter-0/active true
 
 #/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
-#/vis/geometry/set/colour logicAl1 0 0 0 1 		#Blue
 #/vis/geometry/set/colour logicGeDet10 0 0 0 1		#Blue
 #/vis/geometry/set/colour logicSiDet16 0 0 1 1		#Cyan
 #/vis/geometry/set/colour logicShield1 0 0.5 0.5 0.5	#Grey

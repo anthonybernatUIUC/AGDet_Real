@@ -48,7 +48,11 @@ int main(int argc, char** argv) {
 
   // detect interactive mode (if no arguments) and define UI session
   G4UIExecutive* ui = nullptr;
-  if (argc == 1) ui = new G4UIExecutive(argc, argv);
+  bool uiMode = false;
+  if (argc == 1) { 
+		ui = new G4UIExecutive(argc, argv);
+		uiMode = true;
+	}
 
   G4int precision = 4;
   G4SteppingVerbose::UseBestUnit(precision);
@@ -63,7 +67,7 @@ int main(int argc, char** argv) {
   //set mandatory initialization classes
   runManager->SetUserInitialization(new DetectorConstruction);
   runManager->SetUserInitialization(new QGSP_BIC_HP(0));
-  runManager->SetUserInitialization(new ActionInitialization);
+  runManager->SetUserInitialization(new ActionInitialization(uiMode));
   runManager->Initialize();
   G4VisManager* visManager = nullptr;
   G4UImanager* UImanager = G4UImanager::GetUIpointer();

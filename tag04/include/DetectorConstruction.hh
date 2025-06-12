@@ -47,6 +47,8 @@
 #include "G4GDMLParser.hh"
 #include "G4VisAttributes.hh"
 #include "G4Color.hh"
+#include "G4GDMLParser.hh"
+#include "G4LogicalVolumeStore.hh"
 
 #include <set> 
 
@@ -61,10 +63,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		std::set<G4LogicalVolume*> GetGeScoringVolumes() const { return GeDets; }
 		std::set<G4LogicalVolume*> GetSiScoringVolumes() const { return SiDets; }
 		G4LogicalVolume* GetTargetVolume() const { return logicTargetCyl; }
-		G4double GetTargetWidth() { return TarWidth; }
+		G4double GetTargetWidth() { return zTarget; }
 
 		void ScaleTargetWidth(G4double scale) { 
-			TarWidth *= scale; 
+			zTarget *= scale; 
 			G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		}
 
@@ -75,23 +77,22 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   	private:
  
 		G4NistManager *man;
-		G4double fWorldSize, distDetGe, distDetSi, TarLength, TarWidth, 
-		dDiameterGe, dDiameterSi, zLengthGe, zLengthSi;
-		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10;
-		G4Element *elB10;
+		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi;
+		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu;
+		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe;
 		G4Isotope *B10Iso;
+
 		G4Box *solidWorld, *solidTarget;
-		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidCollimator;
+		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidCollimator, *solidGeMount, *solidSiAperture;
 		G4Sphere *solidSiSph;
 		
-		G4LogicalVolume *logicWorld, *logicGeDet, *fGeScoringVolume, *fSiScoringVolume, *logicTarget, 
-		*logicTargetCyl, *logicSiDet, *logicCollimator, *logicSiSph;
+		G4LogicalVolume *logicWorld, *logicGeDet, *logicTarget, *logicSiAperture, 
+		*logicTargetCyl, *logicSiDet, *logicCollimator, *logicSiSph, *logicGeMount;
 
 		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physSiSph, *physTarget, 
-		*physTargetCyl, *physCollimator;
+		*physTargetCyl, *physCollimator, *physGeMount, *physSiAperture;
 
 		G4GenericMessenger* fMessenger = nullptr;
-		G4VisAttributes* magenta, cyan, blue;
 		G4GDMLParser* fParser;
 
 		std::set<G4LogicalVolume*> GeDets, SiDets;		
