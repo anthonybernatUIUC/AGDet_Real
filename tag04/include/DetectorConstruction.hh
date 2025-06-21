@@ -77,20 +77,21 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   	private:
  
 		G4NistManager *man;
-		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi;
-		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu;
-		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe;
-		G4Isotope *B10Iso;
+		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield;
+		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *IsotopeShellMat;
+		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe, *elH, *elCl, *elNa;
+		G4Isotope *B10Iso, *Cl35, *Cr50, *Cr52, *Cr53, *Fe56, *Ni58, *Ni60, *Ni62, *Ni63, *Ni64, *Na24, *Mn56;
 
 		G4Box *solidWorld, *solidTarget;
-		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidCollimator, *solidGeMount, *solidSiAperture;
-		G4Sphere *solidSiSph;
+		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidGeMount, 
+		*solidSiAperture, *solidPbBackShield;
+		G4Sphere *solidIsoSphere;		
 		
-		G4LogicalVolume *logicWorld, *logicGeDet, *logicTarget, *logicSiAperture, 
-		*logicTargetCyl, *logicSiDet, *logicCollimator, *logicSiSph, *logicGeMount;
+		G4LogicalVolume *logicWorld, *logicGeDet, *logicTarget, *logicSiAperture, *logicTargetCyl, 
+		*logicSiDet, *logicGeMount, *logicPbBackShield, *logicIsoSphere;
 
-		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physSiSph, *physTarget, 
-		*physTargetCyl, *physCollimator, *physGeMount, *physSiAperture;
+		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, 
+		*physTargetCyl, *physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere;
 
 		G4GenericMessenger* fMessenger = nullptr;
 		G4GDMLParser* fParser;
@@ -106,8 +107,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		void ConstructShielding(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
 		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
-		void ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-		void ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
+		void ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
+		void ConstructIsotopeShell(int& cpyno);
 		void ConstructTarget();
 
 };

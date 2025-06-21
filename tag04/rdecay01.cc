@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 	G4int precision = 4;
 	G4SteppingVerbose::UseBestUnit(precision);
 
-	//construct the run manager
+	// construct the run manager
 	auto runManager = G4RunManagerFactory::CreateRunManager();  
 	if (argc == 3) {
     	G4int nThreads = G4UIcommand::ConvertToInt(argv[2]);
@@ -63,11 +63,11 @@ int main(int argc, char** argv) {
 	runManager->SetUserInitialization(new QGSP_BIC_HP(0));
 	runManager->SetUserInitialization(new ActionInitialization(uiMode));
 	runManager->Initialize();
+
 	G4VisManager* visManager = nullptr;
 	G4UImanager* UImanager = G4UImanager::GetUIpointer();
-
   	if (ui)  {
-		// interactive mode //
+		// interactive mode
 		visManager = new G4VisExecutive;
 		visManager->Initialize();
 		UImanager->ApplyCommand("/control/execute vis.mac");
@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
 		ui->SessionStart();
 		delete ui;
   	} else  {
-		// batch mode //
+		// batch mode
 		G4String command = "/control/execute ";
 		G4String fileName = argv[1];
 		UImanager->ApplyCommand(command + fileName);

@@ -44,21 +44,17 @@ DetectorConstruction::~DetectorConstruction() {}
 
 void DetectorConstruction::DefineParameters() {
 
-	fWorldSize = 1*m;
+	fWorldSize = 1.1*m;
 	dTarget = 10*cm;
 	zTarget = 106*nm;
 	dGe = 8*cm;
-	dSi = 8*cm;
+	dSi = 2.8*cm;
 	zGe = 10*cm;
 	zSi = 3*mm;
 	distDetGe = 22*cm;
 	distDetSi = 22*cm;
-
+	zPbBackShield = 10.6*cm;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
-
-	logicGeDet = nullptr;
-	logicSiDet = nullptr;
-	logicSiSph = nullptr;
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -89,6 +85,50 @@ void DetectorConstruction::DefineMaterials() {
   	matSteel->AddElement(elSi, 0.01);
   	matSteel->AddElement(elNi, 0.10);
   	matSteel->AddElement(elFe, 0.68);
+
+	Cl35 = new G4Isotope("Cl35", 17, 35);
+	Cr50 = new G4Isotope("Cr50", 24, 50);
+	Cr52 = new G4Isotope("Cr52", 24, 52);
+	Cr53 = new G4Isotope("Cr53", 24, 53);
+	Fe56 = new G4Isotope("Fe56", 26, 56);
+	Ni58 = new G4Isotope("Ni58", 28, 58);
+	Ni60 = new G4Isotope("Ni60", 28, 60);
+	Ni62 = new G4Isotope("Ni62", 28, 62);
+	Ni63 = new G4Isotope("Ni63", 28, 63);
+	Ni64 = new G4Isotope("Ni64", 28, 64);
+	Na24 = new G4Isotope("Na24", 11, 24);
+	Mn56 = new G4Isotope("Mn56", 25, 56);
+
+	elCl = new G4Element("ElCl", "Cl", 1);
+	elCl->AddIsotope(Cl35, 100*perCent);
+	elCr = new G4Element("ElCr", "Cr", 3);
+	elCr->AddIsotope(Cr50, 33.33*perCent);
+	elCr->AddIsotope(Cr52, 33.33*perCent);
+	elCr->AddIsotope(Cr53, 33.34*perCent);
+
+	elFe = new G4Element("ElFe", "Fe", 1);
+	elFe->AddIsotope(Fe56, 100*perCent);
+
+	elNi = new G4Element("ElNi", "Ni", 5);
+	elNi->AddIsotope(Ni58, 20*perCent);
+	elNi->AddIsotope(Ni60, 20*perCent);
+	elNi->AddIsotope(Ni62, 20*perCent);
+	elNi->AddIsotope(Ni63, 20*perCent);
+	elNi->AddIsotope(Ni64, 20*perCent);
+
+	elNa = new G4Element("ElNa", "Na", 1);
+	elNa->AddIsotope(Na24, 100*perCent);
+
+	elMn = new G4Element("ElMn", "Mn", 1);
+	elMn->AddIsotope(Mn56, 100*perCent);
+
+	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 6); 
+	IsotopeShellMat->AddElement(elCl, .0834); //I gave them all roughly the same abundance & sum to 100 percent
+	IsotopeShellMat->AddElement(elCr, .2499);
+	IsotopeShellMat->AddElement(elFe, .0834);
+	IsotopeShellMat->AddElement(elNi, .4165);
+	IsotopeShellMat->AddElement(elNa, .0834);
+	IsotopeShellMat->AddElement(elMn, .0834);
 }
 
 void DetectorConstruction::ConstructTarget() {
@@ -121,49 +161,25 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
 
-	G4Translate3D shiftZSiAperture(0, 0, distDetSi - 1*cm);
-	G4Transform3D transformSiAperture = rotPhi * rotTheta * shiftZSiAperture;
-	solidSiAperture = new G4Tubs(
-		"solidSiAperture" + std::to_string(cpyNo), dSi / 2 - 3*mm, 4.87*cm, .3*cm, 0*deg, 360*deg);
-	logicSiAperture = new G4LogicalVolume(solidSiAperture, matSteel, "logicSiAperture" + std::to_string(cpyNo));
-	physSiAperture = new G4PVPlacement(
-		transformSiAperture, logicSiAperture, "physSiAperture" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
-	logicSiAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
-	cpyNo++;
-}
-
-void DetectorConstruction::ConstructSiSphDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
-
-	G4Transform3D transformSiSph = rotPhi * rotTheta;
-	solidSiSph = new G4Sphere("solidSiSph", 2*distDetSi, 2*distDetSi + zSi / 2, 0*deg, 90*deg, 0*deg, 90*deg);
-	// solidSiSph = new G4Sphere("solidSiSph", 2*distDet, 2*distDet + zSi / 2, 0*deg, 360*deg, 0*deg, 180*deg);
-	// solidSiSph = new G4Sphere(
-	// 	"solidSiSph", 2*distDet, 2*distDet + zSi / 2, 0*deg, 360*deg, 0*deg, atan(dSi/(2*distDet))*rad);
-	logicSiSph = new G4LogicalVolume(solidSiSph, Si, "logicSiSph");
-	SiDets.insert(logicSiSph);
-	physSiSph = new G4PVPlacement(
-		transformSiSph, logicSiSph, "physSiSph", logicWorld, false, 7, false);
-}
-
-void DetectorConstruction::ConstructCollimator(G4RotateY3D rotTheta, G4RotateZ3D rotPhi) {
-
-	G4int zLengthCollimator = 1*cm;
-	G4Translate3D shiftZCollimator(0, 0, distDetSi - zSi / 2 - zLengthCollimator / 2 - .5*cm);
-	G4Transform3D transformCollimator = rotPhi * rotTheta * shiftZCollimator;
-	solidCollimator = new G4Tubs("solidCollimator", 1*cm, dSi / 2, zLengthCollimator / 2, 0*deg, 360*deg);
-	logicCollimator = new G4LogicalVolume(solidCollimator, Al, "logicCollimator");
-	physCollimator = new G4PVPlacement(
-		transformCollimator, logicCollimator, "physCollimator", logicWorld, false, 6, false);
+	// G4Translate3D shiftZSiAperture(0, 0, distDetSi - 1*cm);
+	// G4Transform3D transformSiAperture = rotPhi * rotTheta * shiftZSiAperture;
+	// solidSiAperture = new G4Tubs(
+	// 	"solidSiAperture" + std::to_string(cpyNo), (dSi - 3*mm) / 2, 6.985*cm / 2, .3*cm, 0*deg, 360*deg);
+	// logicSiAperture = new G4LogicalVolume(solidSiAperture, matSteel, "logicSiAperture" + std::to_string(cpyNo));
+	// physSiAperture = new G4PVPlacement(
+	// 	transformSiAperture, logicSiAperture, "physSiAperture" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	// logicSiAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
+	// cpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
 	
 	G4Translate3D shiftZGeDet(0, 0, distDetGe + zGe / 2);
-	G4Transform3D transformGeDet1 = rotPhi * rotTheta * shiftZGeDet;
+	G4Transform3D transformGeDet = rotPhi * rotTheta * shiftZGeDet;
 	solidGeDet = new G4Tubs("solidGeDet" + std::to_string(cpyNo), 0, dGe / 2, zGe / 2, 0*deg, 360*deg);
 	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet" + std::to_string(cpyNo));
 	physGeDet = new G4PVPlacement(
-		transformGeDet1, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformGeDet, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
 	GeDets.insert(logicGeDet);
 	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
@@ -172,18 +188,18 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 		"solidGeMount" + std::to_string(cpyNo), dGe / 2, (dGe + 1*cm) / 2, zGe / 2, 0*deg, 360*deg);
 	logicGeMount = new G4LogicalVolume(solidGeMount, matSteel, "logicGeMount" + std::to_string(cpyNo));
 	physGeMount = new G4PVPlacement(
-		transformGeDet1, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformGeDet, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
 	cpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo) {
 	
 	G4Translate3D shiftZGeDet(0, 0, distDetGe + zGe / 2);
-	G4Transform3D transformGeDet1 = rotX * rotY * rotZ * shiftZGeDet;
+	G4Transform3D transformGeDet = rotX * rotY * rotZ * shiftZGeDet;
 	solidGeDet = new G4Tubs("solidGeDet" + std::to_string(cpyNo), 0, dGe / 2, zGe / 2, 0*deg, 360*deg);
 	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet" + std::to_string(cpyNo));
 	physGeDet = new G4PVPlacement(
-		transformGeDet1, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformGeDet, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
 	GeDets.insert(logicGeDet);
 	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
@@ -192,7 +208,32 @@ void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3
 		"solidGeMount" + std::to_string(cpyNo), dGe / 2, (dGe + 1*cm) / 2, zGe / 2, 0*deg, 360*deg);
 	logicGeMount = new G4LogicalVolume(solidGeMount, matSteel, "logicGeMount" + std::to_string(cpyNo));
 	physGeMount = new G4PVPlacement(
-		transformGeDet1, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformGeDet, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	logicGeMount->SetVisAttributes(G4VisAttributes(G4Color::White()));
+	cpyNo++;
+}
+
+void DetectorConstruction::ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
+
+	G4Translate3D shiftZPbBackShield(0, 0, distDetGe + zPbBackShield / 2 + 21.1*cm / 2);
+	G4Transform3D transformPbBackShield = rotPhi * rotTheta * shiftZPbBackShield;
+	solidPbBackShield = new G4Tubs(
+		"solidPbBackShield" + std::to_string(cpyNo), 2.1*cm, 7.5*cm, zPbBackShield / 2, 0*deg, 360*deg);
+	logicPbBackShield = new G4LogicalVolume(solidPbBackShield, Pb, "logicPbBackShield" + std::to_string(cpyNo));
+	physPbBackShield = new G4PVPlacement(
+		transformPbBackShield, logicPbBackShield, "physPbBackShield" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	logicPbBackShield->SetVisAttributes(G4VisAttributes(G4Colour(.36, .38, .45, 1.)));
+	cpyNo++;
+}
+
+void DetectorConstruction::ConstructIsotopeShell(int& cpyNo) {
+
+	solidIsoSphere = new G4Sphere(
+		"solidIsoSphere" + std::to_string(cpyNo), 49*cm, 50*cm, 0*deg, 360*deg, 7.5*deg, 180*deg);
+	logicIsoSphere = new G4LogicalVolume(solidIsoSphere, IsotopeShellMat, "logicIsoSphere" + std::to_string(cpyNo));
+	physIsoSphere = new G4PVPlacement(
+		0, G4ThreeVector(0, 0, 0), logicIsoSphere, "physIsoSphere" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+    logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1)));
 	cpyNo++;
 }
 
@@ -208,7 +249,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4LogicalVolume* AGDevice = G4LogicalVolumeStore::GetInstance()->GetVolume("AGDevice");
 	AGDevice->SetMaterial(matSteel);
-	AGDevice->SetVisAttributes(G4VisAttributes(G4Color::White()));
+	// AGDevice->SetVisAttributes(G4VisAttributes(G4Color(1, 1, 1, .5)));
 	
 	G4LogicalVolume* AlCap = G4LogicalVolumeStore::GetInstance()->GetVolume("AlCap");
 	AlCap->SetMaterial(Al);
@@ -218,33 +259,50 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	CuWrap->SetMaterial(Cu);
 	CuWrap->SetVisAttributes(G4VisAttributes(G4Color::Brown()));
 
+	G4LogicalVolume* SiDetAperture = G4LogicalVolumeStore::GetInstance()->GetVolume("SiDetAperture");
+	SiDetAperture->SetMaterial(matSteel);
+	SiDetAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
+
 	int cpyNo = 10;
 
-	G4RotateX3D rotX1(-40*deg);
-	G4RotateY3D rotY1(0*deg);
-	G4RotateZ3D rotZ1(0*deg);
-	ConstructHPGeDetectorXYZ(rotX1, rotY1, rotZ1, cpyNo);
-
-	G4RotateX3D rotX2(-220*deg);
-	G4RotateY3D rotY2(0*deg);
-	G4RotateZ3D rotZ2(0*deg);
-	ConstructHPGeDetectorXYZ(rotX2, rotY2, rotZ2, cpyNo);
+	// G4RotateX3D rotX1(-40*deg);
+	// G4RotateY3D rotY1(0*deg);
+	// G4RotateZ3D rotZ1(0*deg);
+	// ConstructHPGeDetectorXYZ(rotX1, rotY1, rotZ1, cpyNo);
 
 	G4RotateY3D rotThetaHPGe1(40*deg);
-	G4RotateZ3D rotPhiHPGe1(-30*deg);
+	G4RotateZ3D rotPhiHPGe1(90*deg);
 	ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
+	ConstructPbBackShield(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
 
 	G4RotateY3D rotThetaHPGe2(40*deg);
-	G4RotateZ3D rotPhiHPGe2(-150*deg);
+	G4RotateZ3D rotPhiHPGe2(-30*deg);
 	ConstructHPGeDetector(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
+	ConstructPbBackShield(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
 
-	G4RotateY3D rotThetaHPGe3(140*deg);
-	G4RotateZ3D rotPhiHPGe3(30*deg);
+	G4RotateY3D rotThetaHPGe3(40*deg);
+	G4RotateZ3D rotPhiHPGe3(-150*deg);
 	ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
+	ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 
-	G4RotateY3D rotThetaHPGe4(140*deg);
-	G4RotateZ3D rotPhiHPGe4(150*deg);
-	ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
+	// ---Rear Ge Det locations--- 
+	// G4RotateX3D rotX2(-220*deg);
+	// G4RotateY3D rotY2(0*deg);
+	// G4RotateZ3D rotZ2(0*deg);
+	// ConstructHPGeDetectorXYZ(rotX2, rotY2, rotZ2, cpyNo);
+	G4RotateY3D rotThetaHPGe4(220*deg);
+	G4RotateZ3D rotPhiHPGe4(90*deg);
+	ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
+
+	G4RotateY3D rotThetaHPGe5(140*deg);
+	G4RotateZ3D rotPhiHPGe5(30*deg);
+	// ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
+	ConstructPbBackShield(rotThetaHPGe5, rotPhiHPGe5, cpyNo);
+
+	G4RotateY3D rotThetaHPGe6(140*deg);
+	G4RotateZ3D rotPhiHPGe6(150*deg);
+	// ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
+	ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
 
 	G4RotateY3D rotThetaSi1(50*deg);
 	G4RotateZ3D rotPhiSi1(-90*deg);
@@ -274,8 +332,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	G4RotateZ3D rotPhiTar(0*deg);
 	ConstructTarget(rotThetaTar, rotPhiTar, cpyNo);
 
+	ConstructIsotopeShell(cpyNo);
+
 	delete fParser;
-	return physWorld;
+	return physWorld; 
 }
 
 void DetectorConstruction::ConstructSDandField() {
@@ -293,10 +353,6 @@ void DetectorConstruction::ConstructSDandField() {
 		for (auto& logicSiDet : SiDets) {
 			logicSiDet->SetSensitiveDetector(sensDetSi);
 		}
-	}
-	if (logicSiSph) {
-		G4cout << "kitsune maison" << G4endl;
-		logicSiSph->SetSensitiveDetector(sensDetSi);
 	}
 }
 

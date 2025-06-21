@@ -13,16 +13,9 @@
     <box name="WorldBox" x="1.0" y="1.0" z="1.0" lunit="m"/>
     <tube name="GoAway" rmin = "0.0" rmax="0.1" startphi="0.0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
 
-    <tube name="GDMLTube039" rmin="5.05" rmax="5.13" startphi="0.0" deltaphi="360.0" aunit="deg" z="9.8" lunit="cm"/>
-    <tube name="GDMLTube038" rmin="0.0" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="0.5" lunit="cm"/>
-    <tube name="GDMLTube037" rmin="5.0" rmax="7.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="1.0" lunit="cm"/>
-    <tube name="GDMLTube036" rmin="4.51" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
-    
-    <tube name="GDMLTube035" rmin="5.05" rmax="5.13" startphi="0.0" deltaphi="360.0" aunit="deg" z="9.8" lunit="cm"/>
-    <tube name="GDMLTube034" rmin="0.0" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="0.5" lunit="cm"/>
-    <tube name="GDMLTube033" rmin="5.0" rmax="7.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="1.0" lunit="cm"/>
-    <tube name="GDMLTube032" rmin="4.51" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
-
+    <tube name="GDMLTube032" rmin="0" rmax="34.9" startphi="0.0" deltaphi="360.0" aunit="deg" z="5.0" lunit="mm"/>
+    <cone name="GDMLCone001" rmin1="0.0" rmax1="12.50" rmin2="0.0" rmax2="15.70" z="5.1" startphi="0.0" deltaphi="360.0" aunit="deg" lunit="mm"/>
+    <!-- Al Top Hat -->
     <tube name="GDMLTube031" rmin="5.05" rmax="5.13" startphi="0.0" deltaphi="360.0" aunit="deg" z="9.8" lunit="cm"/>
     <tube name="GDMLTube030" rmin="0.0" rmax="5.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="0.5" lunit="cm"/>
     <tube name="GDMLTube029" rmin="5.0" rmax="7.0" startphi="0.0" deltaphi="360.0" aunit="deg" z="1.0" lunit="cm"/>
@@ -70,8 +63,7 @@
     <subtraction name="Cut">
       <first ref="GDMLSphere"/>
       <second ref="GDMLTube"/>
-      <positionref ref="center"/>
-      <rotationref ref="identity"/>
+      <!-- <position name="move" unit="cm" z="50"/>  -->
     </subtraction>
     <!-- Ge Det Cuts -->
     <subtraction name="Cut001">
@@ -253,8 +245,15 @@
       <second ref="GDMLTube030"/>
       <position name="P-GDMLTube030" unit="mm" x="0" y="0" z="-53"/>
     </union>
-  </solids>
+    <!-- Si Aperture -->
+    <subtraction name="Cut016">
+      <first ref="GDMLTube032"/>
+      <second ref="GDMLCone001"/>
+      <rotation name="R-GDMLCone001" unit="deg" x="180" y="0" z="0"/>
+    </subtraction>
 
+  </solids>
+  
   <structure>
     <volume name="AGDevice">
       <materialref ref="G4_AIR"/>
@@ -272,14 +271,19 @@
       <solidref ref="GDMLTube031"/>
     </volume>
 
+    <volume name="SiDetAperture">
+      <materialref ref="G4_Pb"/>
+      <solidref ref="Cut016"/>
+    </volume>
+
     <volume name="worldVOL">
       <materialref ref="G4_Galactic"/>
       <solidref ref="WorldBox"/>
 
-      <physvol name="PV_AlCap">
+      <physvol name="PV_AlCap1">
         <volumeref ref="AlCap"/>
-        <position name="P-AlCap" unit="mm" y=".6428*270" z=".766*270"/>
-        <rotation name="R-AlCap" unit="deg" x="40"/>
+        <position name="P-AlCap1" unit="mm" y=".6428*270" z=".766*270"/>
+        <rotation name="R-AlCap1" unit="deg" x="40"/>
       </physvol>
       <physvol name="PV_AlCap2"> 
         <volumeref ref="AlCap"/>
@@ -306,12 +310,42 @@
         <position name="P-AlCap6" unit="mm" x=".5567*270" y=".3214*270" z="-.766*270"/>
         <rotation name="R-AlCap6" unit="deg" x="157.23952373" y="-33.82584497"/>
       </physvol>
-      
 
-      <physvol name="PV_CuWrap">
+      <physvol name="PV_Aperture1">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture1" unit="mm" y="-0.766*210" z="0.6428*210"/>
+        <rotation name="R-Aperture1" unit="deg" x="-50"/>
+      </physvol>
+      <physvol name="PV_Aperture2">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture2" unit="mm" x="0.6634*210" y="0.383*210" z="0.6428*210"/>
+        <rotation name="R-Aperture2" unit="deg" x="30.78973303" y="-41.56076257" z="-48.06989481"/>
+      </physvol>
+      <physvol name="PV_Aperture3">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture3" unit="mm" x="-0.6634*210" y="0.383*210" z="0.6428*210"/>
+        <rotation name="R-Aperture3" unit="deg" x="30.78973303" y="41.56076257" z="48.06989481"/>
+      </physvol>
+      <physvol name="PV_Aperture4">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture4" unit="mm" y="0.9221*210" z="0.3869*210"/>
+        <rotation name="R-Aperture4" unit="deg" x="67.24"/>
+      </physvol>
+      <physvol name="PV_Aperture5">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture5" unit="mm" x="0.7986*210" y="-0.4611*210" z="0.3869*210"/>
+        <rotation name="R-Aperture5" unit="deg" x="-50.00065738" y="-52.99576314" z="33.82532"/>
+      </physvol>
+      <physvol name="PV_Aperture6">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture6" unit="mm" x="-0.7986*210" y="-0.4611*210" z="0.3869*210"/>
+        <rotation name="R-Aperture6" unit="deg" x="-50.00065738" y="52.99576314" z="-33.82532"/>
+      </physvol>
+      
+      <physvol name="PV_CuWrap1">
         <volumeref ref="CuWrap"/>
-        <position name="P-CuWrap" unit="mm" y=".6428*265" z=".766*265"/>
-        <rotation name="R-CuWrap" unit="deg" x="40"/>
+        <position name="P-CuWrap1" unit="mm" y=".6428*265" z=".766*265"/>
+        <rotation name="R-CuWrap1" unit="deg" x="40"/>
       </physvol>
       <physvol name="PV_CuWrap2">
         <volumeref ref="CuWrap"/>
@@ -330,15 +364,14 @@
       </physvol>
       <physvol name="PV_CuWrap5">
         <volumeref ref="CuWrap"/>
-        <position name="P-CuWrap5" unit="mm" x="-.5567*270" y=".3214*270" z="-.766*270"/>
+        <position name="P-CuWrap5" unit="mm" x="-.5567*265" y=".3214*265" z="-.766*265"/>
         <rotation name="R-CuWrap5" unit="deg" x="157.23952373" y="33.82584497"/>
       </physvol>
       <physvol name="PV_CuWrap6">
         <volumeref ref="CuWrap"/>
-        <position name="P-CuCap6" unit="mm" x=".5567*270" y=".3214*270" z="-.766*270"/>
+        <position name="P-CuCap6" unit="mm" x=".5567*265" y=".3214*265" z="-.766*265"/>
         <rotation name="R-CuCap6" unit="deg" x="157.23952373" y="-33.82584497"/>
       </physvol>
-
 
       <physvol name="PV_AGDevice">
         <volumeref ref="AGDevice"/>

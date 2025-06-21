@@ -35,14 +35,8 @@ EventAction::~EventAction() {}
 void EventAction::BeginOfEventAction(const G4Event*) {
  
 	fDecayChain = G4String(" ");
-	fEvisTot = 0.;
-	fEdepGe = 0.;
-	fEdepSi = 0.;
-	fEdepGamma = 0.;
-	fEdepAlpha = 0.;
-	fEdepLi7 = 0.;
-	fEdepSiElec = 0.;
-	fEdepGeElec = 0.;
+	fEvisTot = 0., fEdepGe = 0., fEdepSi = 0., fEdepGamma = 0., 
+	fEdepAlpha = 0., fEdepLi7 = 0., fEdepSiElec = 0., fEdepGeElec = 0.;
 }
 
 void EventAction::EndOfEventAction(const G4Event* evt) {
@@ -73,11 +67,6 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 		// 	G4cout << "------Edep Li7: " << fEdepLi7 << G4endl;
 		// }
 	}
-
-	// for (auto i : Li7Vols) {
-	// 	G4cout << i << ' ';		
-	// }
-
 }
 
 

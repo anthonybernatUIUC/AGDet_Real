@@ -35,7 +35,7 @@
 RunAction::RunAction(PrimaryGeneratorAction* kin, bool uiMode) : 
 G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	
-	auto man = G4AnalysisManager::Instance();
+	G4AnalysisManager* man = G4AnalysisManager::Instance();
 	man->SetDefaultFileType("root");
 
 	man->CreateNtuple("GeScoring", "GeScoring");
@@ -93,11 +93,11 @@ void RunAction::BeginOfRunAction(const G4Run*) {
 		fRun->SetPrimary(particle, energy);
   	}   
 	G4AnalysisManager* man = G4AnalysisManager::Instance(); 
-	if (uiMode) { // uiMode data capture // 
+	if (uiMode) { // uiMode data capture
 		G4cout << "===UI MODE===" << G4endl; 
 		man->SetDefaultFileType("root");
 		man->OpenFile("AGUI.root");
-	} else { // sim.mac, genSim.mac data capture //
+	} else { // sim.mac, genSim.mac data capture
 		G4cout << "===MACRO MODE===" << G4endl; 
 		man->OpenFile();
 	}

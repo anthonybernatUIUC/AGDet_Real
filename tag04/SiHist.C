@@ -9,7 +9,7 @@
 #include "TROOT.h"
 #include "TStyle.h"
 
-void GeHist(std::string file) {
+void SiHist(std::string file) {
 
     int darkGray = TColor::GetColor(23, 23, 28);
     gStyle->SetCanvasColor(darkGray);
@@ -27,9 +27,9 @@ void GeHist(std::string file) {
 
     int binNo = 1500;
     double xMin  = 0.0;
-    double xMax  = 2.5;
+    double xMax  = 2.0;
 
-    TTree* tree = (TTree*)input->Get("Ge e-");
+    TTree* tree = (TTree*)input->Get("SiScoring");
     TCanvas* canvas = new TCanvas();
     canvas->SetLogy(1);
     canvas->SetTicky();
@@ -40,7 +40,7 @@ void GeHist(std::string file) {
     tree->SetBranchAddress(branchName, &fEdep);
     int entries = tree->GetEntries();
 
-    TH1F* hist = new TH1F("GeHist", title + branchName, binNo, xMin, xMax);
+    TH1F* hist = new TH1F("SiHist", title + branchName, binNo, xMin, xMax);
     for (int j = 0; j < entries; j++) {
         tree->GetEntry(j);
         hist->Fill(fEdep);
@@ -51,12 +51,6 @@ void GeHist(std::string file) {
         std::cout << " | " << count;
     }
     std::cout << " |" << std::endl;
-
-    int totalCounts = hist->Integral(hist->FindBin(xMin), hist->FindBin(xMax));
-    int photoPeakCounts = hist->Integral(hist->FindBin(0.47), hist->FindBin(.49));
-    std::cout << "Total Counts: " << totalCounts << std::endl;
-    std::cout << "Photopeak Counts: " << photoPeakCounts << std::endl;
-    std::cout << "Photopeak Efficiency: " << (double)photoPeakCounts / totalCounts << std::endl;
 
     hist->SetLineColorAlpha(kRed, 0.35);
     hist->GetXaxis()->SetLabelColor(kWhite);

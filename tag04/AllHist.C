@@ -33,7 +33,6 @@ void AllHist(std::string file) {
 
     for (int i = 0; i < input->GetListOfKeys()->GetEntries(); ++i) { 
 
-        
         TTree* tree = (TTree*)input->Get(input->GetListOfKeys()->At(i)->GetName());
         TCanvas* canvas = new TCanvas();
         canvas->SetLogy(1);
@@ -54,7 +53,7 @@ void AllHist(std::string file) {
 
         tree->SetBranchAddress(branchName, &fEdep);
         int entries = tree->GetEntries();
-
+        
         TH1F* hist = new TH1F(("hist" + std::to_string(i)).c_str(), title + branchName, binNo, xMin, xMax);
         double fEdepMax = INT_MIN;
         double fEdepMin = INT_MAX;
@@ -69,23 +68,11 @@ void AllHist(std::string file) {
         std::cout << '\t' << "Min: " << fEdepMin << std::endl;
 
         int prevCount = 0;
-        std::vector<int> bro;
         for (int i = 0; i < binNo; i++) {
             int count = hist->GetBinContent(i);
             std::cout << " | " << count;
-            if (prevCount > 10 && count == 0) {
-                std::cout << "bro: " << i;
-                bro.push_back(i);
-            }
-            prevCount = count;
         }
         std::cout << " |" << std::endl;
-
-        if (!bro.empty()) {
-            // bin_centerx = h1->GetXaxis()->GetBinCenter(h1->GetXaxis()->FindFixBin(somex)); 
-            double bin_centerx = hist->GetXaxis()->GetBinCenter(bro.at(0)); 
-            std::cout << "Bro Bin Center: " << bin_centerx << std::endl;
-        }
 
         hist->SetLineColorAlpha(kRed, 0.35);
         hist->GetXaxis()->SetLabelColor(kWhite);
@@ -103,4 +90,4 @@ void AllHist(std::string file) {
         
     }
     delete[] cfile;
-}
+}    

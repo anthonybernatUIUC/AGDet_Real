@@ -9,24 +9,9 @@
 # Use this open statement to create an OpenGL view:
 # My laptop will only have a visualizer with this specific OGL command, but for other
 # machines, I assume the regular "/vis/open OGL 800x800-0+0" command works
-/vis/open OGL 800x800-0+0
+/vis/open OGLI 600x600-0+0
 
-#/vis/open RayTracerX
-
-# Use this open statement to create a .prim file suitable for
-# viewing in DAWN:
-#/vis/open DAWNFILE
-
-# Use this open statement to create a .heprep file suitable for
-# viewing in HepRApp:
-#/vis/open HepRepFile
-
-# Use this open statement to create a .wrl file suitable for
-# viewing in a VRML viewer:
-#/vis/open VRML2FILE
-
-# Disable auto refresh and quieten vis messages whilst scene and
-# trajectories are established:
+# Disable auto refresh and quieten vis messages whilst scene and trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
 
@@ -92,9 +77,9 @@
 
 
 # Filter particles for debugging purposes
-/vis/filtering/trajectories/create/particleFilter
-/vis/filtering/trajectories/particleFilter-0/add Li7
-/vis/filtering/trajectories/particleFilter-0/active true
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add Li7
+#/vis/filtering/trajectories/particleFilter-0/active true
 
 #/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
 #/vis/geometry/set/colour logicGeDet10 0 0 0 1		#Blue
