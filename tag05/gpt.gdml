@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd">
+  <define>
+    <position name="hole_pos" x="0" y="0" z="15"/> <!-- Carving tube -->
+    <position name="tube_pos" x="0" y="0" z="35"/> <!-- Protruding tube -->
+
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <rotation name="identity" x="0" y="0" z="0"/>
+  </define>
+
+  <solids>
+    <box name="WorldBox" x="752.7678592584085" y="830.9631198820621" z="936.7816899693787" lunit="mm"/>
+    <!-- Full sphere -->
+    <sphere name="sphere_raw" rmin="19" rmax="20" deltaphi="360" deltatheta = "720" aunit="deg" lunit="cm"/>
+    
+    <!-- Carving cylinder (solid shell, same size as tube) -->
+    <tube name="tube_hole" rmin="5" rmax="7" z="10" deltaphi="360" aunit="deg" lunit="cm"/>
+
+    <!-- Sphere with hole subtracted -->
+    <subtraction name="carved_sphere">
+      <first ref="sphere_raw"/>
+      <second ref="tube_hole"/>
+      <positionref ref="hole_pos"/>
+    </subtraction>
+
+    <!-- Protruding tube (same as hole dimensions) -->
+    <tube name="protruding_tube" rmin="5" rmax="7" z="30" deltaphi="360" aunit="deg" lunit="cm"/>
+
+    <!-- Final solid: carved sphere + protruding tube -->
+    <union name="sphere_with_tube">
+      <first ref="carved_sphere"/>
+      <second ref="protruding_tube"/>
+      <positionref ref="tube_pos"/>
+    </union>
+  </solids>
+
+  <structure>
+    <volume name="vol_sphere_with_tube">
+      <materialref ref="G4_Al"/>
+      <solidref ref="sphere_with_tube"/>
+    </volume>
+    <volume name="worldVOL">
+      <materialref ref="G4_Galactic"/>
+      <solidref ref="WorldBox"/>
+      <physvol name="PV_vol_sphere_with_tube">
+        <volumeref ref="vol_sphere_with_tube"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>

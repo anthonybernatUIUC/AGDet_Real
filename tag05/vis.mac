@@ -1,0 +1,99 @@
+# Sets some default verbose
+# and initializes the graphic.
+
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 1
+/run/verbose 1
+
+/run/initialize
+
+# Use this open statement to create an OpenGL view:
+# My laptop will only have a visualizer with this specific OGL command, but for other
+# machines, I assume the regular "/vis/open OGL 800x800-0+0" command works
+/vis/open OGLI 600x600-0+0
+
+# Disable auto refresh and quieten vis messages whilst scene and trajectories are established:
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+
+# Draw geometry:
+/vis/drawVolume
+
+# Specify view angle:
+#/vis/viewer/set/viewpointThetaPhi 90. 0.
+
+# Specify zoom value:
+/vis/viewer/zoom 1.5
+
+# Specify background color:
+/vis/viewer/set/background 0.0 0.0 0.0
+
+# Specify style (surface or wireframe):
+#/vis/viewer/set/style wireframe
+/vis/viewer/set/style surface
+
+# Draw coordinate axes:
+# /vis/scene/add/axes -5 -5 -5 10 cm
+
+# Draw smooth trajectories at end of event, showing trajectory points
+# as markers 2 pixels wide:
+/vis/scene/add/trajectories smooth
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+# (if too many tracks cause core dump => /tracking/storeTrajectory 0)
+
+# Draw hits at end of event:
+#/vis/scene/add/hits
+
+# To draw only gammas:
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add gamma
+
+# To invert the above, drawing all particles except gammas,
+# keep the above two lines but also add:
+#/vis/filtering/trajectories/particleFilter-0/invert true
+
+# Many other options are available with /vis/modeling and /vis/filtering.
+# For example, to select colour by particle ID:
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set e- magenta
+/vis/modeling/trajectories/drawByParticleID-0/set e+ brown
+/vis/modeling/trajectories/drawByParticleID-0/set nu_e white
+/vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e white
+/vis/modeling/trajectories/drawByParticleID-0/set geantino white
+/vis/modeling/trajectories/drawByParticleID-0/set gamma green
+/vis/modeling/trajectories/drawByParticleID-0/set alpha red
+/vis/modeling/trajectories/drawByParticleID-0/set Li7 blue
+/vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
+
+/run/printProgress 20
+
+# To superimpose all of the events from a given run:
+/vis/scene/endOfEventAction accumulate
+
+# Make World Invisible and color geometry
+/vis/geometry/set/visibility worldVOL 0 false
+#/vis/geometry/set/visibility AGDevice 0 false
+
+
+# Filter particles for debugging purposes
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add Li7
+#/vis/filtering/trajectories/particleFilter-0/active true
+
+#/vis/geometry/set/colour Det 0 0.29 0.57 0.46 		#Dark Green
+#/vis/geometry/set/colour logicGeDet10 0 0 0 1		#Blue
+#/vis/geometry/set/colour logicSiDet16 0 0 1 1		#Cyan
+#/vis/geometry/set/colour logicShield1 0 0.5 0.5 0.5	#Grey
+#/vis/geometry/set/colour logicShield2 0 0.7 0.4 0.2	#Copper
+#/vis/geometry/set/colour logicShield3 0 0.5 0.5 0.5	#Grey
+
+/vis/geometry/set/colour logicTargetCyl  0 0.7 0.4 0.2    #Cyan
+
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings
+
+# For file-based drivers, use this to create an empty detector view:
+#/vis/viewer/flush
