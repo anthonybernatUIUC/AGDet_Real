@@ -25,7 +25,7 @@ void SiHist(std::string file) {
     std::cout << "Opening File: " << file << std::endl;
     TFile* input = new TFile(cfile, "read");
 
-    int binNo = 1500;
+    int binNo = 2500;
     double xMin  = 0.0;
     double xMax  = 2.0;
 

@@ -51,26 +51,26 @@ int main(int argc, char** argv) {
 
 	G4int precision = 4;
 	G4SteppingVerbose::UseBestUnit(precision);
+	CLHEP::HepRandom::setTheSeed((unsigned)clock());
 
 	// construct the run manager
 	#ifdef G4MULTITHREADED
 		G4MTRunManager* runManager = new G4MTRunManager;
 		G4int maxCores = G4Threading::G4GetNumberOfCores();
 		G4int coresToUse = maxCores;
-		G4cout << "Using " << std::to_string(coresToUse) << 
-		"\\" << std::to_string(maxCores) << " available cores" << G4endl;
+		if (argc == 3) coresToUse = G4UIcommand::ConvertToInt(argv[2]);
+
+		G4cout << "Using " << coresToUse << "/" << maxCores << " available cores" << G4endl;
+
 		runManager->SetNumberOfThreads(coresToUse);
-		// cmake -DCMAKE_PREFIX_PATH=/home/anthony/software/geant4/geant4-v11.2.0-mt-install/bin/geant4-config ..
 	#else
-		// should be grayed out when in single-threaded mode
+		// should be grayed out when in multithreaded mode (possibly Intellisense dependent)
 		G4RunManager* runManager = new G4RunManager;
 		G4cout << "Number of Cores: 1 (single-threaded mode)" << G4endl;
 	#endif
 
-	if (argc == 3) {
-    	G4int nThreads = G4UIcommand::ConvertToInt(argv[2]);
-    	runManager->SetNumberOfThreads(nThreads);
-  	}  
+	// storing this for future reference:
+	// "cmake -DCMAKE_PREFIX_PATH=/home/anthony/software/geant4/geant4-v11.2.0-mt-install/bin/geant4-config .."  
 
 	// set mandatory initialization classes
 	runManager->SetUserInitialization(new DetectorConstruction());
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
 	G4UImanager* UImanager = G4UImanager::GetUIpointer();
   	if (ui)  {
 		// interactive mode
-		visManager = new G4VisExecutive;
+		visManager = new G4VisExecutive("quiet");
 		visManager->Initialize();
 		UImanager->ApplyCommand("/control/execute vis.mac");
 		UImanager->ApplyCommand("/vis/scene/add/scale 10 cm");

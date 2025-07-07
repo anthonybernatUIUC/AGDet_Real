@@ -49,6 +49,7 @@
 #include "G4Color.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
+#include "G4UImanager.hh"
 
 #include <set> 
 
@@ -70,6 +71,19 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		}
 
+		void SetShellType(G4int type) {
+			shellType = type;
+			if (shellType == 0) {
+				logicIsoSphere->SetMaterial(IsotopeShellMatH);
+				logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1)));
+				G4cout << "Isotope Shell Type: Hydrogen" << G4endl;
+			} else {
+				logicIsoSphere->SetMaterial(IsotopeShellMat);
+				logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 0.1)));
+				G4cout << "Isotope Shell Type: Mixed Isotopes" << G4endl;
+			}  
+		}
+
 		virtual G4VPhysicalVolume* Construct();                 
 		virtual G4double GetWorldSize() { return fWorldSize; } 
 		virtual void ConstructSDandField();
@@ -77,10 +91,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   	private:
  
 		G4NistManager *man;
+		G4int shellType;
 		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield;
-		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *IsotopeShellMat;
+		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat;
 		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe, *elH, *elCl, *elNa;
-		G4Isotope *B10Iso, *Cl35, *Cr50, *Cr52, *Cr53, *Fe56, *Ni58, *Ni60, *Ni62, *Ni63, *Ni64, *Na24, *Mn56;
+		G4Isotope *B10Iso, *Cl35, *Cr50, *Cr52, *Cr53, *Fe56, *Ni58, *Ni60, 
+		*Ni62, *Ni63, *Ni64, *Na24, *Mn56, *H1;
 
 		G4Box *solidWorld, *solidTarget;
 		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidGeMount, 
@@ -93,7 +109,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, 
 		*physTargetCyl, *physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere;
 
-		G4GenericMessenger* fMessenger = nullptr;
+		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr;
 		G4GDMLParser* fParser;
 
 		std::set<G4LogicalVolume*> GeDets, SiDets;		

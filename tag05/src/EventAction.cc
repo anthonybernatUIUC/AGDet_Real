@@ -36,7 +36,7 @@ void EventAction::BeginOfEventAction(const G4Event*) {
  
 	fDecayChain = G4String(" ");
 	fEvisTot = 0., fEdepGe = 0., fEdepSi = 0., fEdepGamma = 0., 
-	fEdepAlpha = 0., fEdepLi7 = 0., fEdepSiElec = 0., fEdepGeElec = 0.;
+	fEdepAlpha = 0., fEdepLi7 = 0., fEdepSiElec = 0., fEdepGeElec = 0., fEdepSiBackground = 0.;
 }
 
 void EventAction::EndOfEventAction(const G4Event* evt) {
@@ -52,20 +52,22 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 	run->EvisEvent(fEvisTot);
 
 	G4double tol = 0.0001;
-	G4double cats[7] = { fEdepGe, fEdepSi, fEdepGamma, fEdepAlpha, fEdepLi7, fEdepSiElec, fEdepGeElec };
+	G4double cats[8] = { fEdepGe, fEdepSi, fEdepGamma, fEdepAlpha, 
+		fEdepLi7, fEdepSiElec, fEdepGeElec, fEdepSiBackground };
 	auto man = G4AnalysisManager::Instance();
 
-	for (size_t i = 0; i < 7; ++i) {
+	for (size_t i = 0; i < 8; ++i) {
 		if (cats[i] > tol) {
 			man->FillNtupleDColumn(i, 0, cats[i]);
 			man->AddNtupleRow(i);
+			// if (i == 6) {
+			// 	G4cout << "------Edep Ge Elec: " << fEdepGeElec << G4endl;
+			// }
+			// if (i == 4) {
+			// 	G4cout << "------Edep Li7: " << fEdepLi7 << G4endl;
+			// }
 		}
-		// if (i == 6 && fEdepGeElec > tol) {
-		// 	G4cout << "------Edep Ge Elec: " << fEdepGeElec << G4endl;
-		// }
-		// if (i == 4 && fEdepLi7 > tol) {
-		// 	G4cout << "------Edep Li7: " << fEdepLi7 << G4endl;
-		// }
+		
 	}
 }
 

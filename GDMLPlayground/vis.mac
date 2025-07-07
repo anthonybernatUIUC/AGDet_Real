@@ -1,0 +1,7 @@
+/control/verbose 1
+/run/verbose 0
+/vis/open OGLI
+/vis/drawVolume
+/vis/viewer/set/style surface
+/vis/viewer/set/autoRefresh true
+/vis/viewer/flush

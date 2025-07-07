@@ -41,10 +41,7 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 	G4int n_particle = 1;
 	fParticleGun = new G4ParticleGun(n_particle);
 	fParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("neutron"));
-
-	// fParticleGun->SetParticleEnergy(0.003325*eV);
 	fParticleGun->SetParticleEnergy(0.0001*eV);
-	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
@@ -57,18 +54,23 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	double randRadius = G4UniformRand() * 4.8 * cm;
 	fParticleGun->SetParticlePosition(G4ThreeVector(
 		randRadius*std::cos(randAngle), randRadius*std::sin(randAngle), -25*cm));
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 	// Generate gammas in a spherical shell as a background source
 	bool generateBackground = true;
 	if (generateBackground) {
 		int shellHits = 1;
-		double shellRadius = 49.5*cm;
+		double shellRadius = 49.1*cm;
 		for (int i = 0; i < shellHits; i++) {
 			double randTheta = G4UniformRand() * (M_PI - 7.5*deg) + 7.5*deg;
 			double randPhi = G4UniformRand() * 2 * M_PI;
-			fParticleGun->SetParticlePosition(shellRadius*G4ThreeVector(
-				std::cos(randTheta)*std::sin(randPhi), std::sin(randTheta)*std::sin(randPhi), std::cos(randPhi)));
+			double randX = std::cos(randPhi)*std::sin(randTheta);
+			double randY = std::sin(randPhi)*std::sin(randTheta);
+			double randZ = std::cos(randTheta);
+			G4ThreeVector randAxis = G4ThreeVector(randX, randY, randZ);
+			fParticleGun->SetParticlePosition(shellRadius*randAxis);
+			fParticleGun->SetParticleMomentumDirection(-randAxis);
 			fParticleGun->GeneratePrimaryVertex(anEvent);
 		}
 	}

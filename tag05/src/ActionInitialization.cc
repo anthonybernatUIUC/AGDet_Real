@@ -36,7 +36,7 @@
 
 ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
 
-ActionInitialization::ActionInitialization(bool uiMode) : uiMode(uiMode) {}
+ActionInitialization::ActionInitialization(bool uiMode) : uiMode(uiMode), G4VUserActionInitialization() {}
 
 ActionInitialization::~ActionInitialization() {}
 
@@ -46,7 +46,6 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
-	CLHEP::HepRandom::setTheSeed((unsigned)clock());
 	
 	PrimaryGeneratorAction* primary = new PrimaryGeneratorAction();
 	SetUserAction(primary);

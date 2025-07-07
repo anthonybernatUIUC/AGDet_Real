@@ -40,7 +40,7 @@ target_link_libraries(rdecay01 ${Geant4_LIBRARIES} )
 # relies on these scripts being in the current working directory.
 #
 set(rdecay01_SCRIPTS
-	vis.mac sim.mac AllHist.C GeHist.C SiHist.C pyrootAllSiHist.py macroGen.py
+	vis.mac sim.mac AllHist.C GeHist.C SiHist.C pyrootAllSiHist.py pyrootGeHist.py macroGen.py
   )
 # set(CMAKE_PREFIX_PATH "/home/anthony/software/geant4/geant4-v11.2.0-mt-install/bin/geant4-config")
 

@@ -1,0 +1,500 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd">
+  <define>
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <position name="GoAwayPos" x="-250" y="250" z="250" unit="mm"/>
+    <constant name="SphereInner" value="22.6"/>
+    <constant name="SphereOuter" value="22.86"/>
+	  <constant name="SiTubeInner" value="4.87"/>
+    <constant name="SiTubeOuter" value="5.08"/>
+		<constant name="GeTubeInner" value="7.41"/>
+    <constant name="GeTuberOuter" value="7.62"/>
+  </define>
+  <materials/>
+  <solids>
+    <!-- World -->
+    <box name="WorldBox" x="1.1" y="1.1" z="1.1" lunit="m"/>
+    <tube name="GoAway" rmin ="0.0" rmax="0.1" startphi="0.0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
+    <!-- HPGe Mount -->
+    <tube name="GDMLTube038" rmin="0" rmax="42.45" startphi="0.0" deltaphi="360.0" aunit="deg" z="1" lunit="mm"/>
+    <tube name="GDMLTube037" rmin="0" rmax="20" startphi="0.0" deltaphi="360.0" aunit="deg" z="108.5" lunit="mm"/>
+    <tube name="GDMLTube036" rmin="0" rmax="45" startphi="0.0" deltaphi="360.0" aunit="deg" z="5" lunit="mm"/>
+    <tube name="GDMLTube035" rmin="42.5" rmax="45" startphi="0.0" deltaphi="360.0" aunit="deg" z="121.0" lunit="mm"/>
+    <!-- Si Collimator -->
+    <tube name="GDMLTube034" rmin="25.40" rmax="47.63" startphi="0.0" deltaphi="360.0" aunit="deg" z="10.0" lunit="mm"/>
+    <tube name="GDMLTube033" rmin="25.40" rmax="34.92" startphi="0.0" deltaphi="360.0" aunit="deg" z="126.0" lunit="mm"/>
+    <!-- Si Aperture -->
+    <tube name="GDMLTube032" rmin="0" rmax="34.9" startphi="0.0" deltaphi="360.0" aunit="deg" z="5.0" lunit="mm"/>
+    <cone name="GDMLCone001" rmin1="0.0" rmax1="12.50" rmin2="0.0" rmax2="17.50" z="5.1" startphi="0.0" deltaphi="360.0" aunit="deg" lunit="mm"/>
+    <!-- Al Top Hat -->
+    <tube name="GDMLTube031" rmin="5.77" rmax="5.85" startphi="0.0" deltaphi="360.0" aunit="deg" z="22.0" lunit="cm"/>
+    <tube name="GDMLTube030" rmin="0.0" rmax="5.7" startphi="0.0" deltaphi="360.0" aunit="deg" z="0.5" lunit="cm"/>
+    <tube name="GDMLTube029" rmin="5.4" rmax="10.07" startphi="0.0" deltaphi="360.0" aunit="deg" z="2.2" lunit="cm"/>
+    <tube name="GDMLTube028" rmin="5.4" rmax="5.72" startphi="0.0" deltaphi="360.0" aunit="deg" z="24.6" lunit="cm"/>
+    <!-- Back Ge Tubes -->
+    <tube name="GDMLTube027" rmin="GeTubeInner" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <tube name="GDMLTube026" rmin="GeTubeInner" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <tube name="GDMLTube025" rmin="GeTubeInner" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <!-- Si Tube Fusions, Not Adjacent to Ge Dets -->
+    <tube name="GDMLTube024" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <tube name="GDMLTube023" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <tube name="GDMLTube022" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <!-- Ge-Si Tube Fusion 3 -->
+    <tube name="GDMLTube021" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="30.0" lunit="cm"/>
+    <tube name="GDMLTube020" rmin="0.0" rmax="GeTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="90.0" lunit="cm"/>
+    <tube name="GDMLTube019" rmin="0.0" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <tube name="GDMLTube018" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <!-- Ge-Si Tube Fusion 2 -->
+    <tube name="GDMLTube017" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="40.0" lunit="cm"/>
+    <tube name="GDMLTube016" rmin="0.0" rmax="GeTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="90.0" lunit="cm"/>
+    <tube name="GDMLTube015" rmin="0.0" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <tube name="GDMLTube014" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <!-- Ge-Si Tube Fusion 1 -->
+    <tube name="GDMLTube013" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="40.0" lunit="cm"/>
+    <tube name="GDMLTube012" rmin="0.0" rmax="GeTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="90.0" lunit="cm"/>
+    <tube name="GDMLTube011" rmin="0.0" rmax="SiTubeOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="11.0" lunit="cm"/>
+    <tube name="GDMLTube010" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="20.0" lunit="cm"/>
+    <!-- Si Det Cuts, Adjacent to Ge Tubes -->
+    <tube name="GDMLTube009" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>    
+    <tube name="GDMLTube008" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>    
+    <tube name="GDMLTube007" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>  
+    <!-- Si Det Cuts, Not Adjacent to Ge Tubes -->
+    <tube name="GDMLTube006" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <tube name="GDMLTube005" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <tube name="GDMLTube004" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <!-- Ge Det Cuts -->
+    <tube name="GDMLTube003" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <tube name="GDMLTube002" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <tube name="GDMLTube001" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <!-- Beamline Cut -->
+    <sphere name="GDMLSphere" rmin="SphereInner" rmax="SphereOuter" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="cm" nsegments="256"/>
+    <tube name="GDMLTube" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    
+    <!-- Beamline Cut -->
+    <subtraction name="Cut">
+      <first ref="GDMLSphere"/>
+      <second ref="GDMLTube"/>
+      <!-- <position name="move" unit="cm" z="50"/>  -->
+    </subtraction>
+    <!-- Ge Det Cuts -->
+    <!-- <subtraction name="Cut001">
+      <first ref="Cut"/>
+      <second ref="GDMLTube001"/>
+      <positionref ref="center"/>
+      <rotation name="R-GDMLTube001" unit="deg" x="40"/>
+    </subtraction>
+    <subtraction name="Cut002">
+      <first ref="Cut001"/>
+      <second ref="GDMLTube002"/>
+      <positionref ref="center"/>
+      <rotation name="R-GDMLTube002" unit="deg" x="-40" y="0" z="-60"/>
+    </subtraction>
+    <subtraction name="Cut003">
+      <first ref="Cut002"/>
+      <second ref="GDMLTube003"/>
+      <rotation name="R-GDMLTube003" unit="deg" x="-40" y="0" z="60"/>
+    </subtraction> -->
+    <!-- Si Det Cuts, Not Adjacent to Ge Tubes -->
+    <subtraction name="Cut004">
+      <first ref="Cut"/>
+      <second ref="GDMLTube004"/>
+      <position name="P-GDMLTube004" unit="mm" y="-160.8693330549854" z="-134.98539803417324"/>
+      <rotation name="R-GDMLTube004" unit="deg" x="-50"/>
+    </subtraction>
+    <subtraction name="Cut005">
+      <first ref="Cut004"/>
+      <second ref="GDMLTube005"/>
+      <position name="P-GDMLTube005" unit="mm" x="192.39004496899216" y="111.07644425225186" z="-186.4084068090964"/>
+      <rotation name="R-GDMLTube005" unit="deg" x="50" y="0" z="-60"/>
+    </subtraction>
+    <subtraction name="Cut006">
+      <first ref="Cut005"/>
+      <second ref="GDMLTube006"/>
+      <position name="P-GDMLTube006" unit="mm" x="-192.39004496899216" y="111.07644425225186" z="-186.4084068090964"/>
+      <rotation name="R-GDMLTube006" unit="deg" x="50" y="0" z="60"/>
+    </subtraction>
+    <!-- Si Det Cuts, Adjacent to Ge Tubes -->
+    <subtraction name="Cut007">
+      <first ref="Cut006"/>
+      <second ref="GDMLTube007"/>
+      <position name="P-GDMLTube007" unit="mm" y="184.43" z="-77.37"/>
+      <rotation name="R-GDMLTube007" unit="deg" x="67.24"/>
+    </subtraction>
+    <subtraction name="Cut008">
+      <first ref="Cut007"/>
+      <second ref="GDMLTube008"/>
+      <position name="P-GDMLTube008" unit="mm" x="159.7" y="-92.2" z="-77.4"/>
+      <rotation name="R-GDMLTube008" unit="deg" x="-67.24" y="0" z="60"/>
+    </subtraction>
+    <subtraction name="Cut009">
+      <first ref="Cut008"/>
+      <second ref="GDMLTube009"/>
+      <position name="P-GDMLTube009" unit="mm" x="-159.7" y="-92.2" z="-77.4"/>
+      <rotation name="R-GDMLTube009" unit="deg" x="-67.24" y="0" z="-60"/>
+    </subtraction>
+    <!-- Ge-Si Tube Fusion 1 --> <!-- r = 308 mm for the big collimator of length 20 cm, 290 mm for the small tube of length 15 cm-->
+    <union name="Fusion001">
+      <first ref="Cut009"/>
+      <second ref="GDMLTube010"/>
+      <position name="P-GDMLTube010" unit="mm" x=".5567*312" y="-.3214*312" z="-.766*312"/>
+      <rotation name="R-GDMLTube010" unit="deg" x="-40" y="0" z="60"/>
+    </union>
+    <union name="Fusion002">
+      <first ref="Fusion001"/>
+      <second ref="GDMLTube011"/>
+      <position name="P-GDMLTube011" unit="mm" x="0.7985*272" y="-0.461*272" z="-0.387*272"/>
+      <rotation name="R-GDMLTube011" unit="deg" x="-67.24" y="0" z="60"/>
+    </union>
+    <subtraction name="Cut010"> 
+      <first ref="Fusion002"/>
+      <second ref="GDMLTube012"/>
+      <!-- <position name="P-GDMLTube012" unit="mm" x=".5567*308" y="-.3214*308" z="-.766*308"/> -->
+      <rotation name="R-GDMLTube012" unit="deg" x="-40" y="0" z="60"/>
+    </subtraction>
+    <subtraction name="Cut011">
+      <first ref="Cut010"/>
+      <second ref="GDMLTube013"/>
+      <position name="P-GDMLTube013" unit="mm" x="0.7985*292" y="-0.461*292" z="-0.387*292"/>
+      <rotation name="R-GDMLTube013" unit="deg" x="-67.24" y="0" z="60"/>
+    </subtraction>
+    <!-- Ge-Si Tube Fusion 2 -->
+    <union name="Fusion003">
+      <first ref="Cut011"/>
+      <second ref="GDMLTube014"/>
+      <position name="P-GDMLTube014" unit="mm" x="-.5567*312" y="-.3214*312" z="-.766*312"/>
+      <rotation name="R-GDMLTube014" unit="deg" x="-40" y="0" z="-60"/>
+    </union>
+    <union name="Fusion004">
+      <first ref="Fusion003"/>
+      <second ref="GDMLTube015"/>
+      <position name="P-GDMLTube015" unit="mm" x="-0.7985*273" y="-0.461*273" z="-0.387*273"/>
+      <rotation name="R-GDMLTube015" unit="deg" x="-67.24" y="0" z="-60"/>
+    </union>
+    <subtraction name="Cut012">
+      <first ref="Fusion004"/>
+      <second ref="GDMLTube016"/>
+      <!-- <position name="P-GDMLTube016" unit="mm" x="-.5567*308" y="-.3214*308" z="-.766*308"/> -->
+      <rotation name="R-GDMLTube016" unit="deg" x="-40" y="0" z="-60"/>
+    </subtraction>
+    <subtraction name="Cut013">
+      <first ref="Cut012"/>
+      <second ref="GDMLTube017"/>
+      <position name="P-GDMLTube017" unit="mm" x="-0.7985*292" y="-0.461*292" z="-0.387*292"/>
+      <rotation name="R-GDMLTube017" unit="deg" x="-67.24" y="0" z="-60"/>
+    </subtraction>
+    <!-- Ge-Si Tube Fusion 3 -->
+    <union name="Fusion005">
+      <first ref="Cut013"/>
+      <second ref="GDMLTube018"/>
+      <position name="P-GDMLTube018" unit="mm" y=".6428*312" z="-.766*312"/>
+      <rotation name="R-GDMLTube018" unit="deg" x="40"/>
+    </union>
+    <union name="Fusion006">
+      <first ref="Fusion005"/>
+      <second ref="GDMLTube019"/>
+      <position name="P-GDMLTube019" unit="mm" y="0.922*272" z="-0.387*272"/>
+      <rotation name="R-GDMLTube019" unit="deg" x="67.24"/>
+    </union>
+    <subtraction name="Cut014">
+      <first ref="Fusion006"/>
+      <second ref="GDMLTube020"/>
+      <!-- <position name="P-GDMLTube020" unit="mm" y=".6428*308" z="-.766*308"/> -->
+      <rotation name="R-GDMLTube020" unit="deg" x="40"/>
+    </subtraction>
+    <subtraction name="Cut015">
+      <first ref="Cut014"/>
+      <second ref="GDMLTube021"/>
+      <position name="P-GDMLTube021" unit="mm" y="0.922*292" z="-0.387*292"/>
+      <rotation name="R-GDMLTube021" unit="deg" x="67.24"/>
+    </subtraction>
+    <!-- Si Tube Fusions, Not Adjacent to Ge Dets -->
+    <union name="Fusion007">
+      <first ref="Cut015"/>
+      <second ref="GDMLTube022"/>
+      <position name="P-GDMLTube022" unit="mm" y="-0.766*275" z="-0.6428*275"/>
+      <rotation name="R-GDMLTube022" unit="deg" x="-50"/>
+    </union>
+    <union name="Fusion008">
+      <first ref="Fusion007"/>
+      <second ref="GDMLTube023"/>
+      <position name="P-GDMLTube0023" unit="mm" x="0.6634*275" y="0.383*275" z="-0.6428*275"/>
+      <rotation name="R-GDMLTube0023" unit="deg" x="50" y="0" z="-60"/>
+    </union>
+    <union name="Fusion009">
+      <first ref="Fusion008"/>
+      <second ref="GDMLTube024"/>
+      <position name="P-GDMLTube0024" unit="mm" x="-0.6634*275" y="0.383*275" z="-0.6428*275"/>
+      <rotation name="R-GDMLTube0024" unit="deg" x="50" y="0" z="60"/>
+    </union>
+    <!-- Back Ge Tubes -->
+    <union name="Fusion010">
+      <first ref="Fusion009"/>
+      <second ref="GDMLTube025"/>
+      <position name="P-GDMLTube0025" unit="mm" y="-.6428*308" z=".766*308"/>
+      <rotation name="R-GDMLTube0025" unit="deg" x="40"/>
+    </union>
+    <union name="Fusion011">
+      <first ref="Fusion010"/>
+      <second ref="GDMLTube026"/>
+      <position name="P-GDMLTube026" unit="mm" x="-.5567*308" y=".3214*308" z=".766*308"/>
+      <rotation name="R-GDMLTube0026" unit="deg" x="-40" y="0" z="60"/>
+    </union>
+    <union name="Fusion012">
+      <first ref="Fusion011"/>
+      <second ref="GDMLTube027"/>
+      <position name="P-GDMLTube027" unit="mm" x=".5567*308" y=".3214*308" z=".766*308"/>
+      <rotation name="R-GDMLTube0027" unit="deg" x="-40" y="0" z="-60"/>
+    </union>
+    <!-- Al Shielding Hat -->
+    <union name="Fusion013">
+      <first ref="GDMLTube028"/>
+      <second ref="GDMLTube029"/>
+      <position name="P-GDMLTube029" unit="mm" z="112"/>
+    </union>
+    <union name="Fusion014">
+      <first ref="Fusion013"/>
+      <second ref="GDMLTube030"/>
+      <position name="P-GDMLTube030" unit="mm" x="0" y="0" z="-121"/>
+    </union>
+    <!-- Si Aperture -->
+    <subtraction name="Cut016">
+      <first ref="GDMLTube032"/>
+      <second ref="GDMLCone001"/>
+      <rotation name="R-GDMLCone001" unit="deg" x="180" y="0" z="0"/>
+    </subtraction>
+    <!-- Si Collimator -->
+    <union name="Fusion015">
+      <first ref="GDMLTube033"/>
+      <second ref="GDMLTube034"/>
+      <position name="P-GDMLTube034" unit="mm" x="0" y="0" z="58"/>
+    </union>
+    <!-- HPGe Mount -->
+    <union name="Fusion016">
+      <first ref="GDMLTube035"/>
+      <second ref="GDMLTube036"/>
+      <position name="P-GDMLTube036" unit="mm" x="0" y="0" z="60.5"/>
+    </union>
+    <union name="Fusion017">
+      <first ref="Fusion016"/>
+      <second ref="GDMLTube037"/>
+      <position name="P-GDMLTube037" unit="mm" x="0" y="0" z="60.5 + 106/2 - 1 + 2.5"/>
+    </union>
+    <!-- You can't fuse solid of different materials, just have to make them hover next to each other -->
+    <!-- <union name="Fusion018"> 
+      <first ref="Fusion017"/>
+      <second ref="GDMLTube038"/>
+      <position name="P-GDMLTube038" unit="mm" x="0" y="0" z="-65 + .5"/>
+    </union> -->
+    
+
+  </solids>
+  
+  <structure>
+    <volume name="AGDevice">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="Fusion012"/>
+      <!-- <solidref ref="GoAway"/> -->
+    </volume>
+    
+    <volume name="AlCap">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="Fusion014"/>
+    </volume>
+
+    <volume name="CuWrap">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="GDMLTube031"/>
+    </volume>
+
+    <volume name="SiDetAperture">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="Cut016"/>
+    </volume>
+
+    <volume name="SiCollimator">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="Fusion015"/>
+    </volume>
+
+    <volume name="HPGeMount">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="Fusion017"/>
+    </volume>
+
+    <volume name="CarbonWindow">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="GDMLTube038"/>
+    </volume>
+
+    <volume name="worldVOL">
+      <materialref ref="G4_Galactic"/>
+      <solidref ref="WorldBox"/>
+
+      <physvol name="PV_AlCap1">
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap1" unit="mm" y=".6428*320" z=".766*320"/>
+        <rotation name="R-AlCap1" unit="deg" x="40"/>
+      </physvol>
+      <physvol name="PV_AlCap2"> 
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap2" unit="mm" x="-.5567*320" y="-.3214*320" z=".766*320"/>
+        <rotation name="R-AlCap2" unit="deg" x="-22.76047627" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_AlCap3"> 
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap3" unit="mm" x=".5567*320" y="-.3214*320" z=".766*320"/>
+        <rotation name="R-AlCap3" unit="deg" x="-22.76047627" y="-33.82584497"/>
+      </physvol>
+      <physvol name="PV_AlCap4"> 
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap4" unit="mm" y="-.6428*320" z="-.766*320"/>
+        <rotation name="R-AlCap4" unit="deg" x="-140"/>
+      </physvol>
+      <physvol name="PV_AlCap5"> 
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap5" unit="mm" x="-.5567*320" y=".3214*320" z="-.766*320"/>
+        <rotation name="R-AlCap5" unit="deg" x="157.23952373" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_AlCap6"> 
+        <volumeref ref="AlCap"/>
+        <position name="P-AlCap6" unit="mm" x=".5567*320" y=".3214*320" z="-.766*320"/>
+        <rotation name="R-AlCap6" unit="deg" x="157.23952373" y="-33.82584497"/>
+      </physvol>
+
+      <physvol name="PV_Aperture1">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture1" unit="mm" y="-0.766*200" z="0.6428*200"/>
+        <rotation name="R-Aperture1" unit="deg" x="-50"/>
+      </physvol>
+      <physvol name="PV_Aperture2">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture2" unit="mm" x="0.6634*200" y="0.383*200" z="0.6428*200"/>
+        <rotation name="R-Aperture2" unit="deg" x="30.78973303" y="-41.56076257" z="-48.06989481"/>
+      </physvol>
+      <physvol name="PV_Aperture3">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture3" unit="mm" x="-0.6634*200" y="0.383*200" z="0.6428*200"/>
+        <rotation name="R-Aperture3" unit="deg" x="30.78973303" y="41.56076257" z="48.06989481"/>
+      </physvol>
+      <physvol name="PV_Aperture4">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture4" unit="mm" y="0.9221*200" z="0.3869*200"/>
+        <rotation name="R-Aperture4" unit="deg" x="67.24"/>
+      </physvol>
+      <physvol name="PV_Aperture5">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture5" unit="mm" x="0.7986*200" y="-0.4611*200" z="0.3869*200"/>
+        <rotation name="R-Aperture5" unit="deg" x="-50.00065738" y="-52.99576314" z="33.82532"/>
+      </physvol>
+      <physvol name="PV_Aperture6">
+        <volumeref ref="SiDetAperture"/>
+        <position name="P-Aperture6" unit="mm" x="-0.7986*200" y="-0.4611*200" z="0.3869*200"/>
+        <rotation name="R-Aperture6" unit="deg" x="-50.00065738" y="52.99576314" z="-33.82532"/>
+      </physvol>
+      
+      <physvol name="PV_CuWrap1">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuWrap1" unit="mm" y=".6428*310" z=".766*310"/>
+        <rotation name="R-CuWrap1" unit="deg" x="40"/>
+      </physvol>
+      <physvol name="PV_CuWrap2">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuWrap2" unit="mm" x="-.5567*310" y="-.3214*310" z=".766*310"/>
+        <rotation name="R-CuWrap2" unit="deg" x="-22.76047627" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_CuWrap3">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuWrap3" unit="mm" x=".5567*310" y="-.3214*310" z=".766*310"/>
+        <rotation name="R-CuWrap3" unit="deg" x="-22.76047627" y="-33.82584497"/>
+      </physvol>
+      <physvol name="PV_CuWrap4">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuWrap4" unit="mm" y="-.6428*310" z="-.766*310"/>
+        <rotation name="R-CuWrap4" unit="deg" x="-140"/>
+      </physvol>
+      <physvol name="PV_CuWrap5">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuWrap5" unit="mm" x="-.5567*310" y=".3214*310" z="-.766*310"/>
+        <rotation name="R-CuWrap5" unit="deg" x="157.23952373" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_CuWrap6">
+        <volumeref ref="CuWrap"/>
+        <position name="P-CuCap6" unit="mm" x=".5567*310" y=".3214*310" z="-.766*310"/>
+        <rotation name="R-CuCap6" unit="deg" x="157.23952373" y="-33.82584497"/>
+      </physvol>
+
+      <physvol name="PV_SiCollimator1">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator" unit="mm" y="-0.766*266" z="0.6428*266"/>
+        <rotation name="R-SiCollimator" unit="deg" x="-50"/>
+      </physvol>
+      <physvol name="PV_SiCollimator2">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator2" unit="mm" x="0.6634*266" y="0.383*266" z="0.6428*266"/>
+        <rotation name="R-SiCollimator2" unit="deg" x="30.78973303" y="-41.56076257" z="-48.06989481"/>
+      </physvol>
+      <physvol name="PV_SiCollimator3">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator3" unit="mm" x="-0.6634*266" y="0.383*266" z="0.6428*266"/>
+        <rotation name="R-SiCollimator3" unit="deg" x="30.78973303" y="41.56076257" z="48.06989481"/>
+      </physvol>
+      <physvol name="PV_SiCollimator4">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator4" unit="mm" y="0.9221*266" z="0.3869*266"/>
+        <rotation name="R-SiCollimator4" unit="deg" x="67.24"/>
+      </physvol>
+      <physvol name="PV_SiCollimator5">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator5" unit="mm" x="0.7986*266" y="-0.4611*266" z="0.3869*266"/>
+        <rotation name="R-SiCollimator5" unit="deg" x="-50.00065738" y="-52.99576314" z="33.82532"/>
+      </physvol>
+      <physvol name="PV_SiCollimator6">
+        <volumeref ref="SiCollimator"/>
+        <position name="P-SiCollimator6" unit="mm" x="-0.7986*266" y="-0.4611*266" z="0.3869*266"/>
+        <rotation name="R-SiCollimator6" unit="deg" x="-50.00065738" y="52.99576314" z="-33.82532"/>
+      </physvol>
+
+      <physvol name="PV_HPGeMount1">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount1" unit="mm" y=".6428*270" z=".766*270"/>
+        <rotation name="R-HPGeMount1" unit="deg" x="40"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow1">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow1" unit="mm" y=".6428*(270 - 60.5)" z=".766*(270 - 60.5)"/>
+        <rotation name="R-CarbonWindow1" unit="deg" x="40"/>
+      </physvol>
+      <physvol name="PV_HPGeMount2">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount2" unit="mm" x="-.5567*270" y="-.3214*270" z=".766*270"/>
+        <rotation name="R-HPGeMount2" unit="deg" x="-22.76047627" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow2">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow2" unit="mm" x="-.5567*(270 - 60.5)" y="-.3214*(270 - 60.5)" z=".766*(270 - 60.5)"/>
+        <rotation name="R-CarbonWindow2" unit="deg" x="-22.76047627" y="33.82584497"/>
+      </physvol>
+      <physvol name="PV_HPGeMount3">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount3" unit="mm" x=".5567*270" y="-.3214*270" z=".766*270"/>
+        <rotation name="R-HPGeMount3" unit="deg" x="-22.76047627" y="-33.82584497"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow3">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow3" unit="mm" x=".5567*(270 - 60.5)" y="-.3214*(270 - 60.5)" z=".766*(270 - 60.5)"/>
+        <rotation name="R-CarbonWindow3" unit="deg" x="-22.76047627" y="-33.82584497"/>
+      </physvol>
+
+      <physvol name="PV_AGDevice">
+        <volumeref ref="AGDevice"/>
+        <!-- <positionref ref="GoAwayPos"/> -->
+        <rotation name="R-AlphaGamma" unit="deg" y="180"/>
+      </physvol>
+
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>

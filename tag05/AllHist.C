@@ -27,7 +27,7 @@ void AllHist(std::string file) {
     std::cout << "Opening File: " << file << std::endl;
     TFile* input = new TFile(cfile, "read");
 
-    int binNo = 500;
+    int binNo = 1000;
     double xMin  = 0;
     double xMax  = 2.5;
 

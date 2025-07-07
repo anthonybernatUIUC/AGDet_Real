@@ -78,6 +78,19 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "AllHist.C": "cpp"
+        "AllHist.C": "cpp",
+        "axis": "cpp",
+        "b1": "cpp",
+        "hplot": "cpp",
+        "file": "cpp",
+        "file_format": "cpp",
+        "file_reader": "cpp",
+        "fileis": "cpp",
+        "fsize": "cpp",
+        "gzip": "cpp",
+        "directory": "cpp",
+        "tree": "cpp",
+        "signature": "cpp",
+        "style_colormap": "cpp"
     }
 }

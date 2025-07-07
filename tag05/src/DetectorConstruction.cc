@@ -33,14 +33,19 @@
 DetectorConstruction::DetectorConstruction() {
 	
 	fMessenger = new G4GenericMessenger(this, "/target/", "target control");
-	auto& targetWidthCmd = fMessenger->DeclareMethod(
-		"setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width.");
-	
+	fMessengerShell = new G4GenericMessenger(this, "/shell/", "Isotope shell control");
+	fMessenger->DeclareMethod("setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width");
+	fMessengerShell->DeclareMethod("setShellType", &DetectorConstruction::SetShellType, "Set the type of shell");
+
 	DefineParameters();
 	DefineMaterials();
 }
 
-DetectorConstruction::~DetectorConstruction() {}
+DetectorConstruction::~DetectorConstruction() {
+	delete fMessenger;
+	delete fMessengerShell;
+	delete logicIsoSphere;
+}
 
 void DetectorConstruction::DefineParameters() {
 
@@ -49,11 +54,12 @@ void DetectorConstruction::DefineParameters() {
 	zTarget = 106*nm;
 	dGe = 8*cm;
 	dSi = 2.8*cm;
-	zGe = 10*cm;
+	zGe = 3.14*cm;
 	zSi = 3*mm;
 	distDetGe = 22*cm;
-	distDetSi = 22*cm;
+	distDetSi = 21*cm;
 	zPbBackShield = 10.6*cm;
+	shellType = 0;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
 }
 
@@ -67,6 +73,7 @@ void DetectorConstruction::DefineMaterials() {
 	Al = man->FindOrBuildMaterial("G4_Al");
 	Cu = man->FindOrBuildMaterial("G4_Cu");
   	Pb = man->FindOrBuildMaterial("G4_Pb");
+	C = man->FindOrBuildMaterial("G4_C");
 
 	B10Iso = new G4Isotope("B10", 5, 10);
 	elB10 = new G4Element("MatB10", "B", 1);
@@ -100,35 +107,45 @@ void DetectorConstruction::DefineMaterials() {
 	Mn56 = new G4Isotope("Mn56", 25, 56);
 
 	elCl = new G4Element("ElCl", "Cl", 1);
-	elCl->AddIsotope(Cl35, 100*perCent);
+	elCl->AddIsotope(Cl35, 1);
+
 	elCr = new G4Element("ElCr", "Cr", 3);
-	elCr->AddIsotope(Cr50, 33.33*perCent);
-	elCr->AddIsotope(Cr52, 33.33*perCent);
-	elCr->AddIsotope(Cr53, 33.34*perCent);
+	elCr->AddIsotope(Cr50, .3333);
+	elCr->AddIsotope(Cr52, .3333);
+	elCr->AddIsotope(Cr53, .3334);
 
 	elFe = new G4Element("ElFe", "Fe", 1);
-	elFe->AddIsotope(Fe56, 100*perCent);
+	elFe->AddIsotope(Fe56, 1);
 
 	elNi = new G4Element("ElNi", "Ni", 5);
-	elNi->AddIsotope(Ni58, 20*perCent);
-	elNi->AddIsotope(Ni60, 20*perCent);
-	elNi->AddIsotope(Ni62, 20*perCent);
-	elNi->AddIsotope(Ni63, 20*perCent);
-	elNi->AddIsotope(Ni64, 20*perCent);
+	elNi->AddIsotope(Ni58, .2);
+	elNi->AddIsotope(Ni60, .2);
+	elNi->AddIsotope(Ni62, .2);
+	elNi->AddIsotope(Ni63, .2);
+	elNi->AddIsotope(Ni64, .2);
 
 	elNa = new G4Element("ElNa", "Na", 1);
-	elNa->AddIsotope(Na24, 100*perCent);
+	elNa->AddIsotope(Na24, 1);
 
 	elMn = new G4Element("ElMn", "Mn", 1);
-	elMn->AddIsotope(Mn56, 100*perCent);
+	elMn->AddIsotope(Mn56, 1);
 
-	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 6); 
-	IsotopeShellMat->AddElement(elCl, .0834); //I gave them all roughly the same abundance & sum to 100 percent
+	H1 = new G4Isotope("H1", 1, 1);
+   	elH = new G4Element("isopure hydrogen", "H", 1);
+  	elH->AddIsotope(H1, 1);
+
+	IsotopeShellMatH = new G4Material("IsotopeShellMatH", 0.07085 * g/cm3, 1);
+	IsotopeShellMatH->AddElement(elH, 1);
+
+	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 1); 
+	IsotopeShellMat->AddElement(elCl, .0834);
 	IsotopeShellMat->AddElement(elCr, .2499);
 	IsotopeShellMat->AddElement(elFe, .0834);
 	IsotopeShellMat->AddElement(elNi, .4165);
 	IsotopeShellMat->AddElement(elNa, .0834);
 	IsotopeShellMat->AddElement(elMn, .0834);
+
+	// IsotopeShellMat->AddElement(elMn, 1);
 }
 
 void DetectorConstruction::ConstructTarget() {
@@ -142,10 +159,11 @@ void DetectorConstruction::ConstructTarget() {
 void DetectorConstruction::ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
 
 	G4Transform3D transformTarget = rotPhi * rotTheta;
-	solidTargetCyl = new G4Tubs("solidTargetCyl", 0, dTarget / 2, zTarget / 2, 0*deg, 360*deg);
-	logicTargetCyl = new G4LogicalVolume(solidTargetCyl, B10, "logicTargetCyl");
+	solidTargetCyl = new G4Tubs("solidTargetCyl" + std::to_string(cpyNo), 0, dTarget / 2, zTarget / 2, 0*deg, 360*deg);
+	logicTargetCyl = new G4LogicalVolume(solidTargetCyl, B10, "logicTargetCyl" + std::to_string(cpyNo));
 	physTargetCyl = new G4PVPlacement(
-		transformTarget, logicTargetCyl, "physTargetCyl", logicWorld, false, 100, false);
+		transformTarget, logicTargetCyl, "physTargetCyl" + std::to_string(cpyNo), logicWorld, false, 100, false);
+	logicTargetCyl->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));
 	cpyNo++;
 }
 
@@ -160,16 +178,6 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 	SiDets.insert(logicSiDet);
 	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
-
-	// G4Translate3D shiftZSiAperture(0, 0, distDetSi - 1*cm);
-	// G4Transform3D transformSiAperture = rotPhi * rotTheta * shiftZSiAperture;
-	// solidSiAperture = new G4Tubs(
-	// 	"solidSiAperture" + std::to_string(cpyNo), (dSi - 3*mm) / 2, 6.985*cm / 2, .3*cm, 0*deg, 360*deg);
-	// logicSiAperture = new G4LogicalVolume(solidSiAperture, matSteel, "logicSiAperture" + std::to_string(cpyNo));
-	// physSiAperture = new G4PVPlacement(
-	// 	transformSiAperture, logicSiAperture, "physSiAperture" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
-	// logicSiAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
-	// cpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
@@ -184,12 +192,12 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
 
-	solidGeMount = new G4Tubs(
-		"solidGeMount" + std::to_string(cpyNo), dGe / 2, (dGe + 1*cm) / 2, zGe / 2, 0*deg, 360*deg);
-	logicGeMount = new G4LogicalVolume(solidGeMount, matSteel, "logicGeMount" + std::to_string(cpyNo));
-	physGeMount = new G4PVPlacement(
-		transformGeDet, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
-	cpyNo++;
+	// solidGeMount = new G4Tubs(
+	// 	"solidGeMount" + std::to_string(cpyNo), (dGe + .5*cm) / 2, (dGe + 1*cm) / 2, zGe / 2, 0*deg, 360*deg);
+	// logicGeMount = new G4LogicalVolume(solidGeMount, matSteel, "logicGeMount" + std::to_string(cpyNo));
+	// physGeMount = new G4PVPlacement(
+	// 	transformGeDet, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+	// cpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo) {
@@ -215,10 +223,10 @@ void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3
 
 void DetectorConstruction::ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
 
-	G4Translate3D shiftZPbBackShield(0, 0, distDetGe + zPbBackShield / 2 + 21.1*cm / 2);
+	G4Translate3D shiftZPbBackShield(0, 0, distDetGe + zPbBackShield / 2 + 21.1*cm / 2 + 1*cm);
 	G4Transform3D transformPbBackShield = rotPhi * rotTheta * shiftZPbBackShield;
 	solidPbBackShield = new G4Tubs(
-		"solidPbBackShield" + std::to_string(cpyNo), 2.1*cm, 7.5*cm, zPbBackShield / 2, 0*deg, 360*deg);
+		"solidPbBackShield" + std::to_string(cpyNo), 2.1*cm, 5.3*cm, zPbBackShield / 2, 0*deg, 360*deg);
 	logicPbBackShield = new G4LogicalVolume(solidPbBackShield, Pb, "logicPbBackShield" + std::to_string(cpyNo));
 	physPbBackShield = new G4PVPlacement(
 		transformPbBackShield, logicPbBackShield, "physPbBackShield" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
@@ -227,24 +235,38 @@ void DetectorConstruction::ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ
 }
 
 void DetectorConstruction::ConstructIsotopeShell(int& cpyNo) {
-
+    	
 	solidIsoSphere = new G4Sphere(
 		"solidIsoSphere" + std::to_string(cpyNo), 49*cm, 50*cm, 0*deg, 360*deg, 7.5*deg, 180*deg);
-	logicIsoSphere = new G4LogicalVolume(solidIsoSphere, IsotopeShellMat, "logicIsoSphere" + std::to_string(cpyNo));
+	if (shellType == 0) {
+		logicIsoSphere = new G4LogicalVolume(solidIsoSphere, IsotopeShellMatH, "logicIsoSphere" + std::to_string(cpyNo));
+		logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1)));
+	} else if (shellType == 1) {
+		logicIsoSphere = new G4LogicalVolume(solidIsoSphere, IsotopeShellMat, "logicIsoSphere" + std::to_string(cpyNo));
+		logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 0.1)));
+	} else {
+		G4Exception("DetectorConstruction::ConstructIsotopeShell", "InvalidShellType", FatalException,
+			"Invalid shell type specified. Use 0 for hydrogen or 1 for whatever.");
+	}
 	physIsoSphere = new G4PVPlacement(
 		0, G4ThreeVector(0, 0, 0), logicIsoSphere, "physIsoSphere" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
-    logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1)));
 	cpyNo++;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
-	std::cout << "Loading GDML file..." << std::endl;
+	G4cout << "Constructing Geometry..." << G4endl;
+	int cpyNo = 10;
+
+	G4LogicalVolumeStore* const store = G4LogicalVolumeStore::GetInstance();
+	// clear store to avoid dupes and annoying warnings since reintializing geometry likely calls Construct() again
+	if (store->size() > 0) store->clear();
 
 	G4GDMLParser* fParser = new G4GDMLParser();
-	// fParser->Read("/home/anthony/software/AGDet_Real/tag04/thevoicesaregettinglouder2.gdml");
-	fParser->Read("/home/anthony/software/AGDet_Real/tag04/TheRebirthGDMLMain.gdml");
-	physWorld = fParser->GetWorldVolume();  
+	// fParser->Read("../thevoicesaregettinglouder2.gdml");
+	fParser->Read("../TheRebirthGDMLMain.gdml", true);
+	G4cout << "-------------------------------" << G4endl;
+	physWorld = fParser->GetWorldVolume();
 	logicWorld = physWorld->GetLogicalVolume();
 
 	G4LogicalVolume* AGDevice = G4LogicalVolumeStore::GetInstance()->GetVolume("AGDevice");
@@ -263,13 +285,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	SiDetAperture->SetMaterial(matSteel);
 	SiDetAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
-	int cpyNo = 10;
+	G4LogicalVolume* SiCollimator = G4LogicalVolumeStore::GetInstance()->GetVolume("SiCollimator");
+	SiCollimator->SetMaterial(matSteel);
+	SiCollimator->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
-	// G4RotateX3D rotX1(-40*deg);
-	// G4RotateY3D rotY1(0*deg);
-	// G4RotateZ3D rotZ1(0*deg);
-	// ConstructHPGeDetectorXYZ(rotX1, rotY1, rotZ1, cpyNo);
+	G4LogicalVolume* GeMount = G4LogicalVolumeStore::GetInstance()->GetVolume("HPGeMount");
+	GeMount->SetMaterial(matSteel);
 
+	G4LogicalVolume* CarbonWindow = G4LogicalVolumeStore::GetInstance()->GetVolume("CarbonWindow");
+	CarbonWindow->SetMaterial(C);
+	CarbonWindow->SetVisAttributes(G4VisAttributes(G4Color(.663, .663, .663, .2)));
+
+	// ---Front Ge Det locations--- // 
 	G4RotateY3D rotThetaHPGe1(40*deg);
 	G4RotateZ3D rotPhiHPGe1(90*deg);
 	ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
@@ -285,13 +312,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 
-	// ---Rear Ge Det locations--- 
-	// G4RotateX3D rotX2(-220*deg);
-	// G4RotateY3D rotY2(0*deg);
-	// G4RotateZ3D rotZ2(0*deg);
-	// ConstructHPGeDetectorXYZ(rotX2, rotY2, rotZ2, cpyNo);
+	// ---Rear Ge Det locations--- //
 	G4RotateY3D rotThetaHPGe4(220*deg);
 	G4RotateZ3D rotPhiHPGe4(90*deg);
+	// ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 
 	G4RotateY3D rotThetaHPGe5(140*deg);
@@ -304,6 +328,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
 
+	// ---Si Dets--- //
 	G4RotateY3D rotThetaSi1(50*deg);
 	G4RotateZ3D rotPhiSi1(-90*deg);
 	ConstructSiDetector(rotThetaSi1, rotPhiSi1, cpyNo);
@@ -333,6 +358,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	ConstructTarget(rotThetaTar, rotPhiTar, cpyNo);
 
 	ConstructIsotopeShell(cpyNo);
+
+	// for (auto i = store->cbegin(); i != store->cend(); ++i) {
+	// 	G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
+	// }
 
 	delete fParser;
 	return physWorld; 

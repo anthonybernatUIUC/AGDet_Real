@@ -1,21 +1,21 @@
 
 /control/cout/ignoreThreadsExcept 0
 /control/verbose 1
-/run/verbose 2
-
-#/tracking/verbose 5
+/run/verbose 1
 /tracking/verbose 0
 
+#/target/setWidth 1.0
+/shell/setShellType 1
 /run/initialize
-#/run/useMaximumLogicalCores
+/run/reinitializeGeometry
+
 #/geometry/test/run
 #/geometry/test/tolerance 1 nm
 #/run/setCut 10 cm  
-/run/setCutForAGivenParticle gamma 10 cm
+#/run/setCutForAGivenParticle gamma 10 cm
 
-
-/analysis/setFileName AGMACRO    
+/analysis/setFileName AGMACRO
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 15000000
+/run/beamOn 5000000
 

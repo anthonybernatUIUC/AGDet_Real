@@ -44,6 +44,7 @@ class EventAction : public G4UserEventAction {
 		~EventAction();
 		void AddDecayChain(G4String val) { fDecayChain += val; };
 		void AddEvisible(G4double val) { fEvisTot += val; };
+
 		void AddEdepGe(G4double edep) { fEdepGe += edep; }; 
 		void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
 		void AddEdepAlpha(G4double edep) { fEdepAlpha += edep; }; 
@@ -51,7 +52,7 @@ class EventAction : public G4UserEventAction {
 		void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
 		void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
 		void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; };
-		std::set<G4String> GetLi7Set() { return Li7Vols; }; 
+		void AddEdepSiBackground(G4double edep) { fEdepSiBackground += edep; };
 		
 		virtual void BeginOfEventAction(const G4Event*);
       	virtual void EndOfEventAction(const G4Event*);
@@ -59,6 +60,6 @@ class EventAction : public G4UserEventAction {
   	private:
 		G4String fDecayChain;                   
 		G4double fEvisTot;
-		G4double fEdepGe, fEdepSi, fEdepAlpha, fEdepGamma, fEdepLi7, fEdepSiElec, fEdepGeElec;
-		std::set<G4String> Li7Vols;
+		G4double fEdepGe, fEdepSi, fEdepAlpha, fEdepGamma, fEdepLi7, 
+		fEdepSiElec, fEdepGeElec, fEdepSiBackground;
 };
