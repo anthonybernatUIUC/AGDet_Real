@@ -58,7 +58,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 	// Generate gammas in a spherical shell as a background source
-	bool generateBackground = true;
+	bool generateBackground = false;
 	if (generateBackground) {
 		int shellHits = 1;
 		double shellRadius = 49.1*cm;

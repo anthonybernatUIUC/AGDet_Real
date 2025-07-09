@@ -14,8 +14,8 @@
 #/run/setCut 10 cm  
 #/run/setCutForAGivenParticle gamma 10 cm
 
-/analysis/setFileName AGMACRO
+/analysis/setFileName AGMACRONoBackground
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 5000000
+/run/beamOn 15000000
 

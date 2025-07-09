@@ -61,6 +61,7 @@ void DetectorConstruction::DefineParameters() {
 	zPbBackShield = 10.6*cm;
 	shellType = 0;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
+
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -137,7 +138,8 @@ void DetectorConstruction::DefineMaterials() {
 	IsotopeShellMatH = new G4Material("IsotopeShellMatH", 0.07085 * g/cm3, 1);
 	IsotopeShellMatH->AddElement(elH, 1);
 
-	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 1); 
+	// Pulled from Ian's code. Not necessarily accurate, since it uses isotopes pertinent to UCNtau
+	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 6); 
 	IsotopeShellMat->AddElement(elCl, .0834);
 	IsotopeShellMat->AddElement(elCr, .2499);
 	IsotopeShellMat->AddElement(elFe, .0834);
@@ -145,7 +147,19 @@ void DetectorConstruction::DefineMaterials() {
 	IsotopeShellMat->AddElement(elNa, .0834);
 	IsotopeShellMat->AddElement(elMn, .0834);
 
+	// IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 1); 
 	// IsotopeShellMat->AddElement(elMn, 1);
+
+	// K40 = new G4Isotope("K40", 19, 40);
+	// elK = new G4Element("Potassium", "K", 1);
+	// elK->AddIsotope(K40, 1);
+
+	// Co60 = new G4Isotope("Co60", 27, 60);
+	// G4Element* elCo = new G4Element("Cobalt", "Co", 1);
+	// elCo->AddIsotope(Co60, 1);
+
+	// IsotopeShellMat = new G4Material("IsotopeShellMat", 8.9 * g/cm3, 1);
+	// IsotopeShellMat->AddElement(elCo, 1); 
 }
 
 void DetectorConstruction::ConstructTarget() {

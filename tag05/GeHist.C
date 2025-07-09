@@ -106,6 +106,7 @@
 
 // }
 
+// Does the same as above but doesn't need to initialize its own histogram
 void GeHist(std::string file) { 
 
     int darkGray = TColor::GetColor(23, 23, 28);
@@ -120,22 +121,21 @@ void GeHist(std::string file) {
     std::cout << "Opening File: " << file << std::endl;
     TFile* tfile = new TFile(cfile, "read");
 
-    TTree* tree = (TTree*)tfile->Get("Ge e-");
     TCanvas* canvas = new TCanvas();
     canvas->SetLogy(1);
     canvas->SetTicky();
     canvas->SetTickx();
 
-    // gStyle->SetLineColor(kRed);
-    // gStyle->SetLineColorAlpha(kRed, 0.35);
-    // gStyle->SetFillStyle(3002);
-    // gStyle->SetFillColor(kRed);
-    tree->UseCurrentStyle();  
-    tree->Draw("fEdepGeElec>>htemp(6000,0,3.0)");
+    char const* treeName = "Ge e-";
+    char branchName[] = "fEdepGeElec";
+    char yo[] = ">>htemp(6000,0,3.0)";
+
+    TTree* tree = (TTree*)tfile->Get(treeName);
+    tree->Draw(strcat(branchName, yo));
 
     TH1 *hist = (TH1*)gPad->GetPrimitive("htemp");
-    hist->SetTitle("Simulated Energy Spectrum of Ge e-");
-    hist->SetLineColorAlpha(kRed, 0.35);
+    char title[] = "Simulated Gamma Energy Spectrum - ";
+    hist->SetTitle(strcat(title, cfile));
     hist->GetXaxis()->SetLabelColor(kWhite);
     hist->GetYaxis()->SetLabelColor(kWhite);
     hist->GetXaxis()->SetAxisColor(kWhite, 1);
@@ -144,8 +144,15 @@ void GeHist(std::string file) {
     hist->GetYaxis()->SetTitleColor(kWhite);
     hist->GetXaxis()->SetTitle("Energy / MeV");
     hist->GetYaxis()->SetTitle("Counts");
-    hist->SetStats(0);	
-    hist->SetFillStyle(3002);
+    hist->SetLineColorAlpha(kRed, 0.35);
     hist->SetFillColor(kRed);
+    hist->SetFillStyle(3002);
+    hist->SetStats(0);
+
+    int totalCounts = hist->Integral(hist->FindBin(0), hist->FindBin(10));
+    int photoPeakCounts = hist->Integral(hist->FindBin(0.47), hist->FindBin(0.49));
+    std::cout << "Total Counts: " << totalCounts << std::endl;
+    std::cout << "Photopeak Counts: " << photoPeakCounts << std::endl;
+    std::cout << "Photopeak Efficiency: " << (double)photoPeakCounts / totalCounts << std::endl;
 }
 
