@@ -41,11 +41,11 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtuple("GeScoring", "GeScoring");
 	man->CreateNtupleDColumn("fEdepGe");
 	man->FinishNtuple(0);
-
+	
 	man->CreateNtuple("SiScoring", "SiScoring");
 	man->CreateNtupleDColumn("fEdepSi");
 	man->FinishNtuple(1);
-
+	
 	man->CreateNtuple("Gammas", "Gammas");
 	man->CreateNtupleDColumn("fEdepGammaOnly");
 	man->CreateNtupleIColumn("fEvent");
@@ -53,7 +53,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(2);
-
+	
 	man->CreateNtuple("Alphas", "Alphas");
 	man->CreateNtupleDColumn("fEdepAlphaOnly");
 	man->CreateNtupleIColumn("fEvent");
@@ -61,22 +61,27 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(3);
-
+	
 	man->CreateNtuple("Li7E", "Li7E");
 	man->CreateNtupleDColumn("fEdepLi7");
 	man->FinishNtuple(4);
-
+	
 	man->CreateNtuple("Si e-", "Si e-");
 	man->CreateNtupleDColumn("fEdepSiElec");
 	man->FinishNtuple(5);
-
+	
 	man->CreateNtuple("Ge e-", "Ge e-");
 	man->CreateNtupleDColumn("fEdepGeElec");
 	man->FinishNtuple(6);
-
+	
 	man->CreateNtuple("Si Background", "Si Background");
 	man->CreateNtupleDColumn("fEdepSiBackground");
 	man->FinishNtuple(7);
+	
+	man->CreateNtuple("Ge Background", "Ge Background");
+	man->CreateNtupleDColumn("fEdepGeBackground");
+	man->FinishNtuple(8);
+	
 }
 
 

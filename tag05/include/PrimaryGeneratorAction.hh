@@ -43,11 +43,14 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
    		~PrimaryGeneratorAction();
     	virtual void GeneratePrimaries(G4Event*);
     	G4ParticleGun* GetParticleGun() { return fParticleGun; };
+		void generateBackgroundHit(G4Event* anEvent, G4int shellHits = 1);
+		void generateBeamlineHit(G4Event* anEvent);
 
     	G4int Z, A;
             
   	private:
     	G4ParticleGun* fParticleGun;
+		bool generateBackground = true;
 };
 
 #endif

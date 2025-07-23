@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 		G4int coresToUse = maxCores;
 		if (argc == 3) coresToUse = G4UIcommand::ConvertToInt(argv[2]);
 
-		G4cout << "Using " << coresToUse << "/" << maxCores << " available cores" << G4endl;
+		G4cout << "Using " << coresToUse << "/" << maxCores << " available cores." << G4endl;
 
 		runManager->SetNumberOfThreads(coresToUse);
 	#else
@@ -95,6 +95,7 @@ int main(int argc, char** argv) {
 		G4String fileName = argv[1];
 		UImanager->ApplyCommand(command + fileName);
   	}
+
   	delete visManager;
   	delete runManager;
 }

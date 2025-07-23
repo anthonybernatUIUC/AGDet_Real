@@ -48,7 +48,7 @@
 
 # Filter particles for debugging purposes
 #/vis/filtering/trajectories/create/particleFilter
-#/vis/filtering/trajectories/particleFilter-0/add Li7
+#/vis/filtering/trajectories/particleFilter-0/add e-
 #/vis/filtering/trajectories/particleFilter-0/active true
 
 /vis/viewer/set/autoRefresh true

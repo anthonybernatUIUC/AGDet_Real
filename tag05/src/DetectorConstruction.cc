@@ -27,13 +27,12 @@
 /// \brief Implementation of the DetectorConstruction class
 
 #include "DetectorConstruction.hh"
-#include "detector.hh"
-
 
 DetectorConstruction::DetectorConstruction() {
 	
 	fMessenger = new G4GenericMessenger(this, "/target/", "target control");
 	fMessengerShell = new G4GenericMessenger(this, "/shell/", "Isotope shell control");
+
 	fMessenger->DeclareMethod("setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width");
 	fMessengerShell->DeclareMethod("setShellType", &DetectorConstruction::SetShellType, "Set the type of shell");
 
@@ -44,7 +43,9 @@ DetectorConstruction::DetectorConstruction() {
 DetectorConstruction::~DetectorConstruction() {
 	delete fMessenger;
 	delete fMessengerShell;
-	delete logicIsoSphere;
+
+	delete sensDetGe;
+	delete sensDetSi;
 }
 
 void DetectorConstruction::DefineParameters() {
@@ -55,9 +56,9 @@ void DetectorConstruction::DefineParameters() {
 	dGe = 8*cm;
 	dSi = 2.8*cm;
 	zGe = 3.14*cm;
-	zSi = 3*mm;
+	zSi = 300*um;
 	distDetGe = 22*cm;
-	distDetSi = 21*cm;
+	distDetSi = 20*cm;
 	zPbBackShield = 10.6*cm;
 	shellType = 0;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
@@ -138,7 +139,7 @@ void DetectorConstruction::DefineMaterials() {
 	IsotopeShellMatH = new G4Material("IsotopeShellMatH", 0.07085 * g/cm3, 1);
 	IsotopeShellMatH->AddElement(elH, 1);
 
-	// Pulled from Ian's code. Not necessarily accurate, since it uses isotopes pertinent to UCNtau
+	// Pulled from Ian's code. Not necessarily accurate, since it uses isotopes pertinent to UCNtau background
 	IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 6); 
 	IsotopeShellMat->AddElement(elCl, .0834);
 	IsotopeShellMat->AddElement(elCr, .2499);
@@ -147,19 +148,24 @@ void DetectorConstruction::DefineMaterials() {
 	IsotopeShellMat->AddElement(elNa, .0834);
 	IsotopeShellMat->AddElement(elMn, .0834);
 
-	// IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 1); 
-	// IsotopeShellMat->AddElement(elMn, 1);
+	K40 = new G4Isotope("K40", 19, 40);
+	elK = new G4Element("Potassium", "K", 1);
+	elK->AddIsotope(K40, 1);
 
-	// K40 = new G4Isotope("K40", 19, 40);
-	// elK = new G4Element("Potassium", "K", 1);
-	// elK->AddIsotope(K40, 1);
+	// IsotopeShellMat = new G4Material("IsotopeShellMat", 0.86 * g/cm3, 1);
+	// IsotopeShellMat->AddElement(elK, 1);
 
-	// Co60 = new G4Isotope("Co60", 27, 60);
-	// G4Element* elCo = new G4Element("Cobalt", "Co", 1);
-	// elCo->AddIsotope(Co60, 1);
+	Co60 = new G4Isotope("Co60", 27, 60);
+	G4Element* elCo = new G4Element("Cobalt", "Co", 1);
+	elCo->AddIsotope(Co60, 1);
 
 	// IsotopeShellMat = new G4Material("IsotopeShellMat", 8.9 * g/cm3, 1);
 	// IsotopeShellMat->AddElement(elCo, 1); 
+
+	// IsotopeShellMat = new G4Material("IsotopeShellMat", 7.85 * g/cm3, 2);
+	// IsotopeShellMat->AddElement(elCo, .5);
+	// IsotopeShellMat->AddElement(elK, .5);
+
 }
 
 void DetectorConstruction::ConstructTarget() {
@@ -205,13 +211,6 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 	GeDets.insert(logicGeDet);
 	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
-
-	// solidGeMount = new G4Tubs(
-	// 	"solidGeMount" + std::to_string(cpyNo), (dGe + .5*cm) / 2, (dGe + 1*cm) / 2, zGe / 2, 0*deg, 360*deg);
-	// logicGeMount = new G4LogicalVolume(solidGeMount, matSteel, "logicGeMount" + std::to_string(cpyNo));
-	// physGeMount = new G4PVPlacement(
-	// 	transformGeDet, logicGeMount, "physGeMount" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
-	// cpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo) {
@@ -251,7 +250,7 @@ void DetectorConstruction::ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ
 void DetectorConstruction::ConstructIsotopeShell(int& cpyNo) {
     	
 	solidIsoSphere = new G4Sphere(
-		"solidIsoSphere" + std::to_string(cpyNo), 49*cm, 50*cm, 0*deg, 360*deg, 7.5*deg, 180*deg);
+		"solidIsoSphere" + std::to_string(cpyNo), 49*cm, 50*cm, 0*deg, 360*deg, 0*deg, 172.5*deg);
 	if (shellType == 0) {
 		logicIsoSphere = new G4LogicalVolume(solidIsoSphere, IsotopeShellMatH, "logicIsoSphere" + std::to_string(cpyNo));
 		logicIsoSphere->SetVisAttributes(G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 0.1)));
@@ -270,45 +269,48 @@ void DetectorConstruction::ConstructIsotopeShell(int& cpyNo) {
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4cout << "Constructing Geometry..." << G4endl;
-	int cpyNo = 10;
 
 	G4LogicalVolumeStore* const store = G4LogicalVolumeStore::GetInstance();
 	// clear store to avoid dupes and annoying warnings since reintializing geometry likely calls Construct() again
 	if (store->size() > 0) store->clear();
 
 	G4GDMLParser* fParser = new G4GDMLParser();
-	// fParser->Read("../thevoicesaregettinglouder2.gdml");
-	fParser->Read("../TheRebirthGDMLMain.gdml", true);
+	fParser->Read("../TheRebirthGDMLMain.gdml", false);
 	G4cout << "-------------------------------" << G4endl;
+
 	physWorld = fParser->GetWorldVolume();
 	logicWorld = physWorld->GetLogicalVolume();
 
-	G4LogicalVolume* AGDevice = G4LogicalVolumeStore::GetInstance()->GetVolume("AGDevice");
+	G4LogicalVolume* AGDevice = store->GetVolume("AGDevice");
 	AGDevice->SetMaterial(matSteel);
-	// AGDevice->SetVisAttributes(G4VisAttributes(G4Color(1, 1, 1, .5)));
 	
-	G4LogicalVolume* AlCap = G4LogicalVolumeStore::GetInstance()->GetVolume("AlCap");
+	G4LogicalVolume* AlCap = store->GetVolume("AlCap");
 	AlCap->SetMaterial(Al);
 	AlCap->SetVisAttributes(G4VisAttributes(G4Color::Gray()));
 
-	G4LogicalVolume* CuWrap = G4LogicalVolumeStore::GetInstance()->GetVolume("CuWrap");
+	G4LogicalVolume* CuWrap = store->GetVolume("CuWrap");
 	CuWrap->SetMaterial(Cu);
 	CuWrap->SetVisAttributes(G4VisAttributes(G4Color::Brown()));
 
-	G4LogicalVolume* SiDetAperture = G4LogicalVolumeStore::GetInstance()->GetVolume("SiDetAperture");
+	G4LogicalVolume* SiDetAperture = store->GetVolume("SiDetAperture");
 	SiDetAperture->SetMaterial(matSteel);
 	SiDetAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
-	G4LogicalVolume* SiCollimator = G4LogicalVolumeStore::GetInstance()->GetVolume("SiCollimator");
+	G4LogicalVolume* SiCollimator = store->GetVolume("SiCollimator");
 	SiCollimator->SetMaterial(matSteel);
 	SiCollimator->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
-	G4LogicalVolume* GeMount = G4LogicalVolumeStore::GetInstance()->GetVolume("HPGeMount");
+	G4LogicalVolume* GeMount = store->GetVolume("HPGeMount");
 	GeMount->SetMaterial(matSteel);
 
-	G4LogicalVolume* CarbonWindow = G4LogicalVolumeStore::GetInstance()->GetVolume("CarbonWindow");
+	G4LogicalVolume* CarbonWindow = store->GetVolume("CarbonWindow");
 	CarbonWindow->SetMaterial(C);
 	CarbonWindow->SetVisAttributes(G4VisAttributes(G4Color(.663, .663, .663, .2)));
+
+	G4LogicalVolume* ApertureCover = store->GetVolume("SiDetApertureCover");
+	CarbonWindow->SetMaterial(matSteel);
+
+	int cpyNo = 10;
 
 	// ---Front Ge Det locations--- // 
 	G4RotateY3D rotThetaHPGe1(40*deg);
@@ -329,17 +331,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// ---Rear Ge Det locations--- //
 	G4RotateY3D rotThetaHPGe4(220*deg);
 	G4RotateZ3D rotPhiHPGe4(90*deg);
-	// ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 
 	G4RotateY3D rotThetaHPGe5(140*deg);
 	G4RotateZ3D rotPhiHPGe5(30*deg);
-	// ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe5, rotPhiHPGe5, cpyNo);
 
 	G4RotateY3D rotThetaHPGe6(140*deg);
 	G4RotateZ3D rotPhiHPGe6(150*deg);
-	// ConstructHPGeDetector(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 	ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
 
 	// ---Si Dets--- //
@@ -373,26 +372,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	ConstructIsotopeShell(cpyNo);
 
-	// for (auto i = store->cbegin(); i != store->cend(); ++i) {
-	// 	G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
-	// }
-
 	delete fParser;
 	return physWorld; 
 }
 
 void DetectorConstruction::ConstructSDandField() {
 	
-	MySiDet* sensDetSi = new MySiDet("SiSensDet");
-	MyGeDet* sensDetGe = new MyGeDet("GeSensDet");
+	sensDetSi = new MySiDet("SiSensDet");
+	sensDetGe = new MyGeDet("GeSensDet");
 	if (!GeDets.empty()) {
-		G4cout << "dawn in the adan" << G4endl;
+		G4cout << "the now now and never" << G4endl;
 		for (auto& logicGeDet : GeDets) {
 			logicGeDet->SetSensitiveDetector(sensDetGe);
 		}
 	}
 	if (!SiDets.empty()) {
-		G4cout << "viva la vida" << G4endl;
+		G4cout << "skipping tiles" << G4endl;
 		for (auto& logicSiDet : SiDets) {
 			logicSiDet->SetSensitiveDetector(sensDetSi);
 		}

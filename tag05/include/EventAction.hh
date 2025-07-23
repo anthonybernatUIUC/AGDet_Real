@@ -34,8 +34,8 @@
 #include "G4Event.hh"
 #include "globals.hh"
 #include "Run.hh"
-#include <iomanip>
-#include <set>
+#include "RunAction.hh"
+
 
 class EventAction : public G4UserEventAction {
   
@@ -45,14 +45,13 @@ class EventAction : public G4UserEventAction {
 		void AddDecayChain(G4String val) { fDecayChain += val; };
 		void AddEvisible(G4double val) { fEvisTot += val; };
 
-		void AddEdepGe(G4double edep) { fEdepGe += edep; }; 
-		void AddEdepSi(G4double edep) { fEdepSi += edep; }; 
-		void AddEdepAlpha(G4double edep) { fEdepAlpha += edep; }; 
-		void AddEdepGamma(G4double edep) { fEdepGamma += edep; }; 
-		void AddEdepLi7(G4double edep) { fEdepLi7 += edep; }; 
-		void AddEdepSiElec(G4double edep) { fEdepSiElec += edep; }; 
-		void AddEdepGeElec(G4double edep) { fEdepGeElec += edep; };
-		void AddEdepSiBackground(G4double edep) { fEdepSiBackground += edep; };
+		void AddEdep(G4double edep, int catIdx) { 
+			if (map.find(catIdx) == map.end()) {
+				map[catIdx] = edep;
+			} else {
+				map[catIdx] += edep;
+			}
+		};
 		
 		virtual void BeginOfEventAction(const G4Event*);
       	virtual void EndOfEventAction(const G4Event*);
@@ -60,6 +59,8 @@ class EventAction : public G4UserEventAction {
   	private:
 		G4String fDecayChain;                   
 		G4double fEvisTot;
-		G4double fEdepGe, fEdepSi, fEdepAlpha, fEdepGamma, fEdepLi7, 
-		fEdepSiElec, fEdepGeElec, fEdepSiBackground;
+		std::map<G4int, G4double> map;
+		Run* run;
+		const G4UserRunAction* runAction;
+		G4AnalysisManager* man;
 };

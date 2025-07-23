@@ -55,6 +55,7 @@ class RunAction : public G4UserRunAction {
     	PrimaryGeneratorAction* fPrimary;
     	Run* fRun;
 		bool uiMode;
+		
 };
 
 

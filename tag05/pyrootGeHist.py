@@ -70,7 +70,7 @@ def testAllHist2():
     for p, filename in enumerate(rootcontents):
         plotRootBranch(p, root.RDataFrame(treeName, rootcontents[p]).AsNumpy([columnName, ])[columnName], 
                        numFiles, color = color, element = filename.split("AGMACRO")[1].split(".root")[0], 
-                       separate = True)
+                       separate = False)
     
     ax = plt.gca() 
     ax.xaxis.set_minor_locator(tck.AutoMinorLocator())

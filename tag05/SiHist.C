@@ -9,6 +9,49 @@
 #include "TROOT.h"
 #include "TStyle.h"
 
+void SiHist(std::string file) {
+
+    int darkGray = TColor::GetColor(23, 23, 28);
+    gStyle->SetCanvasColor(darkGray);
+    gStyle->SetStatColor(darkGray);
+    gStyle->SetTitleColor(1);
+    gStyle->SetTitleTextColor(kWhite);
+    gStyle->SetStatTextColor(kWhite);
+
+    char *cfile = new char[file.length() + 1];
+    std::strcpy(cfile, file.c_str());
+    std::cout << "Opening File: " << file << std::endl;
+    TFile* tfile = new TFile(cfile, "read");
+
+    TCanvas* canvas = new TCanvas();
+    canvas->SetLogy(1);
+    canvas->SetTicky();
+    canvas->SetTickx();
+
+    char const* treeName = "SiScoring";
+    char branchName[] = "fEdepSi";
+    char yo[] = ">>htemp(6000,0,3.0)";
+
+    TTree* tree = (TTree*)tfile->Get(treeName);
+    tree->Draw(strcat(branchName, yo));
+
+    TH1 *hist = (TH1*)gPad->GetPrimitive("htemp");
+    char title[] = "Simulated Alpha Energy Spectrum - ";
+    hist->SetTitle(strcat(title, cfile));
+    hist->GetXaxis()->SetLabelColor(kWhite);
+    hist->GetYaxis()->SetLabelColor(kWhite);
+    hist->GetXaxis()->SetAxisColor(kWhite, 1);
+    hist->GetYaxis()->SetAxisColor(kWhite, 1);
+    hist->GetXaxis()->SetTitleColor(kWhite);
+    hist->GetYaxis()->SetTitleColor(kWhite);
+    hist->GetXaxis()->SetTitle("Energy / MeV");
+    hist->GetYaxis()->SetTitle("Counts");
+    hist->SetLineColorAlpha(kRed, 0.35);
+    hist->SetFillColor(kRed);
+    hist->SetFillStyle(3002);
+    hist->SetStats(0);
+}
+
 // void SiHist(std::string file) {
 
 //     int darkGray = TColor::GetColor(23, 23, 28);
@@ -70,45 +113,3 @@
 
 // }
 
-void SiHist(std::string file) {
-
-    int darkGray = TColor::GetColor(23, 23, 28);
-    gStyle->SetCanvasColor(darkGray);
-    gStyle->SetStatColor(darkGray);
-    gStyle->SetTitleColor(1);
-    gStyle->SetTitleTextColor(kWhite);
-    gStyle->SetStatTextColor(kWhite);
-
-    char *cfile = new char[file.length() + 1];
-    std::strcpy(cfile, file.c_str());
-    std::cout << "Opening File: " << file << std::endl;
-    TFile* tfile = new TFile(cfile, "read");
-
-    TCanvas* canvas = new TCanvas();
-    canvas->SetLogy(1);
-    canvas->SetTicky();
-    canvas->SetTickx();
-
-    char const* treeName = "SiScoring";
-    char branchName[] = "fEdepSi";
-    char yo[] = ">>htemp(6000,0,3.0)";
-
-    TTree* tree = (TTree*)tfile->Get(treeName);
-    tree->Draw(strcat(branchName, yo));
-
-    TH1 *hist = (TH1*)gPad->GetPrimitive("htemp");
-    char title[] = "Simulated Alpha Energy Spectrum - ";
-    hist->SetTitle(strcat(title, cfile));
-    hist->GetXaxis()->SetLabelColor(kWhite);
-    hist->GetYaxis()->SetLabelColor(kWhite);
-    hist->GetXaxis()->SetAxisColor(kWhite, 1);
-    hist->GetYaxis()->SetAxisColor(kWhite, 1);
-    hist->GetXaxis()->SetTitleColor(kWhite);
-    hist->GetYaxis()->SetTitleColor(kWhite);
-    hist->GetXaxis()->SetTitle("Energy / MeV");
-    hist->GetYaxis()->SetTitle("Counts");
-    hist->SetLineColorAlpha(kRed, 0.35);
-    hist->SetFillColor(kRed);
-    hist->SetFillStyle(3002);
-    hist->SetStats(0);
-}

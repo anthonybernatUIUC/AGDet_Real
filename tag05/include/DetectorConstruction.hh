@@ -51,6 +51,8 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4UImanager.hh"
 
+#include "detector.hh"
+
 #include <set> 
 
 
@@ -84,13 +86,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			}  
 		}
 
+		void printVolumeStore(G4LogicalVolumeStore* const store) {
+			for (auto i = store->cbegin(); i != store->cend(); ++i) {
+				G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
+			}
+		}
+
 		virtual G4VPhysicalVolume* Construct();                 
 		virtual G4double GetWorldSize() { return fWorldSize; } 
 		virtual void ConstructSDandField();
 		
   	private:
  
-		G4NistManager *man;
 		G4int shellType;
 		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield;
 		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat;
@@ -110,7 +117,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		*physTargetCyl, *physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere;
 
 		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr;
+		G4NistManager *man;
 		G4GDMLParser* fParser;
+		MySiDet* sensDetSi;
+		MyGeDet* sensDetGe;
 
 		std::set<G4LogicalVolume*> GeDets, SiDets;		
 

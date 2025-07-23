@@ -13,8 +13,12 @@
   <materials/>
   <solids>
     <!-- World -->
-    <box name="WorldBox" x="1.1" y="1.1" z="1.1" lunit="m"/>
+    <box name="WorldBox" x="1.3" y="1.3" z="1.3" lunit="m"/>
     <tube name="GoAway" rmin ="0.0" rmax="0.1" startphi="0.0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
+    <!-- Beamline Tube -->
+    <tube name="GDMLTube040" rmin="0" rmax="50.80" startphi="0.0" deltaphi="360.0" aunit="deg" z="200" lunit="mm"/> <!-- should be 13in long, but not needed-->
+    <!-- Aperture Cover -->
+    <tube name="GDMLTube039" rmin="0" rmax="75.82" startphi="0.0" deltaphi="360.0" aunit="deg" z="20" lunit="mm"/>
     <!-- HPGe Mount -->
     <tube name="GDMLTube038" rmin="0" rmax="42.45" startphi="0.0" deltaphi="360.0" aunit="deg" z="1" lunit="mm"/>
     <tube name="GDMLTube037" rmin="0" rmax="20" startphi="0.0" deltaphi="360.0" aunit="deg" z="108.5" lunit="mm"/>
@@ -68,13 +72,17 @@
     <tube name="GDMLTube001" rmin="0.0" rmax="GeTuberOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
     <!-- Beamline Cut -->
     <sphere name="GDMLSphere" rmin="SphereInner" rmax="SphereOuter" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="cm" nsegments="256"/>
-    <tube name="GDMLTube" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="60.0" lunit="cm"/>
+    <tube name="GDMLTube" rmin="0.0" rmax="SiTubeInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="100.0" lunit="cm"/>
     
     <!-- Beamline Cut -->
-    <subtraction name="Cut">
+    <union name="yo">
       <first ref="GDMLSphere"/>
+      <second ref="GDMLTube040"/>
+      <position name="P-GDMLTube038" unit="cm" x="0" y="0" z="-22.6 - 9.5"/>
+    </union>
+    <subtraction name="Cut">
+      <first ref="yo"/>
       <second ref="GDMLTube"/>
-      <!-- <position name="move" unit="cm" z="50"/>  -->
     </subtraction>
     <!-- Ge Det Cuts -->
     <!-- <subtraction name="Cut001">
@@ -326,6 +334,11 @@
       <solidref ref="GDMLTube038"/>
     </volume>
 
+    <volume name="SiDetApertureCover">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="GDMLTube039"/>
+    </volume>
+
     <volume name="worldVOL">
       <materialref ref="G4_Galactic"/>
       <solidref ref="WorldBox"/>
@@ -483,6 +496,37 @@
         <volumeref ref="CarbonWindow"/>
         <position name="P-CarbonWindow3" unit="mm" x=".5567*(270 - 60.5)" y="-.3214*(270 - 60.5)" z=".766*(270 - 60.5)"/>
         <rotation name="R-CarbonWindow3" unit="deg" x="-22.76047627" y="-33.82584497"/>
+      </physvol>
+
+      <physvol name="PV_ApertureCover1">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover1" unit="mm" y="-0.766*341" z="0.6428*341"/>
+        <rotation name="R-ApertureCover1" unit="deg" x="-50"/>
+      </physvol>
+      <physvol name="PV_ApertureCover2">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover2" unit="mm" x="0.6634*341" y="0.383*341" z="0.6428*341"/>
+        <rotation name="R-ApertureCover2" unit="deg" x="30.78973303" y="-41.56076257" z="-48.06989481"/>
+      </physvol>
+      <physvol name="PV_ApertureCover3">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover3" unit="mm" x="-0.6634*341" y="0.383*341" z="0.6428*341"/>
+        <rotation name="R-ApertureCover3" unit="deg" x="30.78973303" y="41.56076257" z="48.06989481"/>
+      </physvol>
+      <physvol name="PV_ApertureCover4">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover4" unit="mm" y="0.9221*341" z="0.3869*341"/>
+        <rotation name="R-ApertureCover4" unit="deg" x="67.24"/>
+      </physvol>
+      <physvol name="PV_ApertureCover5">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover5" unit="mm" x="0.7986*341" y="-0.4611*341" z="0.3869*341"/>
+        <rotation name="R-ApertureCover5" unit="deg" x="-50.00065738" y="-52.99576314" z="33.82532"/>
+      </physvol>
+      <physvol name="PV_ApertureCover6">
+        <volumeref ref="SiDetApertureCover"/>
+        <position name="P-ApertureCover6" unit="mm" x="-0.7986*341" y="-0.4611*341" z="0.3869*341"/>
+        <rotation name="R-ApertureCover6" unit="deg" x="-50.00065738" y="52.99576314" z="-33.82532"/>
       </physvol>
 
       <physvol name="PV_AGDevice">
