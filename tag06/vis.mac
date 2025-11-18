@@ -1,0 +1,59 @@
+/control/cout/ignoreThreadsExcept 0
+
+#/geometry/test/run
+#/geometry/test/tolerance 1 nm
+
+/shell/setShellType 1
+#/run/initialize
+/run/reinitializeGeometry
+/run/initialize
+#/process/inactivate nKiller
+/analysis/setFileName AGUI
+
+/vis/open OGL 600x600-0+0
+/vis/viewer/set/autoRefresh false
+
+/vis/drawVolume
+/vis/viewer/set/background 0.0 0.0 0.0
+/vis/viewer/set/viewpointVector 0 0 1
+/vis/viewer/set/targetPoint 0 0 0 cm
+
+# Specify style (surface or wireframe):
+#/vis/viewer/set/style wireframe
+/vis/viewer/set/style surface
+
+# Draw smooth trajectories at end of event, showing trajectory points as markers 2 pixels wide:
+/vis/scene/add/trajectories smooth
+
+# To draw only gammas:
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add gamma
+#/vis/filtering/trajectories/particleFilter-0/add alpha
+
+# To invert the above, drawing all particles except gammas,
+# keep the above two lines but also add:
+#/vis/filtering/trajectories/particleFilter-0/invert true
+
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set e- magenta
+/vis/modeling/trajectories/drawByParticleID-0/set e+ brown
+/vis/modeling/trajectories/drawByParticleID-0/set nu_e white
+/vis/modeling/trajectories/drawByParticleID-0/set anti_nu_e white
+/vis/modeling/trajectories/drawByParticleID-0/set geantino white
+/vis/modeling/trajectories/drawByParticleID-0/set gamma green
+/vis/modeling/trajectories/drawByParticleID-0/set alpha red
+/vis/modeling/trajectories/drawByParticleID-0/set Li7 blue
+/vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
+
+/run/printProgress 20
+/vis/scene/endOfEventAction accumulate
+/vis/geometry/set/visibility worldVOL 0 true
+/vis/geometry/set/visibility AGDevice 0 false
+
+# Filter particles for debugging purposes
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add e-
+#/vis/filtering/trajectories/particleFilter-0/active true
+
+/vis/verbose warnings
+/vis/verbose 0

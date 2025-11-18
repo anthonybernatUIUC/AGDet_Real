@@ -3,7 +3,7 @@
 
 #include "G4UserSteppingAction.hh"
 #include "G4Step.hh"
-#include "G4RunManager.hh"
+#include "G4MTRunManager.hh"
 #include "G4Gamma.hh"
 #include "G4ParticleTypes.hh"
 

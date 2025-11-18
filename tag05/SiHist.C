@@ -30,7 +30,7 @@ void SiHist(std::string file) {
 
     char const* treeName = "SiScoring";
     char branchName[] = "fEdepSi";
-    char yo[] = ">>htemp(6000,0,3.0)";
+    char yo[] = ">>htemp(6000, 0, 3.0)";
 
     TTree* tree = (TTree*)tfile->Get(treeName);
     tree->Draw(strcat(branchName, yo));

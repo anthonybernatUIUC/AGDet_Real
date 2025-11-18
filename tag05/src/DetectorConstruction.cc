@@ -50,7 +50,7 @@ DetectorConstruction::~DetectorConstruction() {
 
 void DetectorConstruction::DefineParameters() {
 
-	fWorldSize = 1.1*m;
+	fWorldSize = 1*km;
 	dTarget = 10*cm;
 	zTarget = 106*nm;
 	dGe = 8*cm;
@@ -266,6 +266,24 @@ void DetectorConstruction::ConstructIsotopeShell(int& cpyNo) {
 	cpyNo++;
 }
 
+void DetectorConstruction::ConstructAtmosphere(G4int numLayers, G4int& cpyNo) {
+
+	G4double initHeight = 45*cm;
+	G4double layerHeight = ((fWorldSize / 2) - initHeight) / numLayers;
+
+	for (G4int i = 0; i < numLayers; i++) {
+		G4Box* solidAir = new G4Box("test", 100*cm + 100*(numLayers - i - 1)*cm, layerHeight / 2, 100*cm + 100*(numLayers - i - 1)*cm);
+		G4LogicalVolume* logicAir = new G4LogicalVolume(solidAir, man->FindOrBuildMaterial("G4_AIR"), "logicAir" + std::to_string(cpyNo));
+		logicAir->SetVisAttributes(G4VisAttributes(G4Color(1, 1, 1, .2)));
+		G4PVPlacement* physAir = new G4PVPlacement(
+			0, G4ThreeVector(0, initHeight + layerHeight*(i + .5), 0), logicAir, "physAtmosphere" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		solidAtmosphere.push_back(solidAir);
+		logicAtmosphere.push_back(logicAir);
+		physAtmosphere.push_back(physAir);
+		cpyNo++;
+	}
+}
+
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4cout << "Constructing Geometry..." << G4endl;
@@ -280,6 +298,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	physWorld = fParser->GetWorldVolume();
 	logicWorld = physWorld->GetLogicalVolume();
+	logicWorld->SetVisAttributes(G4VisAttributes(G4Color(1, 0, 0, .05)));
 
 	G4LogicalVolume* AGDevice = store->GetVolume("AGDevice");
 	AGDevice->SetMaterial(matSteel);
@@ -310,7 +329,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	G4LogicalVolume* ApertureCover = store->GetVolume("SiDetApertureCover");
 	CarbonWindow->SetMaterial(matSteel);
 
-	int cpyNo = 10;
+	G4int cpyNo = 10;
 
 	// ---Front Ge Det locations--- // 
 	G4RotateY3D rotThetaHPGe1(40*deg);
@@ -370,7 +389,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	G4RotateZ3D rotPhiTar(0*deg);
 	ConstructTarget(rotThetaTar, rotPhiTar, cpyNo);
 
-	ConstructIsotopeShell(cpyNo);
+	// ConstructIsotopeShell(cpyNo);
+	// ConstructAtmosphere(10, cpyNo);
+	
 
 	delete fParser;
 	return physWorld; 

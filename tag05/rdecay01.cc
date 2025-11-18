@@ -35,6 +35,8 @@
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
 #include "QGSP_BIC_HP.hh"
+#include "QGSP_BERT.hh"
+#include "G4DecayPhysics.hh"
 #include "G4UIExecutive.hh"
 #include "G4VisExecutive.hh"
 
@@ -74,7 +76,12 @@ int main(int argc, char** argv) {
 
 	// set mandatory initialization classes
 	runManager->SetUserInitialization(new DetectorConstruction());
-	runManager->SetUserInitialization(new QGSP_BIC_HP(0));
+	// runManager->SetUserInitialization(new QGSP_BIC_HP(0));
+
+	G4VModularPhysicsList* physicsList = new QGSP_BIC_HP(0);
+	physicsList->RegisterPhysics(new G4DecayPhysics());
+	runManager->SetUserInitialization(physicsList);
+
 	runManager->SetUserInitialization(new ActionInitialization(uiMode));
 	runManager->Initialize();
 

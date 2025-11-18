@@ -38,9 +38,12 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction() : 
 G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
   
-	generateBackground = true;
+	generateBackground = false;
+	generateCosmicRay = false;
+	particleTable = G4ParticleTable::GetParticleTable();
+
 	fParticleGun = new G4ParticleGun(1);
-	fParticleGun->SetParticleDefinition(G4ParticleTable::GetParticleTable()->FindParticle("neutron"));
+	fParticleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
 	fParticleGun->SetParticleEnergy(0.0001*eV);
 }
 
@@ -52,8 +55,8 @@ void PrimaryGeneratorAction::generateBeamlineHit(G4Event* anEvent) {
 	
 	double randAngle = G4UniformRand() * 2 * M_PI;
 	double randRadius = G4UniformRand() * 4.8 * cm;
-	fParticleGun->SetParticlePosition(G4ThreeVector(
-		randRadius*std::cos(randAngle), randRadius*std::sin(randAngle), 40*cm));
+
+	fParticleGun->SetParticlePosition(G4ThreeVector(randRadius*std::cos(randAngle), randRadius*std::sin(randAngle), 40*cm));
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
@@ -68,11 +71,18 @@ void PrimaryGeneratorAction::generateBackgroundHit(G4Event* anEvent, G4int shell
 		double randY = std::sin(randPhi)*std::sin(randTheta);
 		double randZ = std::cos(randTheta);
 		G4ThreeVector randAxis = G4ThreeVector(randX, randY, randZ);
-		// G4cout << randAxis[0] << ", " << randAxis[1] << ", " << randAxis[2] << G4endl;
+
 		fParticleGun->SetParticlePosition(shellRadius*randAxis);
 		fParticleGun->SetParticleMomentumDirection(-randAxis);
 		fParticleGun->GeneratePrimaryVertex(anEvent);
 	}
+}
+
+void PrimaryGeneratorAction::generateCosmicRayHit(G4Event* anEvent) {
+
+	fParticleGun->SetParticlePosition(G4ThreeVector(0, 1*km / 2, 0));
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, -1, 0));
+	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
@@ -81,6 +91,16 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 		if (anEvent->GetEventID() % 2 == 0) {
 			generateBackgroundHit(anEvent);
 		} else {
+			generateBeamlineHit(anEvent);
+		}
+	} else if (generateCosmicRay) {
+		if (anEvent->GetEventID() % 2 == 0) {
+			fParticleGun->SetParticleDefinition(particleTable->FindParticle("proton"));
+			fParticleGun->SetParticleEnergy(100*GeV);
+			generateCosmicRayHit(anEvent);
+		} else {
+			fParticleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
+			fParticleGun->SetParticleEnergy(0.0001*eV);
 			generateBeamlineHit(anEvent);
 		}
 	} else {

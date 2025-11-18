@@ -2,18 +2,22 @@
 /control/verbose 0
 /run/verbose 0
 
+#/geometry/test/run
+#/geometry/test/tolerance 1 nm
+
 /shell/setShellType 1
 #/run/initialize
 /run/reinitializeGeometry
 /run/initialize
 /analysis/setFileName AGUI
 
-/vis/open OGLI 600x600-0+0
+/vis/open OGL 600x600-0+0
 /vis/viewer/set/autoRefresh false
 
 /vis/drawVolume
-/vis/viewer/zoom 1.5
 /vis/viewer/set/background 0.0 0.0 0.0
+/vis/viewer/set/viewpointVector 0 0 1
+/vis/viewer/set/targetPoint 0 0 0 cm
 
 # Specify style (surface or wireframe):
 #/vis/viewer/set/style wireframe
@@ -43,7 +47,7 @@
 
 /run/printProgress 20
 /vis/scene/endOfEventAction accumulate
-/vis/geometry/set/visibility worldVOL 0 false
+/vis/geometry/set/visibility worldVOL 0 true
 /vis/geometry/set/visibility AGDevice 0 false
 
 # Filter particles for debugging purposes
@@ -51,6 +55,5 @@
 #/vis/filtering/trajectories/particleFilter-0/add e-
 #/vis/filtering/trajectories/particleFilter-0/active true
 
-/vis/viewer/set/autoRefresh true
 #/vis/verbose warnings
 /vis/verbose 0

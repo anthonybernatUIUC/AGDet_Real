@@ -74,6 +74,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		}
 
 		void SetShellType(G4int type) {
+			if (!logicIsoSphere) return;
 			shellType = type;
 			if (shellType == 0) {
 				logicIsoSphere->SetMaterial(IsotopeShellMatH);
@@ -111,10 +112,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		G4Sphere *solidIsoSphere;		
 		
 		G4LogicalVolume *logicWorld, *logicGeDet, *logicTarget, *logicSiAperture, *logicTargetCyl, 
-		*logicSiDet, *logicGeMount, *logicPbBackShield, *logicIsoSphere;
+		*logicSiDet, *logicGeMount, *logicPbBackShield, *logicIsoSphere = nullptr;
 
-		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, 
-		*physTargetCyl, *physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere;
+		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, *physTargetCyl, 
+		*physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere;
 
 		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr;
 		G4NistManager *man;
@@ -122,19 +123,23 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		MySiDet* sensDetSi;
 		MyGeDet* sensDetGe;
 
-		std::set<G4LogicalVolume*> GeDets, SiDets;		
+		std::set<G4LogicalVolume*> GeDets, SiDets;
+		std::vector<G4Box*> solidAtmosphere;
+		std::vector<G4LogicalVolume*> logicAtmosphere;
+		std::vector<G4VPhysicalVolume*> physAtmosphere;		
 
 		void DefineMaterials();
 		void DefineParameters();
-		void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
-		void ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo);
+		void ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
+		void ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, G4int& cpyNo);
 		void ConstructAlShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructIsoSphere(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
 		void ConstructShielding(G4RotateY3D rotTheta, G4RotateZ3D rotPhi);
-		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
-		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
-		void ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo);
-		void ConstructIsotopeShell(int& cpyno);
+		void ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
+		void ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
+		void ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
+		void ConstructIsotopeShell(G4int& cpyno);
+		void ConstructAtmosphere(G4int numLayers, G4int& cpyNo);
 		void ConstructTarget();
 
 };

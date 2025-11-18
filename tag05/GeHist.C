@@ -68,6 +68,11 @@ void GeHist(std::string file) {
     // Ge75->SetLineStyle(4);
     // Ge75->Draw("same");
 
+    TLine* Hcapture = new TLine(2.223, 10, 2.223, hist->GetMaximum());
+    Hcapture->SetLineColor(kWhite);
+    Hcapture->SetLineStyle(4);
+    Hcapture->Draw("same");
+
     delete[] cfile;
 }
 

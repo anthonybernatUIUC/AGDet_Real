@@ -2,7 +2,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "G4AnalysisManager.hh"
-#include "G4RunManager.hh"
+#include "G4MTRunManager.hh"
 #include "G4SystemOfUnits.hh"
 
 class MySiDet : public G4VSensitiveDetector {

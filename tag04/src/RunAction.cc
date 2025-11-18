@@ -92,15 +92,23 @@ void RunAction::BeginOfRunAction(const G4Run*) {
 		G4double energy = fPrimary->GetParticleGun()->GetParticleEnergy();
 		fRun->SetPrimary(particle, energy);
   	}   
+	// G4AnalysisManager* man = G4AnalysisManager::Instance(); 
+	// man->SetNtupleMerging(true);
+	// if (uiMode) { // uiMode data capture
+	// 	G4cout << "===UI MODE===" << G4endl; 
+	// 	man->SetDefaultFileType("root");
+	// 	man->OpenFile("AGUI.root");
+	// } else { // sim.mac, genSim.mac data capture
+	// 	G4cout << "===MACRO MODE===" << G4endl; 
+	// 	man->OpenFile("");
+	// }
 	G4AnalysisManager* man = G4AnalysisManager::Instance(); 
-	if (uiMode) { // uiMode data capture
-		G4cout << "===UI MODE===" << G4endl; 
-		man->SetDefaultFileType("root");
-		man->OpenFile("AGUI.root");
-	} else { // sim.mac, genSim.mac data capture
-		G4cout << "===MACRO MODE===" << G4endl; 
-		man->OpenFile();
-	}
+	if (uiMode) G4cout << "===UI MODE===" << G4endl; 
+	else G4cout << "===MACRO MODE===" << G4endl; 
+	
+	man->SetNtupleMerging(true);
+	man->OpenFile("");
+	man->SetDefaultFileType("root");
 }
 
 void RunAction::EndOfRunAction(const G4Run*) {

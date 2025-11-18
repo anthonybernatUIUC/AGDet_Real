@@ -1,5 +1,5 @@
 
-/control/cout/ignoreThreadsExcept 0
+#/control/cout/ignoreThreadsExcept 0
 /control/verbose 1
 /run/verbose 0
 /tracking/verbose 0
@@ -14,8 +14,8 @@
 #/run/setCut 10 cm  
 #/run/setCutForAGivenParticle gamma 10 cm
 
-/analysis/setFileName AGMACROhelp
+/analysis/setFileName AGMACROBIC_HP
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 50000000
+/run/beamOn 1000000
 

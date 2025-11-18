@@ -9,11 +9,12 @@
     <constant name="SiTubeOuter" value="5.08"/>
 		<constant name="GeTubeInner" value="7.41"/>
     <constant name="GeTuberOuter" value="7.62"/>
+    <constant name="fWorldSize" value="1"/>
   </define>
   <materials/>
   <solids>
     <!-- World -->
-    <box name="WorldBox" x="1.3" y="1.3" z="1.3" lunit="m"/>
+    <box name="WorldBox" x=".05*fWorldSize" y="fWorldSize" z=".05*fWorldSize" lunit="km"/>
     <tube name="GoAway" rmin ="0.0" rmax="0.1" startphi="0.0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
     <!-- Beamline Tube -->
     <tube name="GDMLTube040" rmin="0" rmax="50.80" startphi="0.0" deltaphi="360.0" aunit="deg" z="200" lunit="mm"/> <!-- should be 13in long, but not needed-->

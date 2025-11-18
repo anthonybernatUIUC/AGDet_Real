@@ -13,7 +13,6 @@
 #/run/setCut 10 cm
 /run/setCutForAGivenParticle gamma 10 cm
 
-
 /analysis/setFileName AGMACRO    
 /run/printProgress 200000
 /run/initialize

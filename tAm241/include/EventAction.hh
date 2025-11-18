@@ -33,7 +33,7 @@
 #include "globals.hh"
 #include "G4AnalysisManager.hh"
 #include "G4Event.hh"
-#include "G4RunManager.hh"
+#include "G4MTRunManager.hh"
 #include <iomanip>
 
 #include "Run.hh"

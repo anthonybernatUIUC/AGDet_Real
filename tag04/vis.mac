@@ -5,6 +5,7 @@
 /run/verbose 1
 
 /run/initialize
+/analysis/setFileName AGUI
 
 # Use this open statement to create an OpenGL view:
 # My laptop will only have a visualizer with this specific OGL command, but for other

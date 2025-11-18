@@ -1,0 +1,83 @@
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 1
+/run/verbose 1
+
+/tracking/verbose 0
+
+/target/setWidth 1.0
+/analysis/setFileName TestBKG00
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 1.2
+/analysis/setFileName TestBKG01
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 1.4
+/analysis/setFileName TestBKG02
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 1.6
+/analysis/setFileName TestBKG03
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 1.8
+/analysis/setFileName TestBKG04
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 2.0
+/analysis/setFileName TestBKG05
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 2.2
+/analysis/setFileName TestBKG06
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 2.4
+/analysis/setFileName TestBKG07
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 2.6
+/analysis/setFileName TestBKG08
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 2.8
+/analysis/setFileName TestBKG09
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+/target/setWidth 3.0
+/analysis/setFileName TestBKG10
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 1000000
+

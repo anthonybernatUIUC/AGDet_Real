@@ -45,12 +45,15 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
     	G4ParticleGun* GetParticleGun() { return fParticleGun; };
 		void generateBackgroundHit(G4Event* anEvent, G4int shellHits = 1);
 		void generateBeamlineHit(G4Event* anEvent);
+		void generateCosmicRayHit(G4Event* anEvent);
 
     	G4int Z, A;
             
   	private:
     	G4ParticleGun* fParticleGun;
-		bool generateBackground = true;
+		G4ParticleTable* particleTable;
+		bool generateBackground;
+		bool generateCosmicRay;
 };
 
 #endif
