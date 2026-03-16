@@ -533,6 +533,7 @@
         <volumeref ref="AGDevice"/>
         <!-- <positionref ref="GoAwayPos"/> -->
         <rotation name="R-AlphaGamma" unit="deg" y="180"/>
+        <rotation name="R-AlphaGamma2" unit="deg" z="90"/>
       </physvol>
 
     </volume>

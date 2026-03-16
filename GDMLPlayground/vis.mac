@@ -1,6 +1,12 @@
 /control/verbose 1
 /run/verbose 0
 /vis/open OGLI
+
+/geometry/test/run
+/geometry/test/tolerance 1 nm
+
+/vis/geometry/set/visibility ApertureWrapper1 0 false
+
 /vis/drawVolume
 /vis/viewer/set/style surface
 /vis/viewer/set/autoRefresh true

@@ -47,7 +47,6 @@ int main(int argc, char** argv) {
 
 	// detect interactive mode (if no arguments) and define UI session
 	G4UIExecutive* ui = nullptr;
-	// G4cout << "G4NEUTRONHPDATA = " << getenv("G4NEUTRONHPDATA") << G4endl;
 
 	bool uiMode = false;
 	if (argc == 1) { 
@@ -85,7 +84,6 @@ int main(int argc, char** argv) {
 	// runManager->SetUserInitialization(physicsList);
 
 	runManager->SetUserInitialization(new QGSP_BIC_HP(0));
-
 	runManager->SetUserInitialization(new ActionInitialization(uiMode));
 	runManager->Initialize();
 

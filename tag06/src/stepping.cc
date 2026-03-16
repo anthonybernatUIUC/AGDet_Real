@@ -31,13 +31,6 @@ void MySteppingAction::RecordDeposition(const G4Step *step) {
 	// 7: Si Background
 	// 8: Ge Background
 
-	// for (auto det : fGeScoringVolumes) {
-	// 	G4cout << "Ge Det: " << det->GetName() << G4endl;
-	// }
-	// for (auto det : fSiScoringVolumes) {
-	// 	G4cout << "Si Det: " << det->GetName() << G4endl;
-	// }
-
 	if (fGeScoringVolumes.find(volumeHit) != fGeScoringVolumes.end()) {
 		if (part == G4Gamma::Gamma()) {
 			fEventAction->AddEdep(edep, 0);
@@ -70,6 +63,10 @@ void MySteppingAction::RecordDeposition(const G4Step *step) {
 void MySteppingAction::UserSteppingAction(const G4Step *step) {
 	RecordDeposition(step);
 }
+
+
+
+
 
 // old method
 	

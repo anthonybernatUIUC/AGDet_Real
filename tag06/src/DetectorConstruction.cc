@@ -50,6 +50,8 @@ DetectorConstruction::~DetectorConstruction() {
 
 void DetectorConstruction::DefineParameters() {
 
+	// Origin centered on target center
+
 	fWorldSize = 5*m;
 	dTarget = 10*cm;
 	zTarget = 106*nm;
@@ -60,9 +62,9 @@ void DetectorConstruction::DefineParameters() {
 	distDetGe = 22*cm;
 	distDetSi = 20*cm;
 	zPbBackShield = 10.6*cm;
+	zPbBackShield = 8.5725*cm;
 	shellType = 0;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
-
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -250,7 +252,7 @@ void DetectorConstruction::ConstructPbBackShield(G4RotateY3D rotTheta, G4RotateZ
 	G4Translate3D shiftZPbBackShield(0, 0, distDetGe + zPbBackShield / 2 + 21.1*cm / 2 + 1*cm);
 	G4Transform3D transformPbBackShield = rotPhi * rotTheta * shiftZPbBackShield;
 	solidPbBackShield = new G4Tubs(
-		"solidPbBackShield" + std::to_string(cpyNo), 2.1*cm, 5.3*cm, zPbBackShield / 2, 0*deg, 360*deg);
+		"solidPbBackShield" + std::to_string(cpyNo), 2.1*cm, 4.5*cm, zPbBackShield / 2, 0*deg, 360*deg);
 	logicPbBackShield = new G4LogicalVolume(solidPbBackShield, Pb, "logicPbBackShield" + std::to_string(cpyNo));
 	physPbBackShield = new G4PVPlacement(
 		transformPbBackShield, logicPbBackShield, "physPbBackShield" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
@@ -305,7 +307,6 @@ void DetectorConstruction::ConstructNBSR(G4RotateY3D rotTheta, G4RotateZ3D rotPh
 		transformNBSR, logicNBSR, "physLH2" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
 	logicNBSR->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
-	
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
@@ -373,17 +374,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 
 	// ---Rear Ge Det locations--- //
-	G4RotateY3D rotThetaHPGe4(220*deg);
-	G4RotateZ3D rotPhiHPGe4(90*deg);
-	ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
+	// G4RotateY3D rotThetaHPGe4(220*deg);
+	// G4RotateZ3D rotPhiHPGe4(90*deg);
+	// ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
 
-	G4RotateY3D rotThetaHPGe5(140*deg);
-	G4RotateZ3D rotPhiHPGe5(30*deg);
-	ConstructPbBackShield(rotThetaHPGe5, rotPhiHPGe5, cpyNo);
+	// G4RotateY3D rotThetaHPGe5(140*deg);
+	// G4RotateZ3D rotPhiHPGe5(30*deg);
+	// ConstructPbBackShield(rotThetaHPGe5, rotPhiHPGe5, cpyNo);
 
-	G4RotateY3D rotThetaHPGe6(140*deg);
-	G4RotateZ3D rotPhiHPGe6(150*deg);
-	ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
+	// G4RotateY3D rotThetaHPGe6(140*deg);
+	// G4RotateZ3D rotPhiHPGe6(150*deg);
+	// ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
 
 	// ---Si Dets--- //
 	G4RotateY3D rotThetaSi1(50*deg);

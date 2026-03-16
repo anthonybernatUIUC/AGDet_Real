@@ -22,7 +22,7 @@
     <tube name="GDMLTube039" rmin="0" rmax="75.82" startphi="0.0" deltaphi="360.0" aunit="deg" z="20" lunit="mm"/>
     <!-- HPGe Mount -->
     <tube name="GDMLTube038" rmin="0" rmax="42.45" startphi="0.0" deltaphi="360.0" aunit="deg" z="1" lunit="mm"/>
-    <tube name="GDMLTube037" rmin="0" rmax="20" startphi="0.0" deltaphi="360.0" aunit="deg" z="108.5" lunit="mm"/>
+    <tube name="GDMLTube037" rmin="0" rmax="12.5" startphi="0.0" deltaphi="360.0" aunit="deg" z="100" lunit="mm"/>
     <tube name="GDMLTube036" rmin="0" rmax="45" startphi="0.0" deltaphi="360.0" aunit="deg" z="5" lunit="mm"/>
     <tube name="GDMLTube035" rmin="42.5" rmax="45" startphi="0.0" deltaphi="360.0" aunit="deg" z="121.0" lunit="mm"/>
     <!-- Si Collimator -->
@@ -86,6 +86,7 @@
       <second ref="GDMLTube"/>
     </subtraction>
     <!-- Ge Det Cuts -->
+
     <!-- <subtraction name="Cut001">
       <first ref="Cut"/>
       <second ref="GDMLTube001"/>
@@ -103,42 +104,43 @@
       <second ref="GDMLTube003"/>
       <rotation name="R-GDMLTube003" unit="deg" x="-40" y="0" z="60"/>
     </subtraction> -->
+
     <!-- Si Det Cuts, Not Adjacent to Ge Tubes -->
     <subtraction name="Cut004">
       <first ref="Cut"/>
       <second ref="GDMLTube004"/>
-      <position name="P-GDMLTube004" unit="mm" y="-160.8693330549854" z="-134.98539803417324"/>
+      <position name="P-GDMLTube004" unit="mm" y="200*-0.766" z="200*-0.643"/>
       <rotation name="R-GDMLTube004" unit="deg" x="-50"/>
     </subtraction>
     <subtraction name="Cut005">
       <first ref="Cut004"/>
       <second ref="GDMLTube005"/>
-      <position name="P-GDMLTube005" unit="mm" x="192.39004496899216" y="111.07644425225186" z="-186.4084068090964"/>
+      <position name="P-GDMLTube005" unit="mm" x="200*0.663" y="200*0.383" z="200*-0.642"/>
       <rotation name="R-GDMLTube005" unit="deg" x="50" y="0" z="-60"/>
     </subtraction>
     <subtraction name="Cut006">
       <first ref="Cut005"/>
       <second ref="GDMLTube006"/>
-      <position name="P-GDMLTube006" unit="mm" x="-192.39004496899216" y="111.07644425225186" z="-186.4084068090964"/>
+      <position name="P-GDMLTube006" unit="mm" x="200*-0.663" y="200*0.383" z="200*-0.642"/>
       <rotation name="R-GDMLTube006" unit="deg" x="50" y="0" z="60"/>
     </subtraction>
     <!-- Si Det Cuts, Adjacent to Ge Tubes -->
     <subtraction name="Cut007">
       <first ref="Cut006"/>
       <second ref="GDMLTube007"/>
-      <position name="P-GDMLTube007" unit="mm" y="184.43" z="-77.37"/>
+      <position name="P-GDMLTube007" unit="mm" y="200*0.92215" z="200*-0.38685"/>
       <rotation name="R-GDMLTube007" unit="deg" x="67.24"/>
     </subtraction>
     <subtraction name="Cut008">
       <first ref="Cut007"/>
       <second ref="GDMLTube008"/>
-      <position name="P-GDMLTube008" unit="mm" x="159.7" y="-92.2" z="-77.4"/>
+      <position name="P-GDMLTube008" unit="mm" x="200*0.7985" y="200*-0.461" z="200*-0.387"/>
       <rotation name="R-GDMLTube008" unit="deg" x="-67.24" y="0" z="60"/>
     </subtraction>
     <subtraction name="Cut009">
       <first ref="Cut008"/>
       <second ref="GDMLTube009"/>
-      <position name="P-GDMLTube009" unit="mm" x="-159.7" y="-92.2" z="-77.4"/>
+      <position name="P-GDMLTube009" unit="mm" x="200*-0.7985" y="200*-0.461" z="200*-0.387"/>
       <rotation name="R-GDMLTube009" unit="deg" x="-67.24" y="0" z="-60"/>
     </subtraction>
     <!-- Ge-Si Tube Fusion 1 --> <!-- r = 308 mm for the big collimator of length 20 cm, 290 mm for the small tube of length 15 cm-->
@@ -291,7 +293,7 @@
     <union name="Fusion017">
       <first ref="Fusion016"/>
       <second ref="GDMLTube037"/>
-      <position name="P-GDMLTube037" unit="mm" x="0" y="0" z="60.5 + 106/2 - 1 + 2.5"/>
+      <position name="P-GDMLTube037" unit="mm" x="0" y="0" z="60.5 + 100/2 - 1 + 2.5"/>
     </union>
     <!-- You can't fuse solid of different materials, just have to make them hover next to each other -->
     <!-- <union name="Fusion018"> 
@@ -539,6 +541,7 @@
         <volumeref ref="AGDevice"/>
         <!-- <positionref ref="GoAwayPos"/> -->
         <rotation name="R-AlphaGamma" unit="deg" y="180"/>
+        <!-- <rotation name="R-AlphaGamma" unit="deg" z="90"/> -->
       </physvol>
 
     </volume>
