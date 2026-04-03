@@ -28,15 +28,12 @@
 
 #include "PrimaryGeneratorAction.hh"
 #include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
 #include "G4Geantino.hh"
 #include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
-
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include <G4Transform3D.hh>
+#include <G4RotationMatrix.hh>
 
 
 PrimaryGeneratorAction::PrimaryGeneratorAction() : 
@@ -54,11 +51,15 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 
 	fParticleGun->SetParticleEnergy(1*MeV);
 	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
+
+	fMessengerGun = new G4GenericMessenger(this, "/gun/", "Gun control");
+	fMessengerGun->DeclareMethod("setMode", &PrimaryGeneratorAction::SwitchGun, "Set gun mode");
 	
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 	delete fParticleGun;
+	delete fMessengerGun;
 }
 
 void PrimaryGeneratorAction::generateBeamlineHit(G4Event* anEvent) {
@@ -107,27 +108,70 @@ void PrimaryGeneratorAction::generateNBSRHit(G4Event* anEvent) {
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
-void PrimaryGeneratorAction::generateAlphaSource(G4Event* anEvent) {
+void PrimaryGeneratorAction::generateAlphaSource() {
 
-	G4double cosTheta = G4UniformRand();
+	// G4double cosTheta = G4UniformRand();
+    // G4double sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
+    // G4double phi = 2 * M_PI * G4UniformRand();
+
+    // G4double ux = sinTheta * std::cos(phi);
+    // G4double uy = sinTheta * std::sin(phi);
+    // G4double uz = cosTheta;
+
+    // G4ThreeVector direction(ux, uy, uz);
+
+	G4double cosTheta = 0.015*G4UniformRand() + 0.985;
     G4double sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
-    G4double phi = 2.0 * M_PI * G4UniformRand();
+    G4double phi = 2 * M_PI * G4UniformRand();
 
     G4double ux = sinTheta * std::cos(phi);
     G4double uy = sinTheta * std::sin(phi);
     G4double uz = cosTheta;
 
-    G4ThreeVector direction(ux, uy, uz);
+	G4ThreeVector direction(ux, uy, uz);
 
-    fParticleGun->SetParticleMomentumDirection(direction);
+	std::vector<G4ThreeVector> detDirs = {
+		G4ThreeVector(0, 0, 1).rotateY(50*deg).rotateZ(0*deg),
+		G4ThreeVector(0, 0, 1).rotateY(50*deg).rotateZ(120*deg),
+		G4ThreeVector(0, 0, 1).rotateY(50*deg).rotateZ(-120*deg),
+		G4ThreeVector(0, 0, 1).rotateY(-67.24*deg).rotateZ(0*deg),
+		G4ThreeVector(0, 0, 1).rotateY(-67.24*deg).rotateZ(120*deg),
+		G4ThreeVector(0, 0, 1).rotateY(-67.24*deg).rotateZ(-120*deg)
+	};
 
-    fParticleGun->GeneratePrimaryVertex(anEvent);
+	G4int detectorSelector = (G4int)(6.0 * G4UniformRand());
+	G4ThreeVector detPos = 21*cm * detDirs[detectorSelector];
+
+	// Compute new axis from shifted source
+	G4ThreeVector newAxis = (detPos - fParticleGun->GetParticlePosition()).unit();
+
+	// Rotate your cone to that axis
+	direction.rotateUz(newAxis);
+
+	fParticleGun->SetParticleMomentumDirection(direction);
+}
+
+void PrimaryGeneratorAction::generateDefaultSource() {
+	
+	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
+}
+
+void PrimaryGeneratorAction::generateAlphaInUniformDisk(G4double rad) {
+
+	G4double r = 5*mm * std::sqrt(G4UniformRand());
+    G4double phi2 = 2 * M_PI * G4UniformRand();
+	fParticleGun->SetParticlePosition(r*G4ThreeVector(std::cos(phi2), std::sin(phi2), 0));
+}
+
+void PrimaryGeneratorAction::generateAlphaConstShift(G4ThreeVector shift) {
+	
+	fParticleGun->SetParticlePosition(shift);
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
-	
-	generateAlphaSource(anEvent);
+	generateAlphaSource();
+	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 
 	// if (generateBackground) {

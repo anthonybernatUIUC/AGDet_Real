@@ -1,13 +1,21 @@
 /control/verbose 1
 /run/verbose 0
-/vis/open OGLI
+/vis/open OGL 600x600-0+0
 
-/geometry/test/run
-/geometry/test/tolerance 1 nm
+#/geometry/test/run
+#/geometry/test/tolerance 1 nm
 
-/vis/geometry/set/visibility ApertureWrapper1 0 false
+#/vis/geometry/set/visibility AGDevice 0 false
+#/vis/geometry/set/visibility AlCap 0 false
+#/vis/geometry/set/visibility CuWrap 0 false
+#/vis/geometry/set/visibility SiCollimator 0 false
+#/vis/geometry/set/visibility HPGeMount 0 false
+#/vis/geometry/set/visibility CarbonWindow 0 false
+
 
 /vis/drawVolume
 /vis/viewer/set/style surface
 /vis/viewer/set/autoRefresh true
 /vis/viewer/flush
+
+/vis/scene/add/axes 0 0 0 10 cm

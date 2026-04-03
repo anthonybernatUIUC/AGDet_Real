@@ -11,10 +11,12 @@ class MySiDet : public G4VSensitiveDetector {
 
     public:
         MySiDet(G4String);
+        MySiDet(G4String, G4int firstSiDetIdx);
         ~MySiDet();
     
     private:
         virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+        G4int firstSiDetIdx;
 
 };
 

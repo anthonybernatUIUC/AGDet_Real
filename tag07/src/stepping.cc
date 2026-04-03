@@ -54,10 +54,11 @@ void MySteppingAction::RecordDeposition(const G4Step *step) {
 	// 		track->SetTrackStatus(fKillTrackAndSecondaries);
 	// 	}
 	// } 
+
 	if (fSiScoringVolumes.find(volumeHit) != fSiScoringVolumes.end()) {		
 		if (part == G4Alpha::Alpha()) {
 			fEventAction->AddEdep(edep, 3);
-			fEventAction->AddEdep(edep, copyNo - 7);
+			fEventAction->AddEdep(edep, copyNo - detectorConstruction->GetFirstSiDetIdx() + 9);
 		} else if (part == G4Electron::Definition()) {
 			fEventAction->AddEdep(edep, 5);
 			fEventAction->AddEdep(edep, 7);

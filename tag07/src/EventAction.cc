@@ -61,6 +61,7 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 		if (map[i] > tol) {
 			man->FillNtupleDColumn(i, 0, map[i]);
 			man->AddNtupleRow(i);
+		} else {
 		}
 	}
 	map.clear();

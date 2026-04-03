@@ -32,7 +32,12 @@
 #define PrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4GenericMessenger.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4ParticleTable.hh"
 #include "G4ParticleGun.hh"
+#include "Randomize.hh"
+
 #include "globals.hh"
 
 class G4Event;
@@ -47,13 +52,33 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 		void generateBeamlineHit(G4Event* anEvent);
 		void generateCosmicRayHit(G4Event* anEvent);
 		void generateNBSRHit(G4Event* anEvent);
-		void generateAlphaSource(G4Event* anEvent);
+		void generateAlphaSource();
+		void generateDefaultSource();
+		void generateAlphaInUniformDisk(G4double rad);
+		void generateAlphaConstShift(G4ThreeVector shift);
+		void SwitchGun(G4String mode) { 
+			gunMode = mode; 
+			if (gunMode == "default" || gunMode == "Default") {
+				generateDefaultSource();
+			} else if (gunMode == "uniformArea") {
+				generateAlphaInUniformDisk(5*mm);
+			} else if (gunMode == "left") {
+				generateAlphaConstShift(G4ThreeVector(-5*mm, 0, 0));
+			} else if (gunMode == "right") {
+				generateAlphaConstShift(G4ThreeVector(5*mm, 0, 0));
+			} else {
+				G4cout << "ts jawn NOT a gun mode" << G4endl;
+			}
+		};
+		G4String GetGunMode() { return gunMode; };
 
     	G4int Z, A;
             
   	private:
+		G4GenericMessenger* fMessengerGun;
     	G4ParticleGun* fParticleGun;
 		G4ParticleTable* particleTable;
+		G4String gunMode = "default";
 		bool generateBackground;
 		bool generateCosmicRay;
 		bool generateNBSR;

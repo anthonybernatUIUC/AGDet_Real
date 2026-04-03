@@ -30,12 +30,13 @@
 
 DetectorConstruction::DetectorConstruction() {
 	
-	fMessenger = new G4GenericMessenger(this, "/target/", "target control");
+	fMessenger = new G4GenericMessenger(this, "/target/", "Target control");
 	fMessengerShell = new G4GenericMessenger(this, "/shell/", "Isotope shell control");
+	fMessengerAperture = new G4GenericMessenger(this, "/aperture/", "Aperture control");
 
 	fMessenger->DeclareMethod("setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width");
 	fMessengerShell->DeclareMethod("setShellType", &DetectorConstruction::SetShellType, "Set the type of shell");
-
+	fMessengerAperture->DeclareMethod("shiftAperture", &DetectorConstruction::ShiftAperture, "Shift the aperture in microns");
 	DefineParameters();
 	DefineMaterials();
 }
@@ -50,7 +51,7 @@ DetectorConstruction::~DetectorConstruction() {
 
 void DetectorConstruction::DefineParameters() {
 
-	// Origin centered on target center
+	// Origin centered on sphere/target center
 
 	fWorldSize = 5*m;
 	dTarget = 10*cm;
@@ -310,22 +311,65 @@ void DetectorConstruction::ConstructNBSR(G4RotateY3D rotTheta, G4RotateZ3D rotPh
 	cpyNo++;
 }
 
+void DetectorConstruction::AddLocalAxes(G4LogicalVolume* parentLV, G4double length, G4double radius) {
+            
+	if (!parentLV) return;
+
+	auto nist = G4NistManager::Instance();
+	auto mat = nist->FindOrBuildMaterial("G4_AIR");
+
+	// Cylinder aligned along Z by default → we'll rotate for X/Y
+	auto axisSolid = new G4Tubs("AxisSolid", 0, radius, length/2., 0., 360.*deg);
+	auto axisSolidZ = new G4Tubs("AxisSolid", 0, radius/2, 202*mm/2, 0., 360.*deg);
+
+	// --- Z axis ---
+	auto zLV = new G4LogicalVolume(axisSolidZ, mat, "ZAxisLV");
+	auto zVis = new G4VisAttributes(G4Colour::Blue());
+	zVis->SetForceSolid(true);
+	zLV->SetVisAttributes(zVis);
+
+	new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -210*mm/2), zLV, "ZAxisPV", parentLV, false, 0, false);
+
+	// --- X axis ---
+	// auto xLV = new G4LogicalVolume(axisSolid, mat, "XAxisLV");
+	// auto xVis = new G4VisAttributes(G4Colour::Red());
+	// xVis->SetForceSolid(true);
+	// xLV->SetVisAttributes(xVis);
+
+	// auto rotX = new G4RotationMatrix();
+	// rotX->rotateY(90.*deg);  // Z -> X
+
+	// new G4PVPlacement(rotX, G4ThreeVector(length/2., 0, 0), xLV, "XAxisPV", parentLV, false, 0, false);
+
+	// --- Y axis ---
+	// auto yLV = new G4LogicalVolume(axisSolid, mat, "YAxisLV");
+	// auto yVis = new G4VisAttributes(G4Colour::Green());
+	// yVis->SetForceSolid(true);
+	// yLV->SetVisAttributes(yVis);
+
+	// auto rotY = new G4RotationMatrix();
+	// rotY->rotateX(-90.*deg); // Z -> Y
+
+	// new G4PVPlacement(rotY, G4ThreeVector(0, length/2., 0), yLV, "YAxisPV", parentLV, false, 0, false);
+}
+
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4cout << "Constructing Geometry..." << G4endl;
 
 	G4LogicalVolumeStore* const store = G4LogicalVolumeStore::GetInstance();
+	G4PhysicalVolumeStore* const pvStore = G4PhysicalVolumeStore::GetInstance();
 	// clear store to avoid dupes and annoying warnings since reintializing geometry likely calls Construct() again
 	if (store->size() > 0) store->clear();
+	if (pvStore->size() > 0) pvStore->clear();
 
 	G4GDMLParser* fParser = new G4GDMLParser();
-	fParser->Read("../TheRebirthGDMLMain.gdml", false);
+	fParser->Read("../Rebirth3.gdml", false);
 	G4cout << "-------------------------------" << G4endl;
 
 	physWorld = fParser->GetWorldVolume();
 	logicWorld = physWorld->GetLogicalVolume();
-	logicWorld->SetVisAttributes(G4VisAttributes(G4Color(1, 0, 0, .05)));
-	// logicWorld->SetUserLimits(new G4UserLimits(10 * nm));
+	logicWorld->SetVisAttributes(G4VisAttributes(G4Color(1, 0, 0, .05))); // transparent red
 	
 	G4LogicalVolume* AGDevice = store->GetVolume("AGDevice");
 	AGDevice->SetMaterial(matSteel);
@@ -340,7 +384,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4LogicalVolume* SiDetAperture = store->GetVolume("SiDetAperture");
 	SiDetAperture->SetMaterial(matSteel);
-	SiDetAperture->SetVisAttributes(G4VisAttributes(G4Color::Green()));
+	SiDetAperture->SetVisAttributes(G4VisAttributes(G4Color::Red()));
+	// AddLocalAxes(SiDetAperture, 5*cm, 0.025*cm);
 
 	G4LogicalVolume* SiCollimator = store->GetVolume("SiCollimator");
 	SiCollimator->SetMaterial(matSteel);
@@ -359,69 +404,92 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	G4int cpyNo = 10;
 
 	// ---Front Ge Det locations--- // 
-	G4RotateY3D rotThetaHPGe1(40*deg);
-	G4RotateZ3D rotPhiHPGe1(90*deg);
-	ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
-	ConstructPbBackShield(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
+	// G4RotateY3D rotThetaHPGe1(-40*deg);
+	// G4RotateZ3D rotPhiHPGe1(0*deg);
+	// ConstructHPGeDetector(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
+	// ConstructPbBackShield(rotThetaHPGe1, rotPhiHPGe1, cpyNo);
 
-	G4RotateY3D rotThetaHPGe2(40*deg);
-	G4RotateZ3D rotPhiHPGe2(-30*deg);
-	ConstructHPGeDetector(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
-	ConstructPbBackShield(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
+	// G4RotateY3D rotThetaHPGe2(-40*deg);
+	// G4RotateZ3D rotPhiHPGe2(120*deg);
+	// ConstructHPGeDetector(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
+	// ConstructPbBackShield(rotThetaHPGe2, rotPhiHPGe2, cpyNo);
 
-	G4RotateY3D rotThetaHPGe3(40*deg);
-	G4RotateZ3D rotPhiHPGe3(-150*deg);
-	ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
-	ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
-
-	// ---Rear Ge Det locations--- //
-	// G4RotateY3D rotThetaHPGe4(220*deg);
-	// G4RotateZ3D rotPhiHPGe4(90*deg);
-	// ConstructPbBackShield(rotThetaHPGe4, rotPhiHPGe4, cpyNo);
-
-	// G4RotateY3D rotThetaHPGe5(140*deg);
-	// G4RotateZ3D rotPhiHPGe5(30*deg);
-	// ConstructPbBackShield(rotThetaHPGe5, rotPhiHPGe5, cpyNo);
-
-	// G4RotateY3D rotThetaHPGe6(140*deg);
-	// G4RotateZ3D rotPhiHPGe6(150*deg);
-	// ConstructPbBackShield(rotThetaHPGe6, rotPhiHPGe6, cpyNo);
+	// G4RotateY3D rotThetaHPGe3(-40*deg);
+	// G4RotateZ3D rotPhiHPGe3(-120*deg);
+	// ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
+	// ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 
 	// ---Si Dets--- //
+	firstSiDetIdx = cpyNo; // for use in MySiDet to determine tuple numbers
 	G4RotateY3D rotThetaSi1(50*deg);
-	G4RotateZ3D rotPhiSi1(-90*deg);
+	G4RotateZ3D rotPhiSi1(0*deg);
 	ConstructSiDetector(rotThetaSi1, rotPhiSi1, cpyNo);
 
 	G4RotateY3D rotThetaSi2(50*deg);
-	G4RotateZ3D rotPhiSi2(30*deg);
+	G4RotateZ3D rotPhiSi2(120*deg);
 	ConstructSiDetector(rotThetaSi2, rotPhiSi2, cpyNo);
 
 	G4RotateY3D rotThetaSi3(50*deg);
-	G4RotateZ3D rotPhiSi3(150*deg);
+	G4RotateZ3D rotPhiSi3(-120*deg);
 	ConstructSiDetector(rotThetaSi3, rotPhiSi3, cpyNo);
 
-	G4RotateY3D rotThetaSi4(67.24*deg);
-	G4RotateZ3D rotPhiSi4(90*deg);
+	G4RotateY3D rotThetaSi4(-67.24*deg);
+	G4RotateZ3D rotPhiSi4(0*deg);
 	ConstructSiDetector(rotThetaSi4, rotPhiSi4, cpyNo);
 
-	G4RotateY3D rotThetaSi5(67.24*deg);
-	G4RotateZ3D rotPhiSi5(210*deg);
+	G4RotateY3D rotThetaSi5(-67.24*deg);
+	G4RotateZ3D rotPhiSi5(120*deg);
 	ConstructSiDetector(rotThetaSi5, rotPhiSi5, cpyNo);
 
-	G4RotateY3D rotThetaSi6(67.24*deg);
-	G4RotateZ3D rotPhiSi6(-30*deg);
+	G4RotateY3D rotThetaSi6(-67.24*deg);
+	G4RotateZ3D rotPhiSi6(-120*deg);
 	ConstructSiDetector(rotThetaSi6, rotPhiSi6, cpyNo);
-
-	// G4RotateY3D rotThetaTar(0*deg);
-	// G4RotateZ3D rotPhiTar(0*deg);
-	// ConstructTarget(rotThetaTar, rotPhiTar, cpyNo);
 
 	// ConstructIsotopeShell(cpyNo);
 	// ConstructAtmosphere(10, cpyNo);
 	
-	G4RotateY3D rotThetaNBSR(0*deg);
-	G4RotateZ3D rotPhiNBSR(0*deg);
-	ConstructNBSR(rotThetaNBSR, rotPhiNBSR, cpyNo);
+	// G4RotateY3D rotThetaNBSR(0*deg);
+	// G4RotateZ3D rotPhiNBSR(0*deg);
+	// ConstructNBSR(rotThetaNBSR, rotPhiNBSR, cpyNo);
+
+	
+	// auto air = man->FindOrBuildMaterial("G4_AIR");
+	// auto point = new G4Sphere("Point", 0, 0.04*cm, 0., 360.*deg, 0., 180.*deg);
+	// auto pointLV1 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV1->SetVisAttributes(G4VisAttributes(G4Color::Cyan())); // MR
+	// // new G4PVPlacement(nullptr, G4ThreeVector(9.025*mm, 0, 0), pointLV1, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(9.351*mm, 0, 0.140*mm), pointLV1, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	
+	// auto pointLV2 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV2->SetVisAttributes(G4VisAttributes(G4Color::Green())); // TL
+	// // new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, -7.815*mm), pointLV2, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(-5.385*mm, 0, -6.070*mm), pointLV2, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	
+	// auto pointLV3 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV3->SetVisAttributes(G4VisAttributes(G4Color::Blue())); // BL
+	// // new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, 7.815*mm), pointLV3, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(-4.1*mm, 0, 7.939*mm), pointLV3, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+
+	// auto pointLV4 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV4->SetVisAttributes(G4VisAttributes(G4Color::Red())); // ML
+	// // new G4PVPlacement(nullptr, G4ThreeVector(-14.464*mm, 0, 0), pointLV4, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(-14.365*mm, 0, -0.203*mm), pointLV4, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+
+	// auto pointLV5 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV5->SetVisAttributes(G4VisAttributes(G4Color::Magenta())); // TR
+	// // new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, -12.552*mm), pointLV5, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(3.343*mm, 0, -12.072*mm), pointLV5, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+
+	// auto pointLV6 = new G4LogicalVolume(point, air, "PointLV");
+	// pointLV6->SetVisAttributes(G4VisAttributes(G4Color::Yellow())); // BR
+	// // new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, 12.552*mm), pointLV6, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+	// new G4PVPlacement(nullptr, G4ThreeVector(8.321*mm, 0, 12.449*mm), pointLV6, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
+
+	// G4RotationMatrix* rotX90 = new G4RotationMatrix();
+	// rotX90->rotateX(90.*deg);
+	// auto xzPlane = new G4Tubs("XZPlane", 0, 10*cm, 0.01*cm, 0., 360.*deg);
+	// auto xzLV = new G4LogicalVolume(xzPlane, G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic"), "XZPlaneLV");
+	// new G4PVPlacement(rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
 
 	delete fParser;
 	return physWorld; 
@@ -429,7 +497,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 void DetectorConstruction::ConstructSDandField() {
 	
-	sensDetSi = new MySiDet("SiSensDet");
+	sensDetSi = new MySiDet("SiSensDet", firstSiDetIdx);
 	sensDetGe = new MyGeDet("GeSensDet");
 	if (!GeDets.empty()) {
 		G4cout << "the now now and never" << G4endl;

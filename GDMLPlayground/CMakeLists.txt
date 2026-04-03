@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16...3.21)
 project(GDMLViewer)
 
-find_package(Geant4 REQUIRED vis_all)
+find_package(Geant4 REQUIRED ui_all vis_all) 
 
 add_executable(gdml_viewer gdml.cc)
 target_link_libraries(gdml_viewer PRIVATE ${Geant4_LIBRARIES})

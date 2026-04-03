@@ -49,6 +49,7 @@
 #include "G4Color.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
+#include "G4PhysicalVolumeStore.hh"
 #include "G4UImanager.hh"
 #include "G4UserLimits.hh"
 
@@ -67,6 +68,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		std::set<G4LogicalVolume*> GetGeScoringVolumes() const { return GeDets; }
 		std::set<G4LogicalVolume*> GetSiScoringVolumes() const { return SiDets; }
 		G4LogicalVolume* GetTargetVolume() const { return logicTargetCyl; }
+		G4int GetFirstSiDetIdx() const { return firstSiDetIdx; }
 		G4double GetTargetWidth() { return zTarget; }
 
 		void ScaleTargetWidth(G4double scale) { 
@@ -88,6 +90,33 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			}  
 		}
 
+		void ShiftAperture(G4double shift) {
+			
+			G4PhysicalVolumeStore* const pvStore = G4PhysicalVolumeStore::GetInstance();
+
+			G4VPhysicalVolume* a1 = pvStore->GetVolume("PV_Aperture1");
+			G4cout << "Old MR position: " << a1->GetTranslation() << G4endl;
+			a1->SetTranslation(a1->GetTranslation() + shift*um*G4ThreeVector(0.766, 0, 0.6428));
+			G4cout << "New MR position: " << a1->GetTranslation() << G4endl;
+
+			G4VPhysicalVolume* a2 = pvStore->GetVolume("PV_Aperture2");
+			a2->SetTranslation(a2->GetTranslation() + shift*um*G4ThreeVector(-0.383, 0.6634, 0.6428));
+
+			G4VPhysicalVolume* a3 = pvStore->GetVolume("PV_Aperture3");
+			a3->SetTranslation(a3->GetTranslation() + shift*um*G4ThreeVector(-0.383, -0.6634, 0.6428));
+
+			G4VPhysicalVolume* a4 = pvStore->GetVolume("PV_Aperture4");
+			a4->SetTranslation(a4->GetTranslation() + shift*um*G4ThreeVector(-0.92215, 0, 0.38685));
+
+			G4VPhysicalVolume* a5 = pvStore->GetVolume("PV_Aperture5");
+			a5->SetTranslation(a5->GetTranslation() + shift*um*G4ThreeVector(0.4611, 0.7986, 0.3869));
+
+			G4VPhysicalVolume* a6 = pvStore->GetVolume("PV_Aperture6");
+			a6->SetTranslation(a6->GetTranslation() + shift*um*G4ThreeVector(0.4611, -0.7986, 0.3869));
+
+			G4RunManager::GetRunManager()->GeometryHasBeenModified();
+		}
+
 		void printVolumeStore(G4LogicalVolumeStore* const store) {
 			for (auto i = store->cbegin(); i != store->cend(); ++i) {
 				G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
@@ -101,7 +130,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   	private:
  
 		G4int shellType;
-		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield;
+		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield, firstSiDetIdx;
 		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat, *H2, *LH2;
 		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe, *elH, *elCl, *elNa, *elK, *elCo;
 		G4Isotope *B10Iso, *Cl35, *Cr50, *Cr52, *Cr53, *Fe56, *Ni58, *Ni60, *K40, *Co60, *H1,
@@ -118,7 +147,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, *physTargetCyl, 
 		*physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere, *physNBSR;
 
-		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr;
+		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr, *fMessengerAperture = nullptr;
 		G4NistManager *man;
 		G4GDMLParser* fParser;
 		MySiDet* sensDetSi;
@@ -142,6 +171,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		void ConstructIsotopeShell(G4int& cpyno);
 		void ConstructAtmosphere(G4int numLayers, G4int& cpyNo);
 		void ConstructNBSR(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
+		void AddLocalAxes(G4LogicalVolume* parentLV, G4double length, G4double radius);
 		void ConstructTarget();
 
 };

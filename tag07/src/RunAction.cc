@@ -82,7 +82,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fEdepGeBackground");
 	man->FinishNtuple(8);
 
-	man->CreateNtuple("AlphaDet16", "AlphaDet16");
+	man->CreateNtuple("AlphaDet1", "AlphaDet1");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
@@ -90,7 +90,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(9);
 
-	man->CreateNtuple("AlphaDet17", "AlphaDet17");
+	man->CreateNtuple("AlphaDet2", "AlphaDet2");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
@@ -98,7 +98,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(10);
 
-	man->CreateNtuple("AlphaDet18", "AlphaDet18");
+	man->CreateNtuple("AlphaDet3", "AlphaDet3");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
@@ -106,7 +106,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(11);
 
-	man->CreateNtuple("AlphaDet19", "AlphaDet19");
+	man->CreateNtuple("AlphaDet4", "AlphaDet4");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
@@ -114,7 +114,7 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(12);
 
-	man->CreateNtuple("AlphaDet20", "AlphaDet20");
+	man->CreateNtuple("AlphaDet5", "AlphaDet5");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
@@ -122,14 +122,13 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(13);
 
-	man->CreateNtuple("AlphaDet21", "AlphaDet21");
+	man->CreateNtuple("AlphaDet6", "AlphaDet6");
 	man->CreateNtupleDColumn("fEdepAlpha");
 	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(14);
-
 
 }
 
@@ -143,8 +142,21 @@ G4Run* RunAction::GenerateRun() {
 void RunAction::BeginOfRunAction(const G4Run*) { 
   	
   	if (fPrimary) { 
-		G4ParticleDefinition* particle = fPrimary->GetParticleGun()->GetParticleDefinition();
-		G4double energy = fPrimary->GetParticleGun()->GetParticleEnergy();
+		G4ParticleGun* gun = fPrimary->GetParticleGun();
+		G4String mode = fPrimary->GetGunMode();
+		if (mode == "default" || mode == "Default") {
+			G4cout << "Default gun mode: alpha source at center" << G4endl;
+		} else if (mode == "uniformArea") {
+			G4cout << "uniformArea gun mode: alpha source in uniform disk" << G4endl;
+		} else if (mode == "left") {
+			G4cout << "left gun mode: alpha source on left side" << G4endl;
+		} else if (mode == "right") {
+			G4cout << "right gun mode: alpha source on right side" << G4endl;
+		} else {
+			G4cout << "ts jawn NOT a gun mode" << G4endl;
+		}
+		G4ParticleDefinition* particle = gun->GetParticleDefinition();
+		G4double energy = gun->GetParticleEnergy();
 		fRun->SetPrimary(particle, energy);
   	}   
 

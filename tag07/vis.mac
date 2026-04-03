@@ -1,17 +1,17 @@
 /control/cout/ignoreThreadsExcept 0
 
-/geometry/test/run
-/geometry/test/tolerance 1 nm
+#/geometry/test/run
+#/geometry/test/tolerance 1 nm
 
 /shell/setShellType 1
+/gun/setMode default
 #/run/initialize
 /run/reinitializeGeometry
 /run/initialize
-#/process/inactivate nKiller
 /analysis/setFileName AGUI
 
 /vis/open OGL 600x600-0+0
-/vis/viewer/set/autoRefresh false
+/vis/viewer/set/autoRefresh true
 
 /vis/drawVolume
 /vis/viewer/set/background 0.0 0.0 0.0
