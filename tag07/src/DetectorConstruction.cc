@@ -67,6 +67,15 @@ void DetectorConstruction::DefineParameters() {
 	zPbBackShield = 8.5725*cm;
 	shellType = 0;
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
+
+	SiApertureNormals = { 
+		{"MR", G4ThreeVector(0.766, 0, 0.6428)}, 
+		{"TL", G4ThreeVector(-0.383, 0.6634, 0.6428)}, 
+		{"BL", G4ThreeVector(-0.383, -0.6634, 0.6428)},
+		{"ML", G4ThreeVector(-0.92215, 0, 0.38685)}, 
+		{"TR", G4ThreeVector(0.4611, 0.7986, 0.3869)}, 
+		{"BR", G4ThreeVector(0.4611, -0.7986, 0.3869)} 
+	};
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -195,7 +204,6 @@ void DetectorConstruction::ConstructTarget(G4RotateY3D rotTheta, G4RotateZ3D rot
 	solidTargetCyl = new G4Tubs("solidTargetCyl" + std::to_string(cpyNo), 0, dTarget / 2, zTarget / 2, 0*deg, 360*deg);
 	logicTargetCyl = new G4LogicalVolume(solidTargetCyl, B10, "logicTargetCyl" + std::to_string(cpyNo));
 	logicTargetCyl->SetMaterial(B10);
-	// logicTargetCyl->SetUserLimits(new G4UserLimits(10 * nm));
 	physTargetCyl = new G4PVPlacement(
 		transformTarget, logicTargetCyl, "physTargetCyl" + std::to_string(cpyNo), logicWorld, false, 100, false);
 	logicTargetCyl->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));
@@ -353,6 +361,60 @@ void DetectorConstruction::AddLocalAxes(G4LogicalVolume* parentLV, G4double leng
 	// new G4PVPlacement(rotY, G4ThreeVector(0, length/2., 0), yLV, "YAxisPV", parentLV, false, 0, false);
 }
 
+void DetectorConstruction::ConstructTriangle(G4GDMLParser* fParser) {
+
+	// std::vector<G4ThreeVector> points = {
+	// 	G4ThreeVector(9.025, 0, 0)*mm, 
+	// 	G4ThreeVector(-4.512, 0, -7.815)*mm, 
+	// 	G4ThreeVector(-4.512, 0, 7.815)*mm, 
+	// 	G4ThreeVector(-14.464, 0, 0)*mm, 
+	// 	G4ThreeVector(7.247, 0, -12.552)*mm,
+	// 	G4ThreeVector(7.247, 0, 12.552)*mm 
+	// };
+	std::vector<G4ThreeVector> points = {
+		G4ThreeVector(9.351, 0, 0.140)*mm, 
+		G4ThreeVector(-5.385, 0, -6.070)*mm, 
+		G4ThreeVector(-4.1, 0, 7.939)*mm, 
+		G4ThreeVector(-14.365, 0, -0.203)*mm, 
+		G4ThreeVector(3.343, 0, -12.072)*mm,
+		G4ThreeVector(8.321, 0, 12.449)*mm
+	};
+
+	G4Sphere* point = new G4Sphere("Point", 0, 0.04*cm, 0., 360.*deg, 0., 180.*deg);
+	G4LogicalVolume* motherVol = fParser->GetVolume("worldVOL");
+	
+	// ========== MR ==========
+	G4LogicalVolume* pointLV1 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV1->SetVisAttributes(G4VisAttributes(G4Color::Cyan())); 
+	new G4PVPlacement(nullptr, points[0], pointLV1, "PointPV", motherVol, false, 0, false);
+	// ========== TL ==========
+	G4LogicalVolume* pointLV2 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV2->SetVisAttributes(G4VisAttributes(G4Color::Green())); 
+	new G4PVPlacement(nullptr, points[1], pointLV2, "PointPV", motherVol, false, 0, false);
+	// ========== BL ==========
+	G4LogicalVolume* pointLV3 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV3->SetVisAttributes(G4VisAttributes(G4Color::Blue())); 
+	new G4PVPlacement(nullptr, points[2], pointLV3, "PointPV", motherVol, false, 0, false);
+	// ========== ML ==========
+	G4LogicalVolume* pointLV4 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV4->SetVisAttributes(G4VisAttributes(G4Color::Red())); 
+	new G4PVPlacement(nullptr, points[3], pointLV4, "PointPV", motherVol, false, 0, false);
+	// ========== TR ==========
+	G4LogicalVolume* pointLV5 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV5->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));
+	new G4PVPlacement(nullptr, points[4], pointLV5, "PointPV", motherVol, false, 0, false);
+	// ========== BR ==========
+	G4LogicalVolume* pointLV6 = new G4LogicalVolume(point, Galactic, "PointLV");
+	pointLV6->SetVisAttributes(G4VisAttributes(G4Color::Yellow())); 
+	new G4PVPlacement(nullptr, points[5], pointLV6, "PointPV", motherVol, false, 0, false);
+
+	G4RotationMatrix* rotX90 = new G4RotationMatrix();
+	rotX90->rotateX(90*deg);
+	G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, 10*cm, 0.01*cm, 0., 360.*deg);
+	G4LogicalVolume* xzLV = new G4LogicalVolume(xzPlane, Galactic, "XZPlaneLV");
+	new G4PVPlacement(rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
+}
+
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 	G4cout << "Constructing Geometry..." << G4endl;
@@ -419,6 +481,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// ConstructHPGeDetector(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 	// ConstructPbBackShield(rotThetaHPGe3, rotPhiHPGe3, cpyNo);
 
+	// --Back Ge Det locations--- //
+	// todo
+
 	// ---Si Dets--- //
 	firstSiDetIdx = cpyNo; // for use in MySiDet to determine tuple numbers
 	G4RotateY3D rotThetaSi1(50*deg);
@@ -451,45 +516,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// G4RotateY3D rotThetaNBSR(0*deg);
 	// G4RotateZ3D rotPhiNBSR(0*deg);
 	// ConstructNBSR(rotThetaNBSR, rotPhiNBSR, cpyNo);
-
-	
-	// auto air = man->FindOrBuildMaterial("G4_AIR");
-	// auto point = new G4Sphere("Point", 0, 0.04*cm, 0., 360.*deg, 0., 180.*deg);
-	// auto pointLV1 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV1->SetVisAttributes(G4VisAttributes(G4Color::Cyan())); // MR
-	// // new G4PVPlacement(nullptr, G4ThreeVector(9.025*mm, 0, 0), pointLV1, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(9.351*mm, 0, 0.140*mm), pointLV1, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	
-	// auto pointLV2 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV2->SetVisAttributes(G4VisAttributes(G4Color::Green())); // TL
-	// // new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, -7.815*mm), pointLV2, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(-5.385*mm, 0, -6.070*mm), pointLV2, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	
-	// auto pointLV3 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV3->SetVisAttributes(G4VisAttributes(G4Color::Blue())); // BL
-	// // new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, 7.815*mm), pointLV3, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(-4.1*mm, 0, 7.939*mm), pointLV3, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-
-	// auto pointLV4 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV4->SetVisAttributes(G4VisAttributes(G4Color::Red())); // ML
-	// // new G4PVPlacement(nullptr, G4ThreeVector(-14.464*mm, 0, 0), pointLV4, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(-14.365*mm, 0, -0.203*mm), pointLV4, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-
-	// auto pointLV5 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV5->SetVisAttributes(G4VisAttributes(G4Color::Magenta())); // TR
-	// // new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, -12.552*mm), pointLV5, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(3.343*mm, 0, -12.072*mm), pointLV5, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-
-	// auto pointLV6 = new G4LogicalVolume(point, air, "PointLV");
-	// pointLV6->SetVisAttributes(G4VisAttributes(G4Color::Yellow())); // BR
-	// // new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, 12.552*mm), pointLV6, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-	// new G4PVPlacement(nullptr, G4ThreeVector(8.321*mm, 0, 12.449*mm), pointLV6, "PointPV", fParser->GetVolume("worldVOL"), false, 0, false);
-
-	// G4RotationMatrix* rotX90 = new G4RotationMatrix();
-	// rotX90->rotateX(90.*deg);
-	// auto xzPlane = new G4Tubs("XZPlane", 0, 10*cm, 0.01*cm, 0., 360.*deg);
-	// auto xzLV = new G4LogicalVolume(xzPlane, G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic"), "XZPlaneLV");
-	// new G4PVPlacement(rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
 
 	delete fParser;
 	return physWorld; 

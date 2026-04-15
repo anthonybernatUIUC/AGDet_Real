@@ -1,0 +1,48 @@
+~~~~TestBKG2~~~~
+Simulation to make a background spectra for the germanium detectors (Second Attempt)
+
+This simulation was built for geant4 v11.1.0
+
+The purpose of this simulation is to simulate a background spectrum that the Alpha-Gamma Device will be at and to study the effects of sheilding the detector has on the magnitude of the spectrum.
+
+This simulation was built off of the rdecay01 example. Credit goes to the Geant4 team for providing this example for public use.
+
+Create this simulation as you would for the rdecay01 example (e.g. make build folder and use cmake).
+
+
+~~~~Files Included~~~~
+CMakeLists.txt - CMake list to build example
+GNUmakefile - [Not sure of use, was in rdecay01 example]
+History - Development progress of rdecay01 example
+README_TestBKG - This file
+README_rdecay01 - README file for rdecay01 example
+UserData - [Not sure of use, was in rdecay01 example]
+debug.mac - debug macro provided by rdecay01 example
+include - header files, all but two of which are included in rdecay01 example. My files I included beyond the edited ones from the rdecay01 example are:
+        stepping.hh - Stepping file used to track energy deposition in the germanium detector
+plotHisto.C - old ROOT analysis file provided by the rdecay01 example
+rdecay01.cc - main file to run the simulation
+rdecay01.in - [Not sure of use, was in rdecay01 example]
+rdecay01.out - [Not sure of use, was in rdecay01 example]
+references - macros involving specific decays provided by the rdecay01 example
+rootFiles - ROOT files that are generated from this simulation
+	BKGall.C - ROOT script that will print all three sheilding spectra on one graph
+	BKGnoShield.C - ROOT script that will only print the unshielded spectrum
+src - source files for this example, all but one are provided by the rdecay01 example (stepping.cc)
+vis.mac - visualization macro used to generate the GUI for this simulation, edited from the rdecay01 example
+
+
+~~~~Important Notes~~~~
+FOR ROOT FILES: Currently, you have to manually change the names of the files to the same format as in BKGall.C and BKGnoShield.C in order for the analysis scripts to read them. Example adjusted scripts are in subdirectories in rootFiles/.
+
+In src/DetectorConstruction.cc, I attempted to build a custom messenger, but I had some problems with it, especially with tring to render the new geometries with the visualization GUI. I have yet to fully implement it, but some adjustments could be made to make it work. I also have variables of the same name in other c files, which also should be linked to this custom messenger.
+
+The shielding apparatus includes four shields:
+	The Aluminum shield is to provide electrons for background positrons to annihilate with before reaching the germanium detector. There were problems in the past of 0.511 MeV gammas from this annihilation not interacting with the detector if the annihilation happened within it.
+	The lead and copper shields are to reduce the background spectrum. These dimensions can be adjusted when more detailed information comes from the BL3 colaboration. For the purposes of this simulation, I used rough values provided from Dr. Liu. To generate my comparison spectra, I adjusted the outer lead shield's diameter via the variable "outerShieldDiameter".
+
+This simulation builds the background spectrum by seeding a shell with various isotopes, and then bombarding the shell with neutrons. The isotopes capture the neutrons, and their products generate the background spectrum. One can toggle between a hydrogen-1 test spectrum and the UCNtau spectrum via the variable "isHydrogen" in src/DetectorConstruction.cc.
+
+The isotope list is currently one I used from a paper which included the background isotopes of the UCNtau experiment (Phys. Rev. Lett. 121, 022505) to demonstrate the proof-of-concept; one will need to adjust this list to the NIST background in order to reproduce it. The probabilities should correlate with the activities of the background isotopes, but this is yet to be confirmed.
+
+In src/stepping.cc, when adding the energy, there must be a check to confirm the volume the gamma is depositing energy in is the detector. I initally had not done this, and I got the background to "increase" with more shielding. This was because the shielding somehow was also tracking the energy depositions.

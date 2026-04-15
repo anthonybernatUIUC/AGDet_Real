@@ -1,0 +1,166 @@
+/control/cout/ignoreThreadsExcept 0
+/control/verbose 0
+/run/verbose 0
+
+/tracking/verbose 0
+
+/aperture/shiftAperture -400
+/gun/setMode default
+/analysis/setFileName AGMACRO00
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -400
+/gun/setMode left
+/analysis/setFileName AGMACRO01
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -400
+/gun/setMode right
+/analysis/setFileName AGMACRO02
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -400
+/gun/setMode uniformArea
+/analysis/setFileName AGMACRO03
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -100
+/gun/setMode default
+/analysis/setFileName AGMACRO04
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -100
+/gun/setMode left
+/analysis/setFileName AGMACRO05
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -100
+/gun/setMode right
+/analysis/setFileName AGMACRO06
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture -100
+/gun/setMode uniformArea
+/analysis/setFileName AGMACRO07
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 0
+/gun/setMode default
+/analysis/setFileName AGMACRO08
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 0
+/gun/setMode left
+/analysis/setFileName AGMACRO09
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 0
+/gun/setMode right
+/analysis/setFileName AGMACRO10
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 0
+/gun/setMode uniformArea
+/analysis/setFileName AGMACRO11
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 100
+/gun/setMode default
+/analysis/setFileName AGMACRO12
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 100
+/gun/setMode left
+/analysis/setFileName AGMACRO13
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 100
+/gun/setMode right
+/analysis/setFileName AGMACRO14
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 100
+/gun/setMode uniformArea
+/analysis/setFileName AGMACRO15
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 400
+/gun/setMode default
+/analysis/setFileName AGMACRO16
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 400
+/gun/setMode left
+/analysis/setFileName AGMACRO17
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 400
+/gun/setMode right
+/analysis/setFileName AGMACRO18
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+
+/aperture/shiftAperture 400
+/gun/setMode uniformArea
+/analysis/setFileName AGMACRO19
+/run/printProgress 200000
+/run/initialize
+/run/reinitializeGeometry
+/run/beamOn 100000000
+

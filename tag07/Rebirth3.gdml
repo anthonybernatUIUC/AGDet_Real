@@ -352,7 +352,7 @@
       </physvol> -->
 
       <!-- MR -->
-      <physvol name="PV_Aperture1"> 
+      <physvol name="MR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture1" unit="mm" x="0.766*ApertureDist" z="0.6428*ApertureDist"/>
         <!-- <rotation name="R-Aperture1" unit="deg" y="-48.279868"/>  --> 
@@ -360,7 +360,7 @@
       </physvol>
 
       <!-- TL -->
-      <physvol name="PV_Aperture2"> 
+      <physvol name="TL"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture2" unit="mm" x="-0.383*ApertureDist" y="0.6634*ApertureDist" z="0.6428*ApertureDist"/>
         <!-- <rotation name="R_Aperture2" unit="deg" x="44.216019" y="20.753455"/> -->
@@ -368,7 +368,7 @@
       </physvol> 
 
       <!-- BL -->
-      <physvol name="PV_Aperture3"> 
+      <physvol name="BL"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture3" unit="mm" x="-0.383*ApertureDist" y="-0.6634*ApertureDist" z="0.6428*ApertureDist"/>
         <!-- <rotation name="R-Aperture3" unit="deg" x="-47.693162" y="21.893109"/> -->
@@ -376,7 +376,7 @@
       </physvol>  
 
       <!-- ML -->
-      <physvol name="PV_Aperture4"> 
+      <physvol name="ML"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture4" unit="mm" x="-0.92215*ApertureDist" z="0.38685*ApertureDist"/>
         <!-- <rotation name="R-Aperture4" unit="deg" y="67.27 - 1.715954"/> -->
@@ -384,7 +384,7 @@
       </physvol>
 
       <!-- TR -->
-      <physvol name="PV_Aperture5"> 
+      <physvol name="TR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture5" unit="mm" x="0.4611*ApertureDist" y="0.7986*ApertureDist" z="0.3869*ApertureDist"/>
         <!-- <rotation name="R-Aperture5" unit="deg" x="60.623752" y="-24.875870" /> -->
@@ -392,7 +392,7 @@
       </physvol>
 
       <!-- BR -->
-      <physvol name="PV_Aperture6"> 
+      <physvol name="BR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture6" unit="mm" x="0.4611*ApertureDist" y="-0.7986*ApertureDist" z="0.3869*ApertureDist"/>
         <!-- <rotation name="R-Aperture6" unit="deg" x="-67.901832" y="-26.243454"/> -->

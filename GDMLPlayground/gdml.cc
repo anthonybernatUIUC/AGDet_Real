@@ -14,9 +14,10 @@
 #include "G4PVPlacement.hh"
 #include "G4NistManager.hh"
 
-// Coerced gpt into making this file to test stuff quickly
-
 class GDMLDetectorConstruction : public G4VUserDetectorConstruction {
+    private:
+        G4GDMLParser* parser;
+    
     public:
         explicit GDMLDetectorConstruction(const G4String& gdmlFile) {
             parser = new G4GDMLParser();
@@ -27,13 +28,8 @@ class GDMLDetectorConstruction : public G4VUserDetectorConstruction {
             G4LogicalVolumeStore* const store = G4LogicalVolumeStore::GetInstance();
             G4PhysicalVolumeStore* const pvStore = G4PhysicalVolumeStore::GetInstance();
 
-            for (const auto& lv : *store) {
-                std::cout << "Logical Volume: " << lv->GetName() << std::endl;
-            } 
-
-            for (const auto& pv : *pvStore) {
-                std::cout << "Physical Volume: " << pv->GetName() << std::endl;
-            }
+            printVolumeStore(store);
+            printPhysicalVolumeStore(pvStore);
 
             // G4LogicalVolume* AlCap = G4LogicalVolumeStore::GetInstance()->GetVolume("AlCap");
             // AlCap->SetVisAttributes(G4VisAttributes(G4Color::Gray())); // semi-transparent gray: G4Color(.5, .5, .5, .85)
@@ -49,53 +45,26 @@ class GDMLDetectorConstruction : public G4VUserDetectorConstruction {
             G4LogicalVolume* SiCollimator = G4LogicalVolumeStore::GetInstance()->GetVolume("SiCollimator");
             SiCollimator->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
-            G4LogicalVolume* GeMount = G4LogicalVolumeStore::GetInstance()->GetVolume("HPGeMount");
+            // G4LogicalVolume* GeMount = G4LogicalVolumeStore::GetInstance()->GetVolume("HPGeMount");
 
-            G4LogicalVolume* CarbonWindow = G4LogicalVolumeStore::GetInstance()->GetVolume("CarbonWindow");
-            CarbonWindow->SetVisAttributes(G4VisAttributes(G4Color(.663, .663, .663, .85)));
+            // G4LogicalVolume* CarbonWindow = G4LogicalVolumeStore::GetInstance()->GetVolume("CarbonWindow");
+            // CarbonWindow->SetVisAttributes(G4VisAttributes(G4Color(.663, .663, .663, .85)));
 
-            auto nist = G4NistManager::Instance();
-            auto air = nist->FindOrBuildMaterial("G4_AIR");
-
-            auto point = new G4Sphere("Point", 0, 0.04*cm, 0., 360.*deg, 0., 180.*deg);
-            auto pointLV1 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV1->SetVisAttributes(G4VisAttributes(G4Color::Cyan())); // MR
-            new G4PVPlacement(nullptr, G4ThreeVector(9.025*mm, 0, 0), pointLV1, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(9.351*mm, 0, 0.140*mm), pointLV1, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            
-            auto pointLV2 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV2->SetVisAttributes(G4VisAttributes(G4Color::Green())); // TL
-            new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, -7.815*mm), pointLV2, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(-5.385*mm, 0, -6.070*mm), pointLV2, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            
-            auto pointLV3 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV3->SetVisAttributes(G4VisAttributes(G4Color::Blue())); // BL
-            new G4PVPlacement(nullptr, G4ThreeVector(-4.512*mm, 0, 7.815*mm), pointLV3, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(-4.1*mm, 0, 7.939*mm), pointLV3, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-
-            auto pointLV4 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV4->SetVisAttributes(G4VisAttributes(G4Color::Red())); // ML
-            new G4PVPlacement(nullptr, G4ThreeVector(-14.464*mm, 0, 0), pointLV4, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(-14.365*mm, 0, -0.203*mm), pointLV4, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-
-            auto pointLV5 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV5->SetVisAttributes(G4VisAttributes(G4Color::Magenta())); // TR
-            new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, -12.552*mm), pointLV5, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(3.343*mm, 0, -12.072*mm), pointLV5, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-
-            auto pointLV6 = new G4LogicalVolume(point, air, "PointLV");
-            pointLV6->SetVisAttributes(G4VisAttributes(G4Color::Yellow())); // BR
-            new G4PVPlacement(nullptr, G4ThreeVector(7.247*mm, 0, 12.552*mm), pointLV6, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-            // new G4PVPlacement(nullptr, G4ThreeVector(8.321*mm, 0, 12.449*mm), pointLV6, "PointPV", parser->GetVolume("worldVOL"), false, 0, false);
-
-            G4RotationMatrix* rotX90 = new G4RotationMatrix();
-            rotX90->rotateX(90.*deg);
-            auto xzPlane = new G4Tubs("XZPlane", 0, 10*cm, 0.01*cm, 0., 360.*deg);
-            auto xzLV = new G4LogicalVolume(xzPlane, G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"), "XZPlaneLV");
-            new G4PVPlacement(rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", parser->GetVolume("worldVOL"), false, 0, false);
-
+            ConstructTriangle(parser);
             return parser->GetWorldVolume();
         }
+
+        void printVolumeStore(G4LogicalVolumeStore* const store) {
+			for (auto i = store->cbegin(); i != store->cend(); ++i) {
+				G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
+			}
+		}
+
+		void printPhysicalVolumeStore(G4PhysicalVolumeStore* const store) {
+			for (auto i = store->cbegin(); i != store->cend(); ++i) {
+				G4cout << "Physical Volume: " << (*i)->GetName() << G4endl;
+			}
+		}
 
         void AddLocalAxes(G4LogicalVolume* parentLV, G4double length, G4double radius) {
             
@@ -139,8 +108,61 @@ class GDMLDetectorConstruction : public G4VUserDetectorConstruction {
             new G4PVPlacement(rotY, G4ThreeVector(0, length/2., 0), yLV, "YAxisPV", parentLV, false, 0, false);
         }
 
-    private:
-        G4GDMLParser* parser;
+        void ConstructTriangle(G4GDMLParser* fParser) {
+
+            auto man = G4NistManager::Instance();
+            auto Galactic = man->FindOrBuildMaterial("G4_Galactic");    
+            G4Sphere* point = new G4Sphere("Point", 0, 0.04*cm, 0., 360.*deg, 0., 180.*deg);
+            G4LogicalVolume* motherVol = fParser->GetVolume("worldVOL");
+            // std::vector<G4ThreeVector> points = {
+            // 	G4ThreeVector(9.025, 0, 0)*mm, 
+            // 	G4ThreeVector(-4.512, 0, -7.815)*mm, 
+            // 	G4ThreeVector(-4.512, 0, 7.815)*mm, 
+            // 	G4ThreeVector(-14.464, 0, 0)*mm, 
+            // 	G4ThreeVector(7.247, 0, -12.552)*mm,
+            // 	G4ThreeVector(7.247, 0, 12.552)*mm 
+            // };
+            std::vector<G4ThreeVector> points = {
+                G4ThreeVector(9.351, 0, 0.140)*mm, 
+                G4ThreeVector(-5.385, 0, -6.070)*mm, 
+                G4ThreeVector(-4.1, 0, 7.939)*mm, 
+                G4ThreeVector(-14.365, 0, -0.203)*mm, 
+                G4ThreeVector(3.343, 0, -12.072)*mm,
+                G4ThreeVector(8.321, 0, 12.449)*mm 
+            };
+            // ========== MR ==========
+            G4LogicalVolume* pointLV1 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV1->SetVisAttributes(G4VisAttributes(G4Color::Cyan())); 
+            new G4PVPlacement(nullptr, points[0], pointLV1, "PointPV", motherVol, false, 0, false);
+            // ========== TL ==========
+            G4LogicalVolume* pointLV2 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV2->SetVisAttributes(G4VisAttributes(G4Color::Green())); 
+            new G4PVPlacement(nullptr, points[1], pointLV2, "PointPV", motherVol, false, 0, false);
+            // ========== BL ==========
+            G4LogicalVolume* pointLV3 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV3->SetVisAttributes(G4VisAttributes(G4Color::Blue())); 
+            new G4PVPlacement(nullptr, points[2], pointLV3, "PointPV", motherVol, false, 0, false);
+            // ========== ML ==========
+            G4LogicalVolume* pointLV4 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV4->SetVisAttributes(G4VisAttributes(G4Color::Red())); 
+            new G4PVPlacement(nullptr, points[3], pointLV4, "PointPV", motherVol, false, 0, false);
+            // ========== TR ==========
+            G4LogicalVolume* pointLV5 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV5->SetVisAttributes(G4VisAttributes(G4Color::Magenta()));
+            new G4PVPlacement(nullptr, points[4], pointLV5, "PointPV", motherVol, false, 0, false);
+            // ========== BR ==========
+            G4LogicalVolume* pointLV6 = new G4LogicalVolume(point, Galactic, "PointLV");
+            pointLV6->SetVisAttributes(G4VisAttributes(G4Color::Yellow())); 
+            new G4PVPlacement(nullptr, points[5], pointLV6, "PointPV", motherVol, false, 0, false);
+
+            G4RotationMatrix* rotX90 = new G4RotationMatrix();
+            rotX90->rotateX(90*deg);
+            G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, 10*cm, 0.01*cm, 0., 360.*deg);
+            G4LogicalVolume* xzLV = new G4LogicalVolume(xzPlane, Galactic, "XZPlaneLV");
+            new G4PVPlacement(rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
+        
+        };
+
 };
 
 int main(int argc, char** argv) {

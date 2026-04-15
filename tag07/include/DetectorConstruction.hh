@@ -90,29 +90,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			}  
 		}
 
-		void ShiftAperture(G4double shift) {
+		void ShiftAperture(G4double shift, G4String det) {
 			
-			G4PhysicalVolumeStore* const pvStore = G4PhysicalVolumeStore::GetInstance();
+			G4PhysicalVolumeStore* const pvStore = G4PhysicalVolumeStore::GetInstance();			
 
-			G4VPhysicalVolume* a1 = pvStore->GetVolume("PV_Aperture1");
-			G4cout << "Old MR position: " << a1->GetTranslation() << G4endl;
-			a1->SetTranslation(a1->GetTranslation() + shift*um*G4ThreeVector(0.766, 0, 0.6428));
-			G4cout << "New MR position: " << a1->GetTranslation() << G4endl;
-
-			G4VPhysicalVolume* a2 = pvStore->GetVolume("PV_Aperture2");
-			a2->SetTranslation(a2->GetTranslation() + shift*um*G4ThreeVector(-0.383, 0.6634, 0.6428));
-
-			G4VPhysicalVolume* a3 = pvStore->GetVolume("PV_Aperture3");
-			a3->SetTranslation(a3->GetTranslation() + shift*um*G4ThreeVector(-0.383, -0.6634, 0.6428));
-
-			G4VPhysicalVolume* a4 = pvStore->GetVolume("PV_Aperture4");
-			a4->SetTranslation(a4->GetTranslation() + shift*um*G4ThreeVector(-0.92215, 0, 0.38685));
-
-			G4VPhysicalVolume* a5 = pvStore->GetVolume("PV_Aperture5");
-			a5->SetTranslation(a5->GetTranslation() + shift*um*G4ThreeVector(0.4611, 0.7986, 0.3869));
-
-			G4VPhysicalVolume* a6 = pvStore->GetVolume("PV_Aperture6");
-			a6->SetTranslation(a6->GetTranslation() + shift*um*G4ThreeVector(0.4611, -0.7986, 0.3869));
+			G4VPhysicalVolume* vol = pvStore->GetVolume(det);
+			G4cout << "Old " << det << " position: " << vol->GetTranslation() << G4endl;
+			vol->SetTranslation(vol->GetTranslation() + shift*um*SiApertureNormals[det]);
+			G4cout << "New " << det << " position: " << vol->GetTranslation() << G4endl;
 
 			G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		}
@@ -120,6 +105,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		void printVolumeStore(G4LogicalVolumeStore* const store) {
 			for (auto i = store->cbegin(); i != store->cend(); ++i) {
 				G4cout << "Logical Volume: " << (*i)->GetName() << G4endl;
+			}
+		}
+
+		void printPhysicalVolumeStore(G4PhysicalVolumeStore* const store) {
+			for (auto i = store->cbegin(); i != store->cend(); ++i) {
+				G4cout << "Physical Volume: " << (*i)->GetName() << G4endl;
 			}
 		}
 
@@ -156,7 +147,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		std::set<G4LogicalVolume*> GeDets, SiDets;
 		std::vector<G4Box*> solidAtmosphere;
 		std::vector<G4LogicalVolume*> logicAtmosphere;
-		std::vector<G4VPhysicalVolume*> physAtmosphere;		
+		std::vector<G4VPhysicalVolume*> physAtmosphere;
+		std::map<G4String, G4ThreeVector> SiApertureNormals;		
 
 		void DefineMaterials();
 		void DefineParameters();
@@ -173,5 +165,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		void ConstructNBSR(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, G4int& cpyNo);
 		void AddLocalAxes(G4LogicalVolume* parentLV, G4double length, G4double radius);
 		void ConstructTarget();
+		void ConstructTriangle(G4GDMLParser* fParser);
 
 };

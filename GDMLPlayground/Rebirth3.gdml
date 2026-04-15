@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd">
   <define>
-    <!-- All in mm -->
     <position name="center" x="0" y="0" z="0" unit="mm"/>
     <position name="GoAwayPos" x="-250" y="250" z="250" unit="mm"/>
     <constant name="SphereInner" value="226"/>
@@ -9,8 +8,10 @@
 	  <constant name="SiTubeInner" value="48.6918"/> 
     <constant name="SiTubeOuter" value="50.8"/>
     <constant name="SiTubeZ" value="103.4542"/>
-    <constant name="SiTubeDist" value="SphereInner + (SiTubeZ / 2) - 5"/> <!-- (277.7271 - buffer) to make cylinder not float -->
-		<constant name="GeTubeInner" value="74.1"/>
+    <constant name="SiTubeDist" value="SphereInner + (SiTubeZ / 2) - 10"/> <!-- equates to (277.7271 - buffer) to make cylinder not float due to the curvature of the sphere -->
+		<constant name="GeTubeZ" value="200"/>
+    <constant name="GeTubeDist" value="SphereInner + (GeTubeZ / 2) - 20"/>
+    <constant name="GeTubeInner" value="74.1"/>
     <constant name="GeTubeOuter" value="76.2"/>
     <constant name="fWorldSize" value="1"/>
     <constant name="SiTurretDist" value="280.086"/>
@@ -31,9 +32,6 @@
     <constant name="TurretRimOuter" value="47.625"/>
     <constant name="TurretZ" value="126.228"/>
     <constant name="TurretRimZ" value="9.525"/>
-    <constant name="KnifeEdgeInner" value="12.5"/>
-    <constant name="KnifeEdgeOuter" value="15.7"/>
-    <constant name="ApertureZ" value="5"/>
     <constant name="GeHousingInner" value="42.5"/>
     <constant name="GeHousingOuter" value="45"/>
     <constant name="GeHousingDist" value="270"/>
@@ -46,80 +44,68 @@
   <solids>
     <!-- World -->
     <box name="WorldBox" x=".005*fWorldSize" y=".005*fWorldSize" z=".005*fWorldSize" lunit="km"/>
-    <tube name="GoAway" rmin ="0.0" rmax="0.1" startphi="0.0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
+    <tube name="GoAway" rmin ="0" rmax="0.1" startphi="0" deltaphi="0.1" aunit="deg" z="10" lunit="cm"/>
     <!-- Beamline Tube -->
-    <tube name="Tube040" rmin="0" rmax="50.80" startphi="0.0" deltaphi="360.0" aunit="deg" z="200" lunit="mm"/> <!-- should be 13in long, but not needed-->
+    <tube name="Tube040" rmin="0" rmax="50.80" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/> <!-- should be 13in long, but not needed-->
     <!-- Aperture Covers -->
-    <tube name="Tube039" rmin="0" rmax="75.82" startphi="0.0" deltaphi="360.0" aunit="deg" z="20" lunit="mm"/>
+    <tube name="Tube039" rmin="0" rmax="75.82" startphi="0" deltaphi="360" aunit="deg" z="20" lunit="mm"/>
     <!-- HPGe Mount -->
-    <tube name="Tube038" rmin="0" rmax="GeHousingInner - .01" startphi="0.0" deltaphi="360.0" aunit="deg" z="1" lunit="mm"/>
-    <tube name="Tube037" rmin="0" rmax="GeNeckOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="GeNeckZ" lunit="mm"/>
-    <tube name="Tube036" rmin="0" rmax="GeHousingOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="5" lunit="mm"/>
-    <tube name="Tube035" rmin="GeHousingInner" rmax="GeHousingOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="GeHousingZ" lunit="mm"/>
+    <tube name="Tube038" rmin="0" rmax="GeHousingInner - .01" startphi="0" deltaphi="360" aunit="deg" z="1" lunit="mm"/>
+    <tube name="Tube037" rmin="0" rmax="GeNeckOuter" startphi="0" deltaphi="360" aunit="deg" z="GeNeckZ" lunit="mm"/>
+    <tube name="Tube036" rmin="0" rmax="GeHousingOuter" startphi="0" deltaphi="360" aunit="deg" z="5" lunit="mm"/>
+    <tube name="Tube035" rmin="GeHousingInner" rmax="GeHousingOuter" startphi="0" deltaphi="360" aunit="deg" z="GeHousingZ" lunit="mm"/>
     <!-- Si Collimator -->
-    <tube name="Tube034" rmin="TurretInner" rmax="TurretRimOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="TurretRimZ" lunit="mm"/>
-    <tube name="Tube033" rmin="TurretInner" rmax="TurretOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="126.228" lunit="mm"/>
+    <tube name="Tube034" rmin="TurretInner" rmax="TurretRimOuter" startphi="0" deltaphi="360" aunit="deg" z="TurretRimZ" lunit="mm"/>
+    <tube name="Tube033" rmin="TurretInner" rmax="TurretOuter" startphi="0" deltaphi="360" aunit="deg" z="126.228" lunit="mm"/>
     <!-- Si Aperture -->
-    <tube name="Tube032" rmin="0" rmax="TurretOuter" startphi="0" deltaphi="360" aunit="deg" z="ApertureZ" lunit="mm"/>
-    <cone name="Cone001" rmin1="0" rmax1="KnifeEdgeInner" rmin2="0" rmax2="KnifeEdgeOuter" z="ApertureZ + .01" startphi="0" deltaphi="360" aunit="deg" lunit="mm"/>
+    <tube name="Tube032" rmin="0" rmax="TurretOuter" startphi="0" deltaphi="360" aunit="deg" z="5.0" lunit="mm"/>
+    <cone name="Cone001" rmin1="0.0" rmax1="12.70" rmin2="0.0" rmax2="17.526" z="5.1" startphi="0" deltaphi="360" aunit="deg" lunit="mm"/>
     <!-- Al Top Hat and Cu Wrap -->
-    <tube name="Tube031" rmin="CuInner" rmax="CuOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="CuZ" lunit="mm"/>
-    <tube name="Tube030" rmin="0" rmax="AlInner" startphi="0.0" deltaphi="360.0" aunit="deg" z="AlMainZ - AlCapZ" lunit="mm"/>
-    <tube name="Tube029" rmin="0" rmax="AlRimOuter" startphi="0.0" deltaphi="360.0" aunit="deg" z="AlRimZ" lunit="mm"/>
-    <tube name="Tube028" rmin="0" rmax="AlOuter" startphi="0.0" deltaphi= "360.0" aunit="deg" z="AlMainZ" lunit="mm"/>
+    <tube name="Tube031" rmin="CuInner" rmax="CuOuter" startphi="0" deltaphi="360" aunit="deg" z="CuZ" lunit="mm"/>
+    <tube name="Tube030" rmin="0" rmax="AlInner" startphi="0" deltaphi="360" aunit="deg" z="AlMainZ - AlCapZ" lunit="mm"/>
+    <tube name="Tube029" rmin="0" rmax="AlRimOuter" startphi="0" deltaphi="360" aunit="deg" z="AlRimZ" lunit="mm"/>
+    <tube name="Tube028" rmin="0" rmax="AlOuter" startphi="0" deltaphi="360" aunit="deg" z="AlMainZ" lunit="mm"/>
     <!-- Back Ge Tubes -->
-    <tube name="Tube027" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
-    <tube name="Tube026" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
-    <tube name="Tube025" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
+    <tube name="Tube027" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
+    <tube name="Tube026" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
+    <tube name="Tube025" rmin="GeTubeInner" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
     <!-- Si Tube Fusions, Not Adjacent to Ge Dets -->
     <tube name="Tube024" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
     <tube name="Tube023" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
     <tube name="Tube022" rmin="SiTubeInner" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
     <!-- Ge-Si Tube Fusion 3 -->
-    <tube name="Tube021" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="300" lunit="mm"/>
+    <tube name="Tube021" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="400" lunit="mm"/>
     <tube name="Tube020" rmin="0" rmax="GeTubeInner" startphi="0" deltaphi="360" aunit="deg" z="900" lunit="mm"/>
     <tube name="Tube019" rmin="0" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
-    <tube name="Tube018" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
+    <tube name="Tube018" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
     <!-- Ge-Si Tube Fusion 2 -->
     <tube name="Tube017" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="400" lunit="mm"/>
     <tube name="Tube016" rmin="0" rmax="GeTubeInner" startphi="0" deltaphi="360" aunit="deg" z="900" lunit="mm"/>
     <tube name="Tube015" rmin="0" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
-    <tube name="Tube014" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
+    <tube name="Tube014" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
     <!-- Ge-Si Tube Fusion 1 -->
     <tube name="Tube013" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="400" lunit="mm"/>
     <tube name="Tube012" rmin="0" rmax="GeTubeInner" startphi="0" deltaphi="360" aunit="deg" z="900" lunit="mm"/>
     <tube name="Tube011" rmin="0" rmax="SiTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="SiTubeZ" lunit="mm"/>
-    <tube name="Tube010" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="200" lunit="mm"/>
+    <tube name="Tube010" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="GeTubeZ" lunit="mm"/>
     <!-- Si Det Cuts, Not Adjacent to Ge Tubes -->
-    <tube name="Tube006" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
-    <tube name="Tube005" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
-    <tube name="Tube004" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
+    <tube name="Tube006" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="50" lunit="mm"/>
+    <tube name="Tube005" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="50" lunit="mm"/>
+    <tube name="Tube004" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="50" lunit="mm"/>
     <!-- Ge Det Cuts -->
     <tube name="Tube003" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
     <tube name="Tube002" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
     <tube name="Tube001" rmin="0" rmax="GeTubeOuter" startphi="0" deltaphi="360" aunit="deg" z="600" lunit="mm"/>
     <!-- Beamline Cut -->
     <sphere name="Sphere" rmin="SphereInner" rmax="SphereOuter" startphi="0" deltaphi="360" starttheta="0" deltatheta="360" aunit="deg" lunit="mm" nsegments="256"/>
-    <tube name="Tube" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="1000" lunit="mm"/>
-    <!-- Aperture Wrappers -->
-    <sphere name="ApertureMother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/>
-    <!-- <sphere name="Aperture2Mother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/>
-    <sphere name="Aperture3Mother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/>
-    <sphere name="Aperture4Mother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/>
-    <sphere name="Aperture5Mother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/>
-    <sphere name="Aperture6Mother" rmin="0" rmax="TurretOuter + 10" startphi="0.0" deltaphi="360.0" starttheta="0.0" deltatheta="360.0" aunit="deg" lunit="mm"/> -->
-    <!-- <box name="Aperture1Box" x="1" y="1" z="1" lunit="cm"/>
-    <box name="Aperture2Box" x="1" y="1" z="1" lunit="cm"/>
-    <box name="Aperture3Box" x="1" y="1" z="1" lunit="cm"/>
-    <box name="Aperture4Box" x="1" y="1" z="1" lunit="cm"/>
-    <box name="Aperture5Box" x="1" y="1" z="1" lunit="cm"/>
-    <box name="Aperture6Box" x="1" y="1" z="1" lunit="cm"/> -->
-
+    <tube name="Tube" rmin="0" rmax="SiTubeInner" startphi="0" deltaphi="360" aunit="deg" z="900" lunit="mm"/>
+    
+    <!-- Note: I don't bother parameterizing the distances/positions of cuts -->
     <!-- Beamline Cut -->
     <union name="BeamlineTube">
       <first ref="Sphere"/>
       <second ref="Tube040"/>
-      <position name="P-Tube038" unit="cm" x="0" y="0" z="22.6 + 9.5"/>
+      <position name="P-Tube038" unit="mm" x="0" y="0" z="SphereInner + 95"/>
     </union>
     <subtraction name="Cut">
       <first ref="BeamlineTube"/>
@@ -129,26 +115,26 @@
     <subtraction name="Cut004">
       <first ref="Cut"/>
       <second ref="Tube004"/>
-      <position name="P-Tube004" unit="mm" x="200*0.766" z="200*0.6428"/>
+      <position name="P-Tube004" unit="mm" x="SphereInner*0.766" z="SphereInner*0.6428"/>
       <rotation name="R-Tube004" unit="deg" y="50"/>
     </subtraction>
     <subtraction name="Cut005">
       <first ref="Cut004"/>
       <second ref="Tube005"/>
-      <position name="P-Tube005" unit="mm" x="200*-0.383" y="200*0.6634" z="200*0.6428"/>
+      <position name="P-Tube005" unit="mm" x="SphereInner*-0.383" y="SphereInner*0.6634" z="SphereInner*0.6428"/>
       <rotation name="R-Tube005" unit="deg" y="50" z="120"/>
     </subtraction>
     <subtraction name="Cut006">
       <first ref="Cut005"/>
       <second ref="Tube006"/>
-      <position name="P-Tube006" unit="mm" x="200*-0.383" y="200*-0.6634" z="200*0.6428"/>
+      <position name="P-Tube006" unit="mm" x="SphereInner*-0.383" y="SphereInner*-0.6634" z="SphereInner*0.6428"/>
       <rotation name="R-Tube006" unit="deg" y="50" z="-120"/>
     </subtraction>
-    <!-- Ge-Si Tube Fusion 1 -->
+    <!-- Ge-Si Tube Fusion 1 --> <!-- r = 308 mm for the big collimator of length 20 cm, 290 mm for the small tube of length 15 cm-->
     <union name="Fusion001">
       <first ref="Cut006"/>
       <second ref="Tube010"/>
-      <position name="P-Tube010" unit="mm" x="-0.6428*312" z="0.766*312"/>
+      <position name="P-Tube010" unit="mm" x="-0.6428*GeTubeDist" z="0.766*GeTubeDist"/>
       <rotation name="R-Tube010" unit="deg" y="-40"/>
     </union>
     <union name="Fusion002">
@@ -172,7 +158,7 @@
     <union name="Fusion003">
       <first ref="Cut011"/>
       <second ref="Tube014"/>
-      <position name="P-Tube014" unit="mm" x="312*0.3214" y="312*-0.5567" z="312*0.766"/>
+      <position name="P-Tube014" unit="mm" x="GeTubeDist*0.3214" y="GeTubeDist*-0.5567" z="GeTubeDist*0.766"/>
       <rotation name="R-Tube014" unit="deg" y="-40" z="120"/>
     </union>
     <union name="Fusion004">
@@ -196,7 +182,7 @@
     <union name="Fusion005">
       <first ref="Cut013"/>
       <second ref="Tube018"/>
-      <position name="P-Tube018" unit="mm" x="312*0.3214" y="312*0.5567" z="312*0.766"/>
+      <position name="P-Tube018" unit="mm" x="GeTubeDist*0.3214" y="GeTubeDist*0.5567" z="GeTubeDist*0.766"/>
       <rotation name="R-Tube018" unit="deg" y="-40" z="-120"/>
     </union>
     <union name="Fusion006">
@@ -239,19 +225,19 @@
     <union name="Fusion010">
       <first ref="Fusion009"/>
       <second ref="Tube025"/>
-      <position name="P-Tube0025" unit="mm" x="0.6428*312" z="-0.766*312"/>
+      <position name="P-Tube0025" unit="mm" x="0.6428*GeTubeDist" z="-0.766*GeTubeDist"/>
       <rotation name="R-Tube0025" unit="deg" y="-40"/>
     </union>
     <union name="Fusion011">
       <first ref="Fusion010"/>
       <second ref="Tube026"/>
-      <position name="P-Tube026" unit="mm" x="312*-0.3214" y="312*0.5567" z="312*-0.766"/>
+      <position name="P-Tube026" unit="mm" x="GeTubeDist*-0.3214" y="GeTubeDist*0.5567" z="GeTubeDist*-0.766"/>
       <rotation name="R-Tube0026" unit="deg" y="-40" z="120"/>
     </union>
     <union name="Fusion012">
       <first ref="Fusion011"/>
       <second ref="Tube027"/>
-      <position name="P-Tube027" unit="mm" x="312*-0.3214" y="312*-0.5567" z="312*-0.766"/>
+      <position name="P-Tube027" unit="mm" x="GeTubeDist*-0.3214" y="GeTubeDist*-0.5567" z="GeTubeDist*-0.766"/>
       <rotation name="R-Tube0027" unit="deg" y="-40" z="-120"/>
     </union>
 
@@ -333,73 +319,6 @@
       <solidref ref="Tube039"/>
     </volume>
 
-    <!-- old shitass wrapper method -->
-    <!-- MR -->
-    <!-- <volume name="ApertureWrapper1">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture1">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt1" unit="deg" y="1.7"/>  
-      </physvol>
-    </volume> -->
-
-    <!-- TL -->
-    <!-- <volume name="ApertureWrapper2">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture2">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt2" unit="deg" x="-1.1" y="2.1"/> 
-      </physvol>
-    </volume> -->
-
-    <!-- BL -->
-    <!-- <volume name="ApertureWrapper3">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture3">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt3" unit="deg" x="1.175" y="-1.35"/>
-      </physvol>
-    </volume> -->
-
-    <!-- ML -->
-    <!-- <volume name="ApertureWrapper4">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture4">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt4" unit="deg" y="-1.7"/>  
-      </physvol>
-    </volume> -->
-
-    <!-- TR -->
-    <!-- <volume name="ApertureWrapper5">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture5">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt5" unit="deg" x="-1.75" y="-3.7"/> 
-      </physvol>
-    </volume> -->
-
-    <!-- BR -->
-    <!-- <volume name="ApertureWrapper6">
-      <materialref ref="G4_Galactic"/>
-      <solidref ref="ApertureMother"/> 
-
-      <physvol name="PV_Aperture6">
-        <volumeref ref="SiDetAperture"/>
-        <rotation name="R-Tilt6" unit="deg" x="1.88" y="3.05"/>  
-      </physvol>
-    </volume> -->
-
     <volume name="worldVOL">
       <materialref ref="G4_Galactic"/>
       <solidref ref="WorldBox"/>
@@ -435,100 +354,55 @@
         <rotation name="R-AlCap6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
       </physvol> -->
 
-
-      <!-- old shitass wrapper method -->
       <!-- MR -->
-      <!-- <physvol name="PV_Aperture1_Wrapper"> 
-        <volumeref ref="ApertureWrapper1"/>
-        <position name="P-Aperture1" unit="mm" x="0.766*ApertureDist" z="0.6428*ApertureDist"/>
-        <rotation name="R-Aperture1" unit="deg" y="-50"/>
-      </physvol> -->
-
-      <!-- TL -->
-      <!-- <physvol name="PV_Aperture2_Wrapper"> 
-        <volumeref ref="ApertureWrapper2"/>
-        <position name="P-Aperture2" unit="mm" x="-0.383*ApertureDist" y="0.6634*ApertureDist"  z="0.6428*ApertureDist"/>
-        <rotation name="R-Aperture2" unit="deg" x="45.90468727" y="22.52101212" z="-110.36057488"/>
-      </physvol>   -->
-
-      <!-- BL -->
-      <!-- <physvol name="PV_Aperture3_Wrapper"> 
-        <volumeref ref="ApertureWrapper3"/>
-        <position name="P-Aperture3" unit="mm" x="-0.383*ApertureDist" y="-0.6634*ApertureDist"  z="0.6428*ApertureDist"/>
-        <rotation name="R-Aperture3" unit="deg" x="-45.90468727" y="22.52101212" z="110.36057488"/>
-      </physvol>   -->
-
-      <!-- ML -->
-      <!-- <physvol name="PV_Aperture4_Wrapper"> 
-        <volumeref ref="ApertureWrapper4"/>
-        <position name="P-Aperture4" unit="mm" x="-0.92215*ApertureDist" z="0.38685*ApertureDist"/>
-        <rotation name="R-Aperture4" unit="deg" y="67.24"/>
-      </physvol> -->
-
-      <!-- TR -->
-      <!-- <physvol name="PV_Aperture5_Wrapper"> 
-        <volumeref ref="ApertureWrapper5"/>
-        <position name="P-Aperture5" unit="mm" x="0.4611*ApertureDist" y="0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <rotation name="R-Aperture5" unit="deg" x="64.15245171" y="-27.45596321" z="102.59094765"/>
-      </physvol> -->
-
-      <!-- BR -->
-      <!-- <physvol name="PV_Aperture6_Wrapper"> 
-        <volumeref ref="ApertureWrapper6"/>
-        <position name="P-Aperture6" unit="mm" x="0.4611*ApertureDist" y="-0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <rotation name="R-Aperture6" unit="deg" x="-64.15245171" y="-27.45596321" z="-102.59094765"/>
-      </physvol>   -->
-
-      <!-- First angle is ideal, second is measured -->
-      <!-- MR -->
-      <physvol name="PV_Aperture1"> 
+      <physvol name="MR"> 
         <volumeref ref="SiDetAperture"/>
-        <position name="P-Aperture1" unit="mm" x="0.76604444*ApertureDist" z="0.64278761*ApertureDist"/>
-        <rotation name="R-Aperture1" unit="deg" y="-48.282171"/> 
-        <!-- <rotation name="R-Aperture1" unit="deg" y="-48.246514"/>  -->
+        <position name="P-Aperture1" unit="mm" x="0.766*ApertureDist" z="0.6428*ApertureDist"/>
+        <!-- <rotation name="R-Aperture1" unit="deg" y="-48.279868"/>  --> 
+        <rotation name="R-Aperture1" unit="deg" y="-48.246514"/> 
       </physvol>
 
       <!-- TL -->
-      <physvol name="PV_Aperture2"> 
+      <physvol name="TL"> 
         <volumeref ref="SiDetAperture"/>
-        <position name="P-Aperture2" unit="mm" x="-0.383*ApertureDist" y="0.6634*ApertureDist"  z="0.6428*ApertureDist"/>
-        <rotation name="R_Aperture2" unit="deg" x="44.216019" y="20.753455"/>
-        <!-- <rotation name="R_Aperture2" unit="deg" x="44.584265" y="20.647388"/> -->
+        <position name="P-Aperture2" unit="mm" x="-0.383*ApertureDist" y="0.6634*ApertureDist" z="0.6428*ApertureDist"/>
+        <!-- <rotation name="R_Aperture2" unit="deg" x="44.216019" y="20.753455"/> -->
+        <rotation name="R_Aperture2" unit="deg" x="44.584265" y="20.647388"/>
       </physvol> 
 
       <!-- BL -->
-      <physvol name="PV_Aperture3"> 
+      <physvol name="BL"> 
         <volumeref ref="SiDetAperture"/>
-        <position name="P-Aperture3" unit="mm" x="-0.383*ApertureDist" y="-0.6634*ApertureDist"  z="0.6428*ApertureDist"/>
-        <rotation name="R-Aperture3" unit="deg" x="-47.693162" y="21.893109"/>
-        <!-- <rotation name="R-Aperture3" unit="deg" x="-47.722412" y="22.015353"/> -->
+        <position name="P-Aperture3" unit="mm" x="-0.383*ApertureDist" y="-0.6634*ApertureDist" z="0.6428*ApertureDist"/>
+        <!-- <rotation name="R-Aperture3" unit="deg" x="-47.693162" y="21.893109"/> -->
+        <rotation name="R-Aperture3" unit="deg" x="-47.722412" y="22.015353"/>
       </physvol>  
 
       <!-- ML -->
-      <physvol name="PV_Aperture4"> 
+      <physvol name="ML"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture4" unit="mm" x="-0.92215*ApertureDist" z="0.38685*ApertureDist"/>
-        <rotation name="R-Aperture4" unit="deg" y="67.24 - 1.715954"/>
-        <!-- <rotation name="R-Aperture4" unit="deg" y="65.483744"/> -->
+        <!-- <rotation name="R-Aperture4" unit="deg" y="67.27 - 1.715954"/> -->
+        <rotation name="R-Aperture4" unit="deg" y="65.483744"/>
       </physvol>
 
       <!-- TR -->
-      <physvol name="PV_Aperture5"> 
+      <physvol name="TR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture5" unit="mm" x="0.4611*ApertureDist" y="0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <rotation name="R-Aperture5" unit="deg" x="60.623752" y="-24.875870" />
-        <!-- <rotation name="R-Aperture5" unit="deg" x="60.754449" y="-25.899233"/> -->
+        <!-- <rotation name="R-Aperture5" unit="deg" x="60.623752" y="-24.875870" /> -->
+        <rotation name="R-Aperture5" unit="deg" x="60.754449" y="-25.899233"/>
       </physvol>
 
       <!-- BR -->
-      <physvol name="PV_Aperture6"> 
+      <physvol name="BR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture6" unit="mm" x="0.4611*ApertureDist" y="-0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <rotation name="R-Aperture6" unit="deg" x="-67.901832" y="-26.243454"/>
-        <!-- <rotation name="R-Aperture6" unit="deg" x="-67.870174" y="-25.951008"/> -->
+        <!-- <rotation name="R-Aperture6" unit="deg" x="-67.901832" y="-26.243454"/> -->
+        <rotation name="R-Aperture6" unit="deg" x="-67.870174" y="-25.951008"/>
       </physvol>
 
-      
+      <!-- don't need rn -->
       <!-- <physvol name="PV_CuWrap1">
         <volumeref ref="CuWrap"/>
         <position name="P-CuWrap1" unit="mm" x="-0.6428*CuDist" z="0.766*CuDist"/>
@@ -591,7 +465,8 @@
         <rotation name="R-SiCollimator6" unit="deg" x="-64.15245171" y="-27.45596321" z="-102.59094765"/>
       </physvol>
 
-      <physvol name="PV_HPGeMount1">
+      <!-- don't need rn -->
+      <!-- <physvol name="PV_HPGeMount1">
         <volumeref ref="HPGeMount"/>
         <position name="P-HPGeMount1" unit="mm" x="-0.6428*GeHousingDist" z="0.766*GeHousingDist"/>
         <rotation name="R-HPGeMount1" unit="deg" y="40"/>
@@ -620,7 +495,7 @@
         <volumeref ref="CarbonWindow"/>
         <position name="P-CarbonWindow3" unit="mm" x="0.3214*(GeHousingDist - GeHousingZ/2)" y="0.5567*(GeHousingDist - GeHousingZ/2)" z="0.766*(GeHousingDist - GeHousingZ/2)"/>
         <rotation name="R-CarbonWindow3" unit="deg" x="36.00521482" y="-18.74723725" z="113.8586548"/>
-      </physvol>
+      </physvol> -->
 
       <!-- <physvol name="PV_ApertureCover1">
         <volumeref ref="SiDetApertureCover"/>
