@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd">
+<!-- <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///home/anthony/software/geant4/geant4-v11.2.0/source/persistency/gdml/schema/gdml.xsd"> -->
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///gdml.xsd">
   <define>
     <position name="center" x="0" y="0" z="0" unit="mm"/>
     <position name="GoAwayPos" x="-250" y="250" z="250" unit="mm"/>
@@ -516,12 +517,12 @@
       </physvol>
       <physvol name="PV_CarbonWindow5">
         <volumeref ref="CarbonWindow"/>
-        <position name="P-CarbonWindow5" unit="mm" x="-0.3214*(GeHousingDist - GeHousingZ/2)" y="-0.5567*(GeHousingDist - GeHousingZ/2)" z="-0.766*(GeHousingDist - GeHousingZ/2)"/>
+        <position name="P-CarbonWindow5" unit="mm" x="-0.3214*(GeHousingDist - GeHousingZ/2)" y="0.5567*(GeHousingDist - GeHousingZ/2)" z="-0.766*(GeHousingDist - GeHousingZ/2)"/>
         <rotation name="R-CarbonWindow5" unit="deg" x="143.99478518" y="18.74723725" z="66.1413452"/>
       </physvol>
       <physvol name="PV_HPGeMount6">
         <volumeref ref="HPGeMount"/>
-        <position name="P-HPGeMount6" unit="mm" x="-0.3214*GeHousingDist" y="0.5567*GeHousingDist" z="-0.766*GeHousingDist"/>
+        <position name="P-HPGeMount6" unit="mm" x="-0.3214*GeHousingDist" y="-0.5567*GeHousingDist" z="-0.766*GeHousingDist"/>
         <rotation name="R-HPGeMount6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
       </physvol>
       <physvol name="PV_CarbonWindow6">
