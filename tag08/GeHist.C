@@ -9,7 +9,46 @@
 #include "TROOT.h"
 #include "TStyle.h"
 #include <TLine.h>
+#include "TRandom.h"
 
+void PlotAllGeDets(TFile* tfile, char* cfile) {
+
+    for (int i = 1; i <= 6; ++i) {
+
+        const char* treeName = Form("GammaDet%d", i);
+        TTree* tree = (TTree*)tfile->Get(treeName);
+
+        TString uniqueName = Form("Canvas_Det%d_Session%d", i, (int)gRandom->Integer(1000));
+        TCanvas* canvas = new TCanvas(uniqueName, treeName, 800, 600);
+        canvas->SetLogy(1);
+        canvas->SetTicky();
+        canvas->SetTickx();
+
+        TString histName = Form("h_det%d", i); 
+                                                //(bins, xMin, xMax)
+        TString drawCommand = Form("fEdepGamma>>%s(1500,0,1.5)", histName.Data());
+        tree->Draw(drawCommand);
+
+        TH1 *hist = (TH1*)gPad->GetPrimitive(histName);
+        hist->SetDirectory(0);
+        TString titleStr = Form("Simulated Gamma Energy Spectrum - Det %d - %s", i, cfile);
+        hist->SetTitle(titleStr.Data());
+        hist->GetXaxis()->SetLabelColor(kWhite);
+        hist->GetYaxis()->SetLabelColor(kWhite);
+        hist->GetXaxis()->SetAxisColor(kWhite, 1);
+        hist->GetYaxis()->SetAxisColor(kWhite, 1);
+        hist->GetXaxis()->SetTitleColor(kWhite);
+        hist->GetYaxis()->SetTitleColor(kWhite);
+        hist->GetXaxis()->SetTitle("Energy / MeV");
+        hist->GetYaxis()->SetTitle("Counts");
+        hist->SetLineColorAlpha(kRed, 0.35);
+        hist->SetFillColor(kRed);
+        hist->SetFillStyle(3002);
+        hist->SetStats(0);
+        
+        canvas->Update();
+    }
+}
 
 void GeHist(std::string file) { 
 
@@ -41,6 +80,7 @@ void GeHist(std::string file) {
     TTree* tree = (TTree*)tfile->Get(treeName);
     tree->Draw(strcat(branchName, yo));
 
+    // Combined hist
     TH1 *hist = (TH1*)gPad->GetPrimitive("htemp");
     char title[] = "Simulated Gamma Energy Spectrum - ";
     hist->SetTitle(strcat(title, cfile));
@@ -60,7 +100,7 @@ void GeHist(std::string file) {
     int totalCounts = hist->Integral(hist->FindBin(0), hist->FindBin(10));
     int photoPeakCounts = hist->Integral(hist->FindBin(0.47), hist->FindBin(0.48));
     std::cout << "Photopeak Counts: " << photoPeakCounts << std::endl;
-    std::cout << "Total Counts: " << totalCounts << std::endl;
+    std::cout << "Total Counts:     " << totalCounts << std::endl;
     std::cout << "Photopeak Efficiency: " << (double)photoPeakCounts / totalCounts << std::endl;
 
     // TLine* Ge75 = new TLine(.1395, 10, .1395, hist->GetMaximum());
@@ -68,113 +108,14 @@ void GeHist(std::string file) {
     // Ge75->SetLineStyle(4);
     // Ge75->Draw("same");
 
-    TLine* Hcapture = new TLine(2.223, 10, 2.223, hist->GetMaximum());
-    Hcapture->SetLineColor(kWhite);
-    Hcapture->SetLineStyle(4);
-    Hcapture->Draw("same");
+    // TLine* Hcapture = new TLine(2.223, 10, 2.223, hist->GetMaximum());
+    // Hcapture->SetLineColor(kWhite);
+    // Hcapture->SetLineStyle(4);
+    // Hcapture->Draw("same");
+
+    PlotAllGeDets(tfile, cfile);
 
     delete[] cfile;
 }
-
-
-
-
-
-// old version
-// void GeHist(std::string file) {
-
-//     int darkGray = TColor::GetColor(23, 23, 28);
-//     gStyle->SetCanvasColor(darkGray);
-//     // gStyle->SetPadColor(darkGray);
-//     gStyle->SetStatColor(darkGray);
-//     gStyle->SetTitleColor(1);
-//     gStyle->SetTitleTextColor(kWhite);
-//     gStyle->SetStatTextColor(kWhite);
-
-//     char *cfile = new char[file.length() + 1];
-//     std::strcpy(cfile, file.c_str());
-//     TString title = "Simulated Energy Spectrum of ";
-//     std::cout << "Opening File: " << file << std::endl;
-//     TFile* input = new TFile(cfile, "read");
-
-//     int binNo = 6000;
-//     double xMin  = 0.0;
-//     double xMax  = 3.0;
-
-//     TTree* tree = (TTree*)input->Get("Ge e-");
-//     TCanvas* canvas = new TCanvas();
-//     canvas->SetLogy(1);
-//     canvas->SetTicky();
-//     canvas->SetTickx();
-
-//     TString branchName = tree->GetListOfBranches()->At(0)->GetName();
-//     double fEdep;
-//     tree->SetBranchAddress(branchName, &fEdep);
-//     int entries = tree->GetEntries();
-
-//     double fEdepMax = INT_MIN;
-//     double fEdepMin = INT_MAX;
-//     TH1F* hist = new TH1F("GeHist", title + branchName, binNo, xMin, xMax);
-//     for (int j = 0; j < entries; j++) {
-//         tree->GetEntry(j);
-//         hist->Fill(fEdep);
-//         if (fEdep > fEdepMax) fEdepMax = fEdep;
-//         if (fEdep < fEdepMin) fEdepMin = fEdep;
-//     }
-    
-//     for (int i = 0; i < binNo; i++) {
-//         int count = hist->GetBinContent(i);
-//         if (count == 0) continue; // Skip bins with zero counts
-//         std::cout << " | " << std::hex << i << ":" << std::dec << count;
-//     }
-//     std::cout << " |" << std::endl;
-
-//     int totalCounts = hist->Integral(hist->FindBin(xMin), hist->FindBin(xMax));
-//     int photoPeakCounts = hist->Integral(hist->FindBin(0.47), hist->FindBin(.49));
-//     std::cout << "Total Counts: " << totalCounts << std::endl;
-//     std::cout << "Photopeak Counts: " << photoPeakCounts << std::endl;
-//     std::cout << "Photopeak Efficiency: " << (double)photoPeakCounts / totalCounts << std::endl;
-//     std::cout << '\t' << "Max: " << fEdepMax << std::endl;
-//     std::cout << '\t' << "Min: " << fEdepMin << std::endl;
-
-//     hist->SetLineColorAlpha(kRed, 0.35);
-//     hist->GetXaxis()->SetLabelColor(kWhite);
-//     hist->GetYaxis()->SetLabelColor(kWhite);
-//     hist->GetXaxis()->SetAxisColor(kWhite, 1);
-//     hist->GetYaxis()->SetAxisColor(kWhite, 1);
-//     hist->GetXaxis()->SetTitleColor(kWhite);
-//     hist->GetYaxis()->SetTitleColor(kWhite);
-//     hist->GetXaxis()->SetTitle("Energy / MeV");
-//     hist->GetYaxis()->SetTitle("Counts");
-//     hist->SetStats(0);	
-//     hist->SetFillStyle(3002);
-//     hist->SetFillColor(kRed);
-//     hist->Draw();
-
-//     // TLine* Cr53 = new TLine(2.239, 10, 2.239, hist->GetMaximum());
-//     // Cr53->SetLineColor(kWhite);
-//     // Cr53->SetLineStyle(4);
-//     // Cr53->Draw("same");
-//     // TLine* Mn56 = new TLine(1.81, 10, 1.81, hist->GetMaximum());
-//     // Mn56->SetLineColor(kWhite);
-//     // Mn56->SetLineStyle(4);
-//     // Mn56->Draw();
-//     // TLine* Cr50 = new TLine(1.899, 10, 1.899, hist->GetMaximum());
-//     // Cr50->SetLineColor(kWhite);
-//     // Cr50->SetLineStyle(4);
-//     // Cr50->Draw();
-//     // TLine* Na24 = new TLine(2.754, 10, 2.754, hist->GetMaximum());
-//     // Na24->SetLineColor(kWhite);
-//     // Na24->SetLineStyle(4);
-//     // Na24->Draw();
-//     // TLine* Fe56 = new TLine(.845, 10, .845, hist->GetMaximum()); // maybe?
-//     // Fe56->SetLineColor(kWhite);
-//     // Fe56->SetLineStyle(4);
-//     // Fe56->Draw("same");
-    
-//     delete[] cfile;
-
-// }
-
 
 

@@ -82,9 +82,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			G4RunManager::GetRunManager()->ReinitializeGeometry();
 		}
 
-		void SetBesselNu(G4int newNu) {
-			nu = newNu;	
-			G4cout << "Updated Bessel function order to: " << nu << G4endl;
+		void SetBesselNu(G4int newNu, G4int newN) {
+			nu = newNu;
+			radial_n = newN;
+
+			G4cout << "Updated Bessel function order to: (" << nu << ", " << radial_n << ")" << G4endl;
 			G4RunManager* runManager = G4RunManager::GetRunManager();
 
 			runManager->GeometryHasBeenModified();
@@ -102,6 +104,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			ui->ApplyCommand("/vis/scene/rebuild");
 			ui->ApplyCommand("/vis/viewer/rebuild");
 			ui->ApplyCommand("/vis/viewer/flush");
+
+			// i can try to play around with this logic with ui->ApplyCommand("/vis/drawVolume");, but it's working as is
 		}
 
 		void SetShellType(G4int type) {
@@ -150,7 +154,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		
   	private:
  
-		G4int shellType, nu;
+		G4int shellType, nu, radial_n, SiDetCpyNo, GeDetCpyNo;
 		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield, firstSiDetIdx;
 		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat, *H2, *LH2;
 		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe, *elH, *elCl, *elNa, *elK, *elCo;
@@ -197,5 +201,5 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		void AddLocalAxes(G4LogicalVolume* parentLV, G4double length, G4double radius);
 		void ConstructTarget();
 		void ConstructTriangle(G4GDMLParser* fParser);
-		void ConstructBesselTarget(G4int nu);
+		void ConstructBesselTarget(G4int nu, G4int n);
 };

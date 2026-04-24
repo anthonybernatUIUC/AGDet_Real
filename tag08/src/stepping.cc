@@ -47,21 +47,25 @@ void MySteppingAction::RecordDeposition(const G4Step *step) {
 	// 20: Ge Det 6
 
 	if (fGeScoringVolumes.find(volumeHit) != fGeScoringVolumes.end()) {
-		
 		if (part == G4Gamma::Gamma()) {
+			// G4cout << "Ge Scoring Volume Hit: " << volumeHit->GetName() << " | " << part->GetParticleName() << " | " << edep << G4endl;
 			fEventAction->AddEdep(edep, 0);
 			fEventAction->AddEdep(edep, 2);
 		} else if (part == G4Electron::Definition()) {
-			fEventAction->AddEdep(edep, 6);
 			fEventAction->AddEdep(edep, 0);
+			fEventAction->AddEdep(edep, 6);
 		} else {
 			track->SetTrackStatus(fKillTrackAndSecondaries);
 		}
 	} 
 
 	if (fSiScoringVolumes.find(volumeHit) != fSiScoringVolumes.end()) {		
-		
-		if (part == G4Alpha::Alpha()) {
+		if (part == G4Gamma::Gamma()) {
+			step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
+		} else if (part->GetParticleName() == "Li7") {
+			fEventAction->AddEdep(edep, 4); // Li7E
+		} else if (part == G4Alpha::Alpha()) {
+			G4cout << "Si Scoring Volume Hit: " << volumeHit->GetName() << " | " << part->GetParticleName() << " | " << edep << G4endl;
 			fEventAction->AddEdep(edep, 3);
 			fEventAction->AddEdep(edep, copyNo - detectorConstruction->GetFirstSiDetIdx() + 9);
 		} else if (part == G4Electron::Definition()) {
@@ -75,48 +79,6 @@ void MySteppingAction::RecordDeposition(const G4Step *step) {
 }
 
 void MySteppingAction::UserSteppingAction(const G4Step *step) {
-	RecordDeposition(step);
+	// RecordDeposition(step);
 }
-
-
-
-
-
-// old method
-	
-	// if (fGeScoringVolumes.find(volumeHit) != fGeScoringVolumes.end()) {
-	// 	if (part == G4Alpha::Alpha() || part->GetParticleName() == "Li7") {
-	// 		step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-	// 	} else if (part == G4Gamma::Gamma()) {
-	// 		fEventAction->AddEdepGe(edep);
-	// 		fEventAction->AddEdepGamma(edep);
-	// 	} else if (part == G4Electron::Definition()) {
-	// 		fEventAction->AddEdepGe(edep);
-	// 		fEventAction->AddEdepGeElec(edep);
-	// 		// G4cout << "Step Edep with Parent: " << edep << ", " << step->GetTrack()->GetParentID() << G4endl;
-	// 	} else {
-	// 		// G4cout << part->GetParticleName() << " has hit a Ge det" << G4endl;
-	// 		step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-	// 	}
-	// } else if (fSiScoringVolumes.find(volumeHit) != fSiScoringVolumes.end()) {		
-	// 	if (part == G4Gamma::Gamma()) {
-	// 		// fEventAction->AddEdepSiBackground(edep);
-	// 		// step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-	// 	} else if (part->GetParticleName() == "Li7") {
-	// 		fEventAction->AddEdepLi7(edep);
-	// 		// G4cout << "Li7 Edep at Event: " << edep << " " << 
-	// 		// G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID() << G4endl;
-	// 	} else if (part == G4Alpha::Alpha()) {
-	// 		fEventAction->AddEdepAlpha(edep);
-	// 	} else if (part == G4Electron::Definition()) {
-	// 		fEventAction->AddEdepSiElec(edep);
-	// 		fEventAction->AddEdepSiBackground(edep);
-	// 	} else {
-	// 		// G4cout << part->GetParticleName() << " has hit a Si Det with E: " << edep << G4endl;
-	// 		// step->GetTrack()->SetTrackStatus(fKillTrackAndSecondaries);
-	// 		fEventAction->AddEdepSiBackground(edep);
-	// 	}
-	// 	fEventAction->AddEdepSi(edep);
-	// }
-
 

@@ -41,7 +41,7 @@ target_link_libraries(rdecay01 ${Geant4_LIBRARIES} )
 #
 set(rdecay01_SCRIPTS
 	vis.mac sim.mac AllHist.C GeHist.C SiHist.C AlphaCounter.C DetHitsPos.C 
-  pyrootAllSiHist.py pyrootGeHist.py macroGen.py
+  pyrootAllSiHist.py pyrootGeHist.py macroGen.py BesselDecomp.py
   )
 set(CMAKE_PREFIX_PATH "/home/anthony/software/geant4/geant4-v11.2.0-mt-install/bin/geant4-config")
 

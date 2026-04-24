@@ -49,12 +49,13 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 	fParticleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
 	fParticleGun->SetParticleEnergy(0.0001*eV);
 
-	fParticleGun->SetParticleEnergy(1*MeV);
-	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
+	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 40*cm));
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
 
 	fMessengerGun = new G4GenericMessenger(this, "/gun/", "Gun control");
 	fMessengerGun->DeclareMethod("setMode", &PrimaryGeneratorAction::SwitchGun, "Set gun mode");
-	
+	fMessengerGun->DeclareMethod("setDrift", &PrimaryGeneratorAction::SetDrift, "Set gun drift");
+
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
@@ -62,15 +63,18 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 	delete fMessengerGun;
 }
 
-void PrimaryGeneratorAction::generateBeamlineHit(G4Event* anEvent) {
+void PrimaryGeneratorAction::generateBeamlineHit() {
 	
-	double randAngle = G4UniformRand() * 2 * M_PI;
-	double randRadius = G4UniformRand() * 4.8 * cm;
+	G4double cosTheta = 0.0001*G4UniformRand() + 0.9999;
+    G4double sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
+    G4double phi = 2 * M_PI * G4UniformRand();
 
-	fParticleGun->SetParticlePosition(
-		G4ThreeVector(randRadius*std::cos(randAngle), randRadius*std::sin(randAngle), 40*cm));
-	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
-	fParticleGun->GeneratePrimaryVertex(anEvent);
+    G4double ux = sinTheta * std::cos(phi);
+    G4double uy = sinTheta * std::sin(phi);
+    G4double uz = cosTheta;
+
+	G4ThreeVector direction(ux, uy, uz);
+	fParticleGun->SetParticleMomentumDirection(-direction);
 }
 
 void PrimaryGeneratorAction::generateBackgroundHit(G4Event* anEvent, G4int shellHits) {
@@ -86,7 +90,6 @@ void PrimaryGeneratorAction::generateBackgroundHit(G4Event* anEvent, G4int shell
 
 		fParticleGun->SetParticlePosition(shellRadius*randAxis);
 		fParticleGun->SetParticleMomentumDirection(-randAxis);
-		fParticleGun->GeneratePrimaryVertex(anEvent);
 	}
 }
 
@@ -140,7 +143,6 @@ void PrimaryGeneratorAction::generateAlphaSource() {
 		G4ThreeVector(0, 0, 1).rotateY(-67.24*deg).rotateZ(120*deg),
 		G4ThreeVector(0, 0, 1).rotateY(-67.24*deg).rotateZ(-120*deg)
 	};
-
 	G4int detectorSelector = (G4int)(6.0 * G4UniformRand());
 	G4ThreeVector detPos = 21*cm * detDirs[detectorSelector];
 
@@ -155,24 +157,24 @@ void PrimaryGeneratorAction::generateAlphaSource() {
 
 void PrimaryGeneratorAction::generateDefaultSource() {
 	
-	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 0));
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
 }
 
-void PrimaryGeneratorAction::generateAlphaInUniformDisk(G4double rad) {
+void PrimaryGeneratorAction::generateInUniformDisk(G4double rad) {
 
-	G4double r = 5*mm * std::sqrt(G4UniformRand());
-    G4double phi2 = 2 * M_PI * G4UniformRand();
-	fParticleGun->SetParticlePosition(r*G4ThreeVector(std::cos(phi2), std::sin(phi2), 0));
+	G4double r = rad * std::sqrt(G4UniformRand());
+    G4double phi = 2 * M_PI * G4UniformRand();
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
+	fParticleGun->SetParticlePosition(G4ThreeVector(r*std::cos(phi), r*std::sin(phi), 40*cm));
 }
 
-void PrimaryGeneratorAction::generateAlphaConstShift(G4ThreeVector shift) {
+void PrimaryGeneratorAction::generateConstDrift(G4ThreeVector drift) {
 	
-	fParticleGun->SetParticlePosition(shift);
+	fParticleGun->SetParticlePosition(drift);
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
-	generateBeamlineHit(anEvent);
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 

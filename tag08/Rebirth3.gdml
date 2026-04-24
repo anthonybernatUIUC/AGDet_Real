@@ -299,7 +299,7 @@
       <solidref ref="Cut016"/>
     </volume>
 
-    <volume name="SiCollimator">
+    <volume name="SiTurret">
       <materialref ref="G4_AIR"/>
       <solidref ref="Fusion015"/>
     </volume>
@@ -328,7 +328,7 @@
         <position name="P-AGDevice" unit="mm" x="0" y="0" z="0"/>
       </physvol>
 
-      <!-- <physvol name="PV_AlCap1">
+      <physvol name="PV_AlCap1">
         <volumeref ref="AlCap"/>
         <position name="P-AlCap1" unit="mm" x="-0.6428*AlDist" z="0.766*AlDist"/>
         <rotation name="R-AlCap1" unit="deg" y="40"/>
@@ -357,7 +357,7 @@
         <volumeref ref="AlCap"/>
         <position name="P-AlCap6" unit="mm" x="AlDist*-0.3214" y="AlDist*-0.5567" z="AlDist*-0.766"/>
         <rotation name="R-AlCap6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
-      </physvol> -->
+      </physvol>
 
       <!-- MR -->
       <physvol name="MR"> 
@@ -407,8 +407,7 @@
         <rotation name="R-Aperture6" unit="deg" x="-67.870174" y="-25.951008"/>
       </physvol>
 
-      <!-- don't need rn -->
-      <!-- <physvol name="PV_CuWrap1">
+      <physvol name="PV_CuWrap1">
         <volumeref ref="CuWrap"/>
         <position name="P-CuWrap1" unit="mm" x="-0.6428*CuDist" z="0.766*CuDist"/>
         <rotation name="R-CuWrap1" unit="deg" y="40"/>
@@ -437,41 +436,40 @@
         <volumeref ref="CuWrap"/>
         <position name="P-CuWrap6" unit="mm" x="CuDist*-0.3214" y="CuDist*-0.5567" z="CuDist*-0.766"/>
         <rotation name="R-CuWrap6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
-      </physvol> -->
-
-      <physvol name="PV_SiCollimator1">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator" unit="mm" x="0.766*SiTurretDist" z="0.6428*SiTurretDist"/>
-        <rotation name="R-SiCollimator" unit="deg" y="-50"/>
-      </physvol>
-      <physvol name="PV_SiCollimator2">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator2" unit="mm" x="-0.383*SiTurretDist" y="0.6634*SiTurretDist" z="0.6428*SiTurretDist"/>
-        <rotation name="R-SiCollimator2" unit="deg" x="45.90468727" y="22.52101212" z="-110.36057488"/>
-      </physvol>
-      <physvol name="PV_SiCollimator3">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator3" unit="mm" x="-0.383*SiTurretDist" y="-0.6634*SiTurretDist" z="0.6428*SiTurretDist"/>
-        <rotation name="R-SiCollimator3" unit="deg" x="-45.90468727" y="22.52101212" z="110.36057488"/>
-      </physvol>
-      <physvol name="PV_SiCollimator4">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator4" unit="mm" x="-0.92215*SiTurretDist" z="0.38685*SiTurretDist"/>
-        <rotation name="R-SiCollimator4" unit="deg" y="67.24"/>
-      </physvol>
-      <physvol name="PV_SiCollimator5">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator5" unit="mm" x="0.4611*SiTurretDist" y="0.7986*SiTurretDist" z="0.3869*SiTurretDist"/>
-        <rotation name="R-SiCollimator5" unit="deg" x="64.15245171" y="-27.45596321" z="102.59094765"/>
-      </physvol>
-      <physvol name="PV_SiCollimator6">
-        <volumeref ref="SiCollimator"/>
-        <position name="P-SiCollimator6" unit="mm" x="0.4611*SiTurretDist" y="-0.7986*SiTurretDist" z="0.3869*SiTurretDist"/>
-        <rotation name="R-SiCollimator6" unit="deg" x="-64.15245171" y="-27.45596321" z="-102.59094765"/>
       </physvol>
 
-      <!-- don't need rn -->
-      <!-- <physvol name="PV_HPGeMount1">
+      <physvol name="MR_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret" unit="mm" x="0.766*SiTurretDist" z="0.6428*SiTurretDist"/>
+        <rotation name="R-SiTurret" unit="deg" y="-50"/>
+      </physvol>
+      <physvol name="TL_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret2" unit="mm" x="-0.383*SiTurretDist" y="0.6634*SiTurretDist" z="0.6428*SiTurretDist"/>
+        <rotation name="R-SiTurret2" unit="deg" x="45.90468727" y="22.52101212" z="-110.36057488"/>
+      </physvol>
+      <physvol name="BL_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret3" unit="mm" x="-0.383*SiTurretDist" y="-0.6634*SiTurretDist" z="0.6428*SiTurretDist"/>
+        <rotation name="R-SiTurret3" unit="deg" x="-45.90468727" y="22.52101212" z="110.36057488"/>
+      </physvol>
+      <physvol name="ML_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret4" unit="mm" x="-0.92215*SiTurretDist" z="0.38685*SiTurretDist"/>
+        <rotation name="R-SiTurret4" unit="deg" y="67.24"/>
+      </physvol>
+      <physvol name="TR_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret5" unit="mm" x="0.4611*SiTurretDist" y="0.7986*SiTurretDist" z="0.3869*SiTurretDist"/>
+        <rotation name="R-SiTurret5" unit="deg" x="64.15245171" y="-27.45596321" z="102.59094765"/>
+      </physvol>
+      <physvol name="BR_Turret">
+        <volumeref ref="SiTurret"/>
+        <position name="P-SiTurret6" unit="mm" x="0.4611*SiTurretDist" y="-0.7986*SiTurretDist" z="0.3869*SiTurretDist"/>
+        <rotation name="R-SiTurret6" unit="deg" x="-64.15245171" y="-27.45596321" z="-102.59094765"/>
+      </physvol>
+
+      <physvol name="PV_HPGeMount1">
         <volumeref ref="HPGeMount"/>
         <position name="P-HPGeMount1" unit="mm" x="-0.6428*GeHousingDist" z="0.766*GeHousingDist"/>
         <rotation name="R-HPGeMount1" unit="deg" y="40"/>
@@ -500,7 +498,37 @@
         <volumeref ref="CarbonWindow"/>
         <position name="P-CarbonWindow3" unit="mm" x="0.3214*(GeHousingDist - GeHousingZ/2)" y="0.5567*(GeHousingDist - GeHousingZ/2)" z="0.766*(GeHousingDist - GeHousingZ/2)"/>
         <rotation name="R-CarbonWindow3" unit="deg" x="36.00521482" y="-18.74723725" z="113.8586548"/>
-      </physvol> -->
+      </physvol>
+      <physvol name="PV_HPGeMount4">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount4" unit="mm" x="0.6428*GeHousingDist" z="-0.766*GeHousingDist"/>
+        <rotation name="R-HPGeMount4" unit="deg" y="-140"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow4">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow4" unit="mm" x="0.6428*(GeHousingDist - GeHousingZ/2)" z="-0.766*(GeHousingDist - GeHousingZ/2)"/>
+        <rotation name="R-CarbonWindow4" unit="deg" y="-140"/>
+      </physvol>
+      <physvol name="PV_HPGeMount5">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount5" unit="mm" x="-0.3214*GeHousingDist" y="GeHousingDist*0.5567" z="-0.766*GeHousingDist"/>
+        <rotation name="R-HPGeMount5" unit="deg" x="143.99478518" y="18.74723725" z="66.1413452"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow5">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow5" unit="mm" x="-0.3214*(GeHousingDist - GeHousingZ/2)" y="-0.5567*(GeHousingDist - GeHousingZ/2)" z="-0.766*(GeHousingDist - GeHousingZ/2)"/>
+        <rotation name="R-CarbonWindow5" unit="deg" x="143.99478518" y="18.74723725" z="66.1413452"/>
+      </physvol>
+      <physvol name="PV_HPGeMount6">
+        <volumeref ref="HPGeMount"/>
+        <position name="P-HPGeMount6" unit="mm" x="-0.3214*GeHousingDist" y="0.5567*GeHousingDist" z="-0.766*GeHousingDist"/>
+        <rotation name="R-HPGeMount6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
+      </physvol>
+      <physvol name="PV_CarbonWindow6">
+        <volumeref ref="CarbonWindow"/>
+        <position name="P-CarbonWindow6" unit="mm" x="-0.3214*(GeHousingDist - GeHousingZ/2)" y="-0.5567*(GeHousingDist - GeHousingZ/2)" z="-0.766*(GeHousingDist - GeHousingZ/2)"/>
+        <rotation name="R-CarbonWindow6" unit="deg" x="-143.99478518" y="18.74723725" z="-66.1413452"/>
+      </physvol>
 
       <!-- <physvol name="PV_ApertureCover1">
         <volumeref ref="SiDetApertureCover"/>

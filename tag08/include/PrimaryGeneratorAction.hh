@@ -49,29 +49,38 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
     	virtual void GeneratePrimaries(G4Event*);
     	G4ParticleGun* GetParticleGun() { return fParticleGun; };
 		void generateBackgroundHit(G4Event* anEvent, G4int shellHits = 1);
-		void generateBeamlineHit(G4Event* anEvent);
+		void generateBeamlineHit();
 		void generateCosmicRayHit(G4Event* anEvent);
 		void generateNBSRHit(G4Event* anEvent);
 		void generateAlphaSource();
 		void generateDefaultSource();
-		void generateAlphaInUniformDisk(G4double rad);
-		void generateAlphaConstShift(G4ThreeVector shift);
+		void generateInUniformDisk(G4double rad);
+		void generateConstDrift(G4ThreeVector drift);
+
 		void SwitchGun(G4String mode) { 
 			gunMode = mode; 
 			if (gunMode == "default" || gunMode == "Default") {
 				generateDefaultSource();
 			} else if (gunMode == "uniformArea") {
-				generateAlphaInUniformDisk(5*mm);
-			} else if (gunMode == "left") {
-				generateAlphaConstShift(G4ThreeVector(-5*mm, 0, 0));
-			} else if (gunMode == "right") {
-				generateAlphaConstShift(G4ThreeVector(5*mm, 0, 0));
+				generateInUniformDisk(5*mm);
+			} else if (gunMode == "cone") {
+				generateBeamlineHit();
+			} else if (gunMode == "reset") {
+				fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 40*cm));
 			} else {
-				G4cout << "ts jawn NOT a gun mode" << G4endl;
+				gunMode = "reset";
+				fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 40*cm));
+				G4cout << "ts jawn NOT a gun mode!" << G4endl;
 			}
 		};
-		G4String GetGunMode() { return gunMode; };
 
+		void SetDrift(G4ThreeVector drift) {
+			G4cout << "Gun drift set to: " << drift*cm << G4endl;
+			gunMode = "drift";
+			generateConstDrift(G4ThreeVector(drift[0], drift[1], 40)*cm);
+		};
+
+		G4String GetGunMode() { return gunMode; };
     	G4int Z, A;
             
   	private:

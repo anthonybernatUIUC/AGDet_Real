@@ -169,15 +169,13 @@ void RunAction::BeginOfRunAction(const G4Run*) {
 		G4ParticleGun* gun = fPrimary->GetParticleGun();
 		G4String mode = fPrimary->GetGunMode();
 		if (mode == "default" || mode == "Default") {
-			G4cout << "Default gun mode: alpha source at center" << G4endl;
+			G4cout << "Default gun mode: beam aimed at center" << G4endl;
 		} else if (mode == "uniformArea") {
-			G4cout << "uniformArea gun mode: alpha source in uniform disk" << G4endl;
-		} else if (mode == "left") {
-			G4cout << "left gun mode: alpha source on left side" << G4endl;
-		} else if (mode == "right") {
-			G4cout << "right gun mode: alpha source on right side" << G4endl;
+			G4cout << "uniformArea gun mode: beam aimed in uniform disk" << G4endl;
+		} else if (mode == "drift") {
+			G4cout << "drift gun mode: beam aimed with constant drift" << G4endl;
 		} else {
-			G4cout << "ts jawn NOT a gun mode" << G4endl;
+			G4cout << "ts jawn NOT a gun mode!" << G4endl;
 		}
 		G4ParticleDefinition* particle = gun->GetParticleDefinition();
 		G4double energy = gun->GetParticleEnergy();

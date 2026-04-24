@@ -5,11 +5,9 @@
 
 #/target/setWidth 1.0
 /shell/setShellType 1
-/run/initialize
-/run/reinitializeGeometry
 
-/analysis/setFileName AGMACROTest
+/analysis/setFileName AGMACROThickB4C
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 1000000
+/run/beamOn 5000000
 

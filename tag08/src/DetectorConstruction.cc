@@ -70,6 +70,7 @@ void DetectorConstruction::DefineParameters() {
 	zPbBackShield = 8.5725*cm;
 	shellType = 0;
 	nu = 0;
+	radial_n = 1;
 
 	// Ge Casing z = 15 cm, d = 10.2 cm irl
 
@@ -222,7 +223,7 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 	solidSiDet = new G4Tubs("solidSiDet" + std::to_string(cpyNo), 0, dSi / 2, zSi / 2, 0*deg, 360*deg);
 	logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet" + std::to_string(cpyNo));
 	physSiDet = new G4PVPlacement(
-		transformSiDet, logicSiDet, "physSiDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformSiDet, logicSiDet, "physSiDet" + std::to_string(cpyNo), logicWorld, false, SiDetCpyNo, false);
 	SiDets.insert(logicSiDet);
 	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
@@ -235,10 +236,11 @@ void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ
 	solidGeDet = new G4Tubs("solidGeDet" + std::to_string(cpyNo), 0, dGe / 2, zGe / 2, 0*deg, 360*deg);
 	logicGeDet = new G4LogicalVolume(solidGeDet, Ge, "logicGeDet" + std::to_string(cpyNo));
 	physGeDet = new G4PVPlacement(
-		transformGeDet, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, cpyNo, false);
+		transformGeDet, logicGeDet, "physGeDet" + std::to_string(cpyNo), logicWorld, false, GeDetCpyNo, false);
 	GeDets.insert(logicGeDet);
 	logicGeDet->SetVisAttributes(G4VisAttributes(G4Color::Blue()));
 	cpyNo++;
+	GeDetCpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetectorXYZ(G4RotateX3D rotX, G4RotateY3D rotY, G4RotateZ3D rotZ, int& cpyNo) {
@@ -421,25 +423,33 @@ void DetectorConstruction::ConstructTriangle(G4GDMLParser* fParser) {
 		rotX90, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
 }
 
-void DetectorConstruction::ConstructBesselTarget(int nu) {
+void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
+	nu = std::min(std::max(nu, 0), 19);
+	radial_n = std::min(std::max(radial_n, 1), 3);
+	G4cout << "Setting Bessel function order to: (" << nu << ", " << radial_n << ")" << G4endl;
 
-
-	G4cout << "Building Bessel with nu = " << nu << G4endl;
-
-	std::vector<G4double> alpha = 
-	{	// first zero of J_nu for nu = 0, 1, 2, ... 19
-		2.40482556, 3.83170597, 5.1356223, 6.3801619, 7.58834243, 
+	std::vector<std::vector<G4double>> alpha = 
+	{	// n-th (n = 1, 2, 3) zero of J_nu for nu = 0, 1, 2, ... 19
+		{2.40482556, 3.83170597, 5.1356223, 6.3801619, 7.58834243, 
 		8.77148382, 9.93610952, 11.08637002, 12.22509226, 13.35430048, 
 		14.47550069, 15.58984788, 16.69824993, 17.80143515, 18.89999795, 
-		19.99443063, 21.08514611, 22.17249462, 23.25677609, 24.33824962 
+		19.99443063, 21.08514611, 22.17249462, 23.25677609, 24.33824962},
+		{5.52007811, 7.01558667, 8.41724414, 9.76102313, 11.06470949, 
+		12.3386042, 13.58929017, 14.82126873, 16.03777419, 17.24122038, 
+		18.43346367, 19.6159669, 20.78990636, 21.95624407, 23.11577835, 
+		24.26918003, 25.41701901, 26.55978414, 27.69789835, 28.83173035},
+		{8.65372791, 10.17346814, 11.61984117, 13.01520072, 14.37253667, 
+		15.70017408, 17.00381967, 18.28758283, 19.55453643, 20.80704779, 
+		22.04698536, 23.27585373, 24.49488504, 25.70510305, 26.90736898, 
+		28.10241523, 29.2908707, 30.47327995, 31.65011815, 32.82180276}
 	};
 
 	solidBesselTarget = new G4TessellatedSolid("BesselTarget");
 
 	// set-up grid
-	int Nr = 250;
-	int Ntheta = 250;
+	int Nr = 175;
+	int Ntheta = 175;
 
 	std::vector<G4double> rs(Nr);
 	for (int i = 1; i <= Nr; i++) {
@@ -457,16 +467,30 @@ void DetectorConstruction::ConstructBesselTarget(int nu) {
 		std::vector<std::vector<G4double>>(Nr, std::vector<G4double>(Ntheta));
 	
 	G4double zmin = INFINITY;
-	G4double A = 1*cm;
-	G4double J_R = std::cyl_bessel_j(nu, dTarget / 2);
+	G4double zmax = -INFINITY;
+	std::pair<int, int> minIndex;
+	G4double A_thin = 106*nm;
+	G4double A_thick = 100*um;
+	G4double A = A_thick;
+	G4double phi0 = 0;
 	for (int i = 0; i < Nr; i++) {
 		for (int j = 0; j < Ntheta; j++) {
-			zs[i][j] = A * std::cyl_bessel_j(nu, alpha[nu] * rs[i] / (dTarget / 2)) * std::cos(nu * thetas[j]);
-			if (zs[i][j] < zmin) zmin = zs[i][j];
+			zs[i][j] = A * std::cyl_bessel_j(nu, alpha[radial_n - 1][nu] * rs[i] / (dTarget / 2)) * 
+				std::cos(nu * thetas[j] - phi0);
+			if (zs[i][j] < zmin) { 
+				zmin = zs[i][j];
+				minIndex = {i, j};
+			}
+			if (zs[i][j] > zmax) {
+				zmax = zs[i][j];
+			}
 		}
 	}
+	G4cout << "(zmin, zmax)\n\t|(" << zmin/nm << ", " << zmax/nm << ") nm\n\t|(" 
+		   << zmin/A << ", " << zmax/A << ") amplitudes; A = " << A/nm << " nm" << G4endl;
+	G4cout << "Bessel z range = " << (zmax - zmin)/nm << " nm" << G4endl;
 
-	G4ThreeVector closurePoint;
+	// convert to xyz and store in grid
 	std::vector<std::vector<G4ThreeVector>> xyzgrid;
 	for (int i = 0; i < Nr; i++) {
 		std::vector<G4ThreeVector> ring;
@@ -474,7 +498,6 @@ void DetectorConstruction::ConstructBesselTarget(int nu) {
 			G4double x = rs[i] * std::cos(thetas[j]);
 			G4double y = rs[i] * std::sin(thetas[j]);
 			G4double z = zs[i][j];
-			if (z == zmin) closurePoint = G4ThreeVector(x, y, z);
 			ring.push_back(G4ThreeVector(x, y, z));
 		}
 		xyzgrid.push_back(ring);
@@ -483,14 +506,15 @@ void DetectorConstruction::ConstructBesselTarget(int nu) {
 	// special case for connecting to center point with no degeneracy
 	G4ThreeVector targetCenter(0, 0, A*std::cyl_bessel_j(nu, 0));
 	for (int j = 0; j < Ntheta; j++) {
-
 		G4ThreeVector p1 = xyzgrid[0][j];
 		G4ThreeVector p2 = xyzgrid[0][(j+1)%Ntheta];
-		solidBesselTarget->AddFacet(new G4TriangularFacet(p1, p2, targetCenter, ABSOLUTE)
-		);
+		solidBesselTarget->AddFacet(new G4TriangularFacet(p1, p2, targetCenter, ABSOLUTE));
 	}
 
-	G4ThreeVector closurePointTest = closurePoint + G4ThreeVector(0, 0, -10*cm);
+	G4double buffer = 1*nm;
+	G4ThreeVector closurePoint = G4ThreeVector(0, 0, -abs(xyzgrid[minIndex.first][minIndex.second].z()) - buffer);
+	G4cout << "Closure point: " << closurePoint / nm << " nm" << G4endl;
+	G4cout << "Edge point:    " << xyzgrid[Nr-1][0] / nm << " nm" << G4endl;
 	// create triangles between adjacent points in the grid and add to tessellated solid
 	for (int i = 0; i < Nr - 1; i++) {
 		for (int j = 0; j < Ntheta; j++) {
@@ -501,20 +525,22 @@ void DetectorConstruction::ConstructBesselTarget(int nu) {
 			solidBesselTarget->AddFacet(new G4TriangularFacet(p1, p2, p3, ABSOLUTE));
 			solidBesselTarget->AddFacet(new G4TriangularFacet(p2, p4, p3, ABSOLUTE));
 
-			if (i == Nr - 2) { // crudely combine edges to point
-				G4ThreeVector p_outer1 = xyzgrid[i+1][j];
-    			G4ThreeVector p_outer2 = xyzgrid[i+1][(j+1) % Ntheta];
-				solidBesselTarget->AddFacet(new G4TriangularFacet(p_outer2, p_outer1, closurePointTest, ABSOLUTE));
+			// check for outer ring points, extend down to closure and close the solid
+			if (i == Nr - 2) { 
+				G4ThreeVector p_base1 = p2 + closurePoint;
+    			G4ThreeVector p_base2 = p4 + closurePoint;
+				solidBesselTarget->AddFacet(new G4TriangularFacet(p_base1, p4, p2, ABSOLUTE));
+				solidBesselTarget->AddFacet(new G4TriangularFacet(p4, p_base1, p_base2, ABSOLUTE));
+				solidBesselTarget->AddFacet(new G4TriangularFacet(p_base2, p_base1, closurePoint, ABSOLUTE));
 			}
 		}
 	}
 
 	solidBesselTarget->SetSolidClosed(true);
 
-	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, B10, "logicBesselTarget");
-	logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));
-	physBesselTarget = new G4PVPlacement(
-		0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
+	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, BC, "logicBesselTarget");
+	logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
+	physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
 	
 }
 
@@ -538,7 +564,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	logicWorld = physWorld->GetLogicalVolume();
 	logicWorld->SetVisAttributes(G4VisAttributes(G4Color(1, 0, 0, .05))); // transparent red
 
-	// --- AG Device --- //
+	// --- AG Chamber --- //
 	G4LogicalVolume* AGDevice = fParser->GetVolume("AGDevice");
 	AGDevice->SetMaterial(matSteel);
 
@@ -559,9 +585,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// AddLocalAxes(SiDetAperture, 5*cm, 0.025*cm);
 
 	// --- Si Collimator --- //
-	G4LogicalVolume* SiCollimator = fParser->GetVolume("SiCollimator");
-	SiCollimator->SetMaterial(matSteel);
-	SiCollimator->SetVisAttributes(G4VisAttributes(G4Color::Green()));
+	G4LogicalVolume* SiTurret = fParser->GetVolume("SiTurret");
+	SiTurret->SetMaterial(matSteel);
+	SiTurret->SetVisAttributes(G4VisAttributes(G4Color::Green()));
 
 	// --- Ge Mount --- //
 	G4LogicalVolume* GeMount = fParser->GetVolume("HPGeMount");
@@ -577,6 +603,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	ApertureCover->SetMaterial(matSteel);
 
 	G4int cpyNo = 10;
+	GeDetCpyNo = 0;
+	SiDetCpyNo = 0;
 
 	// --- Front Ge Dets --- // 
 	G4RotateY3D rotThetaHPGe1(-40*deg);
@@ -644,12 +672,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// G4RotateZ3D rotPhiNBSR(0*deg);
 	// ConstructNBSR(rotThetaNBSR, rotPhiNBSR, cpyNo);
 
-	ConstructBesselTarget(nu);
+	ConstructBesselTarget(nu, radial_n);
 
-	G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, dTarget/2, 0.01*cm, 0., 360.*deg);
+	// Something to keep in mind to make visualization faster
+	// // High-res mesh for tracking
+	// G4TessellatedSolid* highResSolid = BuildBesselMesh(nu, 100); // 100 segments
+	// G4LogicalVolume* logicBessel = new G4LogicalVolume(highResSolid, mat, "BesselLogic");
+
+	// // Low-res mesh for looking at
+	// G4TessellatedSolid* lowResSolid = BuildBesselMesh(nu, 20);   // 20 segments
+	// G4LogicalVolume* logicBesselVis = new G4LogicalVolume(lowResSolid, mat, "BesselVis");
+
+	// // Logic: Hide the heavy one, show the light one
+	// logicBessel->SetVisAttributes(G4VisAttributes::GetInvisible());
+	// logicBesselVis->SetVisAttributes(new G4VisAttributes(G4Colour(1,1,1)));
+
+
+	G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, dTarget/2, 1*nm, 0., 360.*deg);
 	G4LogicalVolume* xzLV = new G4LogicalVolume(xzPlane, Galactic, "XZPlaneLV");
-	new G4PVPlacement(
-		nullptr, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", fParser->GetVolume("worldVOL"), false, 0, false);
+	new G4PVPlacement(nullptr, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", logicWorld, false, 0, false);
 
 	G4cout << "Geometry Construction Complete . . ." << G4endl;
 	G4cout << "-------------------------------" << G4endl;
@@ -662,18 +703,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 void DetectorConstruction::ConstructSDandField() {
 	
-	sensDetSi = new MySiDet("SiSensDet", firstSiDetIdx);
+	sensDetSi = new MySiDet("SiSensDet");
 	sensDetGe = new MyGeDet("GeSensDet");
+
 	if (!GeDets.empty()) {
-		G4cout << "the now now and never" << G4endl;
-		for (auto& logicGeDet : GeDets) {
-			logicGeDet->SetSensitiveDetector(sensDetGe);
+		for (auto& GeDet : GeDets) {
+			GeDet->SetSensitiveDetector(sensDetGe);
 		}
 	}
 	if (!SiDets.empty()) {
-		G4cout << "skipping tiles" << G4endl;
-		for (auto& logicSiDet : SiDets) {
-			logicSiDet->SetSensitiveDetector(sensDetSi);
+		for (auto& SiDet : SiDets) {
+			SiDet->SetSensitiveDetector(sensDetSi);
 		}
 	}
 }
