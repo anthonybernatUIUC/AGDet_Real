@@ -35,7 +35,7 @@ DetectorConstruction::DetectorConstruction() {
 	fMessengerShell = new G4GenericMessenger(this, "/shell/", "Isotope shell control");
 	fMessengerAperture = new G4GenericMessenger(this, "/aperture/", "Aperture control");
 
-	fMessenger->DeclareMethod("setWidth", &DetectorConstruction::ScaleTargetWidth,"Set target width");
+	fMessenger->DeclareMethod("setThickness", &DetectorConstruction::ScaleTargetThickness,"Set target thickness");
 	fMessenger->DeclareMethod("setBesselNu", &DetectorConstruction::SetBesselNu, "Set Bessel function order");
 	fMessengerShell->DeclareMethod("setShellType", &DetectorConstruction::SetShellType, "Set the type of shell");
 	fMessengerAperture->DeclareMethod("shiftAperture", &DetectorConstruction::ShiftAperture, "Shift the aperture in microns");
@@ -194,6 +194,8 @@ void DetectorConstruction::DefineMaterials() {
 	// IsotopeShellMat->AddElement(elCo, .5);
 	// IsotopeShellMat->AddElement(elK, .5);
 
+	targetMat = B10;
+
 }
 
 void DetectorConstruction::ConstructTarget() {
@@ -227,6 +229,7 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 	SiDets.insert(logicSiDet);
 	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
 	cpyNo++;
+	SiDetCpyNo++;
 }
 
 void DetectorConstruction::ConstructHPGeDetector(G4RotateY3D rotTheta, G4RotateZ3D rotPhi, int& cpyNo) {
@@ -435,11 +438,11 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 		8.77148382, 9.93610952, 11.08637002, 12.22509226, 13.35430048, 
 		14.47550069, 15.58984788, 16.69824993, 17.80143515, 18.89999795, 
 		19.99443063, 21.08514611, 22.17249462, 23.25677609, 24.33824962},
-		{5.52007811, 7.01558667, 8.41724414, 9.76102313, 11.06470949, 
+		{ 5.52007811, 7.01558667, 8.41724414, 9.76102313, 11.06470949, 
 		12.3386042, 13.58929017, 14.82126873, 16.03777419, 17.24122038, 
 		18.43346367, 19.6159669, 20.78990636, 21.95624407, 23.11577835, 
 		24.26918003, 25.41701901, 26.55978414, 27.69789835, 28.83173035},
-		{8.65372791, 10.17346814, 11.61984117, 13.01520072, 14.37253667, 
+		{ 8.65372791, 10.17346814, 11.61984117, 13.01520072, 14.37253667, 
 		15.70017408, 17.00381967, 18.28758283, 19.55453643, 20.80704779, 
 		22.04698536, 23.27585373, 24.49488504, 25.70510305, 26.90736898, 
 		28.10241523, 29.2908707, 30.47327995, 31.65011815, 32.82180276}
@@ -469,9 +472,7 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 	G4double zmin = INFINITY;
 	G4double zmax = -INFINITY;
 	std::pair<int, int> minIndex;
-	G4double A_thin = 106*nm;
-	G4double A_thick = 100*um;
-	G4double A = A_thick;
+	G4double A = zTarget;
 	G4double phi0 = 0;
 	for (int i = 0; i < Nr; i++) {
 		for (int j = 0; j < Ntheta; j++) {
@@ -538,7 +539,7 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
 	solidBesselTarget->SetSolidClosed(true);
 
-	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, BC, "logicBesselTarget");
+	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
 	logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
 	physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
 	
@@ -546,12 +547,11 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
-	G4GeometryManager::GetInstance()->OpenGeometry();
-	G4PhysicalVolumeStore::GetInstance()->Clean();
-	G4LogicalVolumeStore::GetInstance()->Clean();
-	G4SolidStore::GetInstance()->Clean();
-	if (!GeDets.empty()) GeDets.clear();
-	if (!SiDets.empty()) SiDets.clear();
+	// G4PhysicalVolumeStore::GetInstance()->Clean();
+	// G4LogicalVolumeStore::GetInstance()->Clean();
+	// G4SolidStore::GetInstance()->Clean();
+	// if (!GeDets.empty()) GeDets.clear();
+	// if (!SiDets.empty()) SiDets.clear();
 
 	G4cout << "-------------------------------" << G4endl;
 	G4cout << "Constructing Geometry . . ." << G4endl;
@@ -687,10 +687,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// logicBessel->SetVisAttributes(G4VisAttributes::GetInvisible());
 	// logicBesselVis->SetVisAttributes(new G4VisAttributes(G4Colour(1,1,1)));
 
-
-	G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, dTarget/2, 1*nm, 0., 360.*deg);
-	G4LogicalVolume* xzLV = new G4LogicalVolume(xzPlane, Galactic, "XZPlaneLV");
-	new G4PVPlacement(nullptr, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", logicWorld, false, 0, false);
+	// if (G4UImanager::GetUIpointer()->GetSession() != nullptr) {
+	// 	G4Tubs* xzPlane = new G4Tubs("XZPlane", 0, dTarget/2, 1*nm, 0., 360.*deg);
+	// 	G4LogicalVolume* xzLV = new G4LogicalVolume(xzPlane, Galactic, "XZPlaneLV");
+	// 	new G4PVPlacement(nullptr, G4ThreeVector(0, 0, 0), xzLV, "XZPlanePV", logicWorld, false, 0, false);
+	// }
+	
 
 	G4cout << "Geometry Construction Complete . . ." << G4endl;
 	G4cout << "-------------------------------" << G4endl;

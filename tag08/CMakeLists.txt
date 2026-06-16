@@ -39,10 +39,11 @@ target_link_libraries(rdecay01 ${Geant4_LIBRARIES} )
 # build rdecay01. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(rdecay01_SCRIPTS
-	vis.mac sim.mac AllHist.C GeHist.C SiHist.C AlphaCounter.C DetHitsPos.C 
-  pyrootAllSiHist.py pyrootGeHist.py macroGen.py BesselDecomp.py
-  )
+set(
+  rdecay01_SCRIPTS
+	vis.mac sim.mac
+  AllHist.C GeHist.C SiHist.C AlphaCounter.C DetHitsPos.C Coincidence.C
+  pyrootAllSiHist.py pyrootGeHist.py macroGen.py BesselDecomp.py)
 set(CMAKE_PREFIX_PATH "/home/anthony/software/geant4/geant4-v11.2.0-mt-install/bin/geant4-config")
 
 foreach(_script ${rdecay01_SCRIPTS})

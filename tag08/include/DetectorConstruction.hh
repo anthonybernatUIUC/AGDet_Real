@@ -56,6 +56,7 @@
 #include "G4TriangularFacet.hh"
 #include "G4SolidStore.hh"
 #include "G4GeometryManager.hh"
+#include "G4VisManager.hh"
 
 #include "detector.hh"
 
@@ -76,36 +77,86 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		G4int GetFirstSiDetIdx() const { return firstSiDetIdx; }
 		G4double GetTargetWidth() { return zTarget; }
 
-		void ScaleTargetWidth(G4double scale) { 
-			zTarget *= scale; 
-			G4RunManager::GetRunManager()->GeometryHasBeenModified();
-			G4RunManager::GetRunManager()->ReinitializeGeometry();
+		void ScaleTargetThickness(G4String type) { // Sets Amplitude of Bessel
+
+			if (type == "thin" || type == "Thin") {
+				zTarget = 106*nm;
+				targetMat = B10;
+				G4cout << "Target thickness set to thin: " << zTarget / nm << " nm" << G4endl;
+			} else if (type == "thick" || type == "Thick") {
+				zTarget = 1*mm;
+				targetMat = BC;
+				G4cout << "Target thickness set to thick: " << zTarget / um << " um" << G4endl;
+			} else if (type == "demo" || type == "Demo") {
+				zTarget = 1*cm;
+				targetMat = BC;
+				G4cout << "Target thickness set to demo: " << zTarget / cm << " cm" << G4endl;
+			} else {
+				zTarget = 106*nm;
+				targetMat = B10;
+				G4cout << "Invalid target thickness type. Setting to thin." << G4endl;
+			}
+			
+			G4GeometryManager::GetInstance()->OpenGeometry();
+			if (solidBesselTarget) {
+				G4SolidStore::GetInstance()->DeRegister(solidBesselTarget);
+				delete solidBesselTarget;
+			}
+			if (logicBesselTarget) {
+				G4LogicalVolumeStore::GetInstance()->DeRegister(logicBesselTarget);
+				delete logicBesselTarget;
+			}
+			if (physBesselTarget) {
+				G4PhysicalVolumeStore::GetInstance()->DeRegister(physBesselTarget);
+				delete physBesselTarget;
+			}
+			ConstructBesselTarget(nu, radial_n);
+
+			G4GeometryManager::GetInstance()->CloseGeometry(true, false);
+			G4RunManager* runManager = G4RunManager::GetRunManager();
+			runManager->GeometryHasBeenModified();
+			
+			if (G4VisManager::GetConcreteInstance() != nullptr) {
+				G4VisManager* visManager = G4VisManager::GetInstance();
+				if (visManager && visManager->GetCurrentViewer()) {
+					G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/rebuild");
+				}
+			}
 		}
 
 		void SetBesselNu(G4int newNu, G4int newN) {
 			nu = newNu;
 			radial_n = newN;
+			G4cout << "Updating Bessel function order to: (" << nu << ", " << radial_n << ")" << G4endl;
 
-			G4cout << "Updated Bessel function order to: (" << nu << ", " << radial_n << ")" << G4endl;
+			G4GeometryManager::GetInstance()->OpenGeometry();
+			if (solidBesselTarget) {
+				G4SolidStore::GetInstance()->DeRegister(solidBesselTarget);
+				delete solidBesselTarget;
+			}
+			ConstructBesselTarget(nu, radial_n);
+			G4GeometryManager::GetInstance()->CloseGeometry(true, false);
+
 			G4RunManager* runManager = G4RunManager::GetRunManager();
-
 			runManager->GeometryHasBeenModified();
-			runManager->ReinitializeGeometry(true);
-			runManager->Initialize();
+			if (G4VisManager::GetConcreteInstance() != nullptr) {
+				G4VisManager* visManager = G4VisManager::GetInstance();
+				if (visManager && visManager->GetCurrentViewer()) {
+					G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/rebuild");
+				}
+			}
 
-			G4UImanager* ui = G4UImanager::GetUIpointer(); 
-			// Clear the current scene of 'dead' pointers
-			ui->ApplyCommand("/vis/scene/clear");
-			
-			// Force the scene to find the new world volume created in Construct()
-			ui->ApplyCommand("/vis/scene/add/volume worldVOL_PV"); 
-			
-			// Re-calculate the scene extent and redraw
-			ui->ApplyCommand("/vis/scene/rebuild");
-			ui->ApplyCommand("/vis/viewer/rebuild");
-			ui->ApplyCommand("/vis/viewer/flush");
+			// G4RunManager* runManager = G4RunManager::GetRunManager();
+			// runManager->GeometryHasBeenModified();
+			// runManager->ReinitializeGeometry(true);
+			// runManager->Initialize();
 
-			// i can try to play around with this logic with ui->ApplyCommand("/vis/drawVolume");, but it's working as is
+			// G4UImanager* ui = G4UImanager::GetUIpointer(); 
+			// ui->ApplyCommand("/vis/scene/clear");
+			// ui->ApplyCommand("/vis/scene/add/volume worldVOL_PV"); 
+			// ui->ApplyCommand("/vis/scene/rebuild");
+			// ui->ApplyCommand("/vis/viewer/rebuild");
+			// ui->ApplyCommand("/vis/viewer/flush");
 		}
 
 		void SetShellType(G4int type) {
@@ -156,7 +207,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
  
 		G4int shellType, nu, radial_n, SiDetCpyNo, GeDetCpyNo;
 		G4double fWorldSize, distDetGe, distDetSi, dTarget, zTarget, dGe, dSi, zGe, zSi, zPbBackShield, firstSiDetIdx;
-		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat, *H2, *LH2;
+		G4Material *Galactic, *Ge, *BC, *Si, *Al, *B10, *matSteel, *Pb, *Cu, *C, *IsotopeShellMatH, *IsotopeShellMat, *H2, *LH2, *targetMat;
 		G4Element *elB10, *elMn, *elSi, *elCr, *elNi, *elFe, *elH, *elCl, *elNa, *elK, *elCo;
 		G4Isotope *B10Iso, *Cl35, *Cr50, *Cr52, *Cr53, *Fe56, *Ni58, *Ni60, *K40, *Co60, *H1,
 		*Ni62, *Ni63, *Ni64, *Na24, *Mn56;

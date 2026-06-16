@@ -32,3 +32,5 @@ idealCounts = countsArray[8]
 deviation = np.abs(countsArray - idealCounts) / idealCounts
 print(countsArray - idealCounts)
 print(deviation)
+
+# unfinished

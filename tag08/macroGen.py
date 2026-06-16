@@ -53,7 +53,15 @@ def gettingTilty():
             file.write(f"/aperture/shiftAperture {-i}\n\n")
             count += 1
 
-gettingTilty()
+def CountsDracula():
+    file = open("genSim.mac", "w")
+    file.write("/control/cout/ignoreThreadsExcept 0\n")
+    file.write("/control/verbose 0\n")
+    file.write("/run/verbose 0\n\n")
+    file.write("/tracking/verbose 0\n\n")
+
+    printProgress = 200000
+    beamOn = 10000000
 
 # /control/cout/ignoreThreadsExcept 0
 # /control/verbose 0

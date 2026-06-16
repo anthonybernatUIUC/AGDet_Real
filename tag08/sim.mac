@@ -3,11 +3,11 @@
 /run/verbose 0
 /tracking/verbose 0
 
-#/target/setWidth 1.0
-/shell/setShellType 1
+/geometry/test/run
+/target/setThickness thick
 
-/analysis/setFileName AGMACROThickB4C
 /run/printProgress 200000
 /run/initialize
-/run/beamOn 5000000
+/analysis/setFileName ../rootFiles/AGMACROThickB4C1mm
+/run/beamOn 10000000
 

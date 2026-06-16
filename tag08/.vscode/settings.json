@@ -5,6 +5,7 @@
         "DetHitsPos.C": "cpp",
         "GeHist copy.C": "cpp",
         "SiHist.C": "cpp",
+        "Coincidence.C": "cpp",
         "*.icc": "cpp",
         "array": "cpp",
         "atomic": "cpp",

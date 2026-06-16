@@ -23,6 +23,7 @@ MyGeDet::MyGeDet(G4String name) : G4VSensitiveDetector(name) {
 MySiDet::~MySiDet() {}
 MyGeDet::~MyGeDet() {}
 
+    // AddEdep indices to populate ROOT file
     // 0: GeScoring
     // 1: SiScoring
     // 2: Gammas
@@ -33,19 +34,19 @@ MyGeDet::~MyGeDet() {}
     // 7: Si Background
     // 8: Ge Background
 
-    // 9: Si Det 1
-    // 10: Si Det 2
-    // 11: Si Det 3
-    // 12: Si Det 4
-    // 13: Si Det 5
-    // 14: Si Det 6
+    // 9:  SiDet1
+    // 10: SiDet2
+    // 11: SiDet3
+    // 12: SiDet4
+    // 13: SiDet5
+    // 14: SiDet6
 
-    // 15: Ge Det 1
-    // 16: Ge Det 2
-    // 17: Ge Det 3
-    // 18: Ge Det 4
-    // 19: Ge Det 5
-    // 20: Ge Det 6
+    // 15: GeDet1
+    // 16: GeDet2
+    // 17: GeDet3
+    // 18: GeDet4
+    // 19: GeDet5
+    // 20: GeDet6
 
 G4bool MySiDet::ProcessHits(G4Step* aStep, G4TouchableHistory* ROhist) {
 

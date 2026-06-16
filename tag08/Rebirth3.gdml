@@ -39,9 +39,7 @@
     <constant name="GeHousingZ" value="121"/>
     <constant name="GeNeckOuter" value="12.5"/>
     <constant name="GeNeckZ" value="100"/>
-    
   </define>
-  <materials/>
   <solids>
     <!-- World -->
     <box name="WorldBox" x=".005*fWorldSize" y=".005*fWorldSize" z=".005*fWorldSize" lunit="km"/>
@@ -60,7 +58,7 @@
     <tube name="Tube033" rmin="TurretInner" rmax="TurretOuter" startphi="0" deltaphi="360" aunit="deg" z="126.228" lunit="mm"/>
     <!-- Si Aperture -->
     <tube name="Tube032" rmin="0" rmax="TurretOuter" startphi="0" deltaphi="360" aunit="deg" z="5.0" lunit="mm"/>
-    <cone name="Cone001" rmin1="0.0" rmax1="12.70" rmin2="0.0" rmax2="17.526" z="5.1" startphi="0" deltaphi="360" aunit="deg" lunit="mm"/>
+    <cone name="Cone001" rmin1="0" rmax1="12.70" rmin2="0" rmax2="17.526" z="5.1" startphi="0" deltaphi="360" aunit="deg" lunit="mm"/>
     <!-- Al Top Hat and Cu Wrap -->
     <tube name="Tube031" rmin="CuInner" rmax="CuOuter" startphi="0" deltaphi="360" aunit="deg" z="CuZ" lunit="mm"/>
     <tube name="Tube030" rmin="0" rmax="AlInner" startphi="0" deltaphi="360" aunit="deg" z="AlMainZ - AlCapZ" lunit="mm"/>
@@ -364,48 +362,49 @@
       <physvol name="MR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture1" unit="mm" x="0.766*ApertureDist" z="0.6428*ApertureDist"/>
-        <!-- <rotation name="R-Aperture1" unit="deg" y="-48.279868"/>  --> 
-        <rotation name="R-Aperture1" unit="deg" y="-48.246514"/> 
+        <!-- Second option is the tilted version -->
+        <rotation name="R-Aperture1" unit="deg" y="-48.279868"/>  
+        <!-- <rotation name="R-Aperture1" unit="deg" y="-48.246514"/>  -->
       </physvol>
 
       <!-- TL -->
       <physvol name="TL"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture2" unit="mm" x="-0.383*ApertureDist" y="0.6634*ApertureDist" z="0.6428*ApertureDist"/>
-        <!-- <rotation name="R_Aperture2" unit="deg" x="44.216019" y="20.753455"/> -->
-        <rotation name="R_Aperture2" unit="deg" x="44.584265" y="20.647388"/>
+        <rotation name="R_Aperture2" unit="deg" x="44.216019" y="20.753455"/>
+        <!-- <rotation name="R_Aperture2" unit="deg" x="44.584265" y="20.647388"/> -->
       </physvol> 
 
       <!-- BL -->
       <physvol name="BL"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture3" unit="mm" x="-0.383*ApertureDist" y="-0.6634*ApertureDist" z="0.6428*ApertureDist"/>
-        <!-- <rotation name="R-Aperture3" unit="deg" x="-47.693162" y="21.893109"/> -->
-        <rotation name="R-Aperture3" unit="deg" x="-47.722412" y="22.015353"/>
+        <rotation name="R-Aperture3" unit="deg" x="-47.693162" y="21.893109"/>
+        <!-- <rotation name="R-Aperture3" unit="deg" x="-47.722412" y="22.015353"/> -->
       </physvol>  
 
       <!-- ML -->
       <physvol name="ML"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture4" unit="mm" x="-0.92215*ApertureDist" z="0.38685*ApertureDist"/>
-        <!-- <rotation name="R-Aperture4" unit="deg" y="67.27 - 1.715954"/> -->
-        <rotation name="R-Aperture4" unit="deg" y="65.483744"/>
+        <rotation name="R-Aperture4" unit="deg" y="67.27 - 1.715954"/>
+        <!-- <rotation name="R-Aperture4" unit="deg" y="65.483744"/> -->
       </physvol>
 
       <!-- TR -->
       <physvol name="TR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture5" unit="mm" x="0.4611*ApertureDist" y="0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <!-- <rotation name="R-Aperture5" unit="deg" x="60.623752" y="-24.875870" /> -->
-        <rotation name="R-Aperture5" unit="deg" x="60.754449" y="-25.899233"/>
+        <rotation name="R-Aperture5" unit="deg" x="60.623752" y="-24.875870" />
+        <!-- <rotation name="R-Aperture5" unit="deg" x="60.754449" y="-25.899233"/> -->
       </physvol>
 
       <!-- BR -->
       <physvol name="BR"> 
         <volumeref ref="SiDetAperture"/>
         <position name="P-Aperture6" unit="mm" x="0.4611*ApertureDist" y="-0.7986*ApertureDist" z="0.3869*ApertureDist"/>
-        <!-- <rotation name="R-Aperture6" unit="deg" x="-67.901832" y="-26.243454"/> -->
-        <rotation name="R-Aperture6" unit="deg" x="-67.870174" y="-25.951008"/>
+        <rotation name="R-Aperture6" unit="deg" x="-67.901832" y="-26.243454"/>
+        <!-- <rotation name="R-Aperture6" unit="deg" x="-67.870174" y="-25.951008"/> -->
       </physvol>
 
       <physvol name="PV_CuWrap1">
