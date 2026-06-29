@@ -35,6 +35,7 @@
 #include "globals.hh"
 #include "Run.hh"
 #include "RunAction.hh"
+#include "G4THitsMap.hh"
 
 
 class EventAction : public G4UserEventAction {
@@ -43,24 +44,25 @@ class EventAction : public G4UserEventAction {
 		EventAction();
 		~EventAction();
 		void AddDecayChain(G4String val) { fDecayChain += val; };
-		void AddEvisible(G4double val) { fEvisTot += val; };
-
-		void AddEdep(G4double edep, int catIdx) { 
-			if (map.find(catIdx) == map.end()) {
-				map[catIdx] = edep;
+		void AddEdep(G4double edep, int catIdx) { detMap[catIdx] += edep; };
+		void AddPos(int catIdx, G4ThreeVector pos) {
+			if (posMap[catIdx].size() == 0) {
+				posMap[catIdx] = { pos };
 			} else {
-				map[catIdx] += edep;
+				posMap[catIdx].push_back(pos);
 			}
-		};
+		}
+
+		void AddSiEdep(G4int catIdx, G4double edep) { fSiHitsMap.add(catIdx, edep); }
+    	void AddGeEdep(G4int catIdx, G4double edep) { fGeHitsMap.add(catIdx, edep); }
 		
 		virtual void BeginOfEventAction(const G4Event*);
       	virtual void EndOfEventAction(const G4Event*);
     
   	private:
 		G4String fDecayChain;                   
-		G4double fEvisTot;
-		std::map<G4int, G4double> map;
-		Run* run;
-		const G4UserRunAction* runAction;
-		G4AnalysisManager* man;
+		std::map<G4int, G4double> detMap;
+		std::map< G4int, std::vector<G4ThreeVector> > posMap;
+		G4THitsMap<G4double> fSiHitsMap;
+    	G4THitsMap<G4double> fGeHitsMap;
 };

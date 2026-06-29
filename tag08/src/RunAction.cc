@@ -48,18 +48,10 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 	
 	man->CreateNtuple("Gammas", "Gammas");
 	man->CreateNtupleDColumn("fEdepGammaOnly");
-	man->CreateNtupleIColumn("fEvent");
-	man->CreateNtupleDColumn("fX");
-	man->CreateNtupleDColumn("fY");
-	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(2);
 	
 	man->CreateNtuple("Alphas", "Alphas");
 	man->CreateNtupleDColumn("fEdepAlphaOnly");
-	man->CreateNtupleIColumn("fEvent");
-	man->CreateNtupleDColumn("fX");
-	man->CreateNtupleDColumn("fY");
-	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(3);
 	
 	man->CreateNtuple("Li7E", "Li7E");
@@ -84,7 +76,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet1", "AlphaDet1");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -92,7 +83,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet2", "AlphaDet2");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -100,7 +90,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet3", "AlphaDet3");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -108,7 +97,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet4", "AlphaDet4");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -116,7 +104,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet5", "AlphaDet5");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -124,7 +111,6 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("AlphaDet6", "AlphaDet6");
 	man->CreateNtupleDColumn("fEdepAlpha");
-	man->CreateNtupleIColumn("fEvent");
 	man->CreateNtupleDColumn("fX");
 	man->CreateNtupleDColumn("fY");
 	man->CreateNtupleDColumn("fZ");
@@ -132,26 +118,44 @@ G4UserRunAction(), fPrimary(kin), fRun(0), uiMode(uiMode) {
 
 	man->CreateNtuple("GammaDet1", "GammaDet1");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(15);
 
 	man->CreateNtuple("GammaDet2", "GammaDet2");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(16);
 
 	man->CreateNtuple("GammaDet3", "GammaDet3");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(17);
 
 	man->CreateNtuple("GammaDet4", "GammaDet4");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(18);
 
 	man->CreateNtuple("GammaDet5", "GammaDet5");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(19);
 
 	man->CreateNtuple("GammaDet6", "GammaDet6");
 	man->CreateNtupleDColumn("fEdepGamma");
+	man->CreateNtupleDColumn("fX");
+	man->CreateNtupleDColumn("fY");
+	man->CreateNtupleDColumn("fZ");
 	man->FinishNtuple(20);
 
 }

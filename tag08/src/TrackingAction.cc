@@ -86,16 +86,9 @@ void TrackingAction::PreUserTrackingAction(const G4Track* track) {
 	if (fCharge > 2.) {
     	// build decay chain
     	if (ID == 1) fEvent->AddDecayChain(name);
-      	else       fEvent->AddDecayChain(" ---> " + name);
+      	else         fEvent->AddDecayChain(" ---> " + name);
 
     	// full chain: put at rest; if not: kill secondary      
-    	G4Track* tr = (G4Track*) track;
-    	if (fFullChain) { 
-    	  // tr->SetKineticEnergy(0.);
-    	  // tr->SetTrackStatus(fStopButAlive); // shit that was not letting Li7 form
-    	} else if (ID>1) { 
-			// tr->SetTrackStatus(fStopAndKill); // shit that was not letting Li7 form
-		}
     	fTime_birth = track->GetGlobalTime();
   	}
   
@@ -123,7 +116,7 @@ void TrackingAction::PostUserTrackingAction(const G4Track* track) {
 		// balance    
 		G4double EkinTot = 0., EkinVis = 0.;
 		G4ThreeVector Pbalance = - track->GetMomentum();
-		for (size_t itr=0; itr<nbtrk; itr++) {
+		for (size_t itr = 0; itr < nbtrk; itr++) {
 			const G4Track* trk = (*secondaries)[itr];
 			G4ParticleDefinition* particle = trk->GetDefinition();
 			G4double Ekin = trk->GetKineticEnergy();
@@ -136,7 +129,6 @@ void TrackingAction::PostUserTrackingAction(const G4Track* track) {
 		}
 		G4double Pbal = Pbalance.mag();  
 		run->Balance(EkinTot,Pbal);  
-		fEvent->AddEvisible(EkinVis);
 	}
   
   	// no secondaries --> end of chain    

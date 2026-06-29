@@ -98,21 +98,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			}
 			
 			G4GeometryManager::GetInstance()->OpenGeometry();
-			if (solidBesselTarget) {
-				G4SolidStore::GetInstance()->DeRegister(solidBesselTarget);
-				delete solidBesselTarget;
-			}
-			if (logicBesselTarget) {
-				G4LogicalVolumeStore::GetInstance()->DeRegister(logicBesselTarget);
-				delete logicBesselTarget;
-			}
-			if (physBesselTarget) {
-				G4PhysicalVolumeStore::GetInstance()->DeRegister(physBesselTarget);
-				delete physBesselTarget;
-			}
 			ConstructBesselTarget(nu, radial_n);
-
 			G4GeometryManager::GetInstance()->CloseGeometry(true, false);
+
 			G4RunManager* runManager = G4RunManager::GetRunManager();
 			runManager->GeometryHasBeenModified();
 			
@@ -130,33 +118,19 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 			G4cout << "Updating Bessel function order to: (" << nu << ", " << radial_n << ")" << G4endl;
 
 			G4GeometryManager::GetInstance()->OpenGeometry();
-			if (solidBesselTarget) {
-				G4SolidStore::GetInstance()->DeRegister(solidBesselTarget);
-				delete solidBesselTarget;
-			}
 			ConstructBesselTarget(nu, radial_n);
 			G4GeometryManager::GetInstance()->CloseGeometry(true, false);
 
 			G4RunManager* runManager = G4RunManager::GetRunManager();
 			runManager->GeometryHasBeenModified();
+
 			if (G4VisManager::GetConcreteInstance() != nullptr) {
 				G4VisManager* visManager = G4VisManager::GetInstance();
 				if (visManager && visManager->GetCurrentViewer()) {
+					G4cout << "Rebuilding visualization . . ." << G4endl;
 					G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/rebuild");
 				}
 			}
-
-			// G4RunManager* runManager = G4RunManager::GetRunManager();
-			// runManager->GeometryHasBeenModified();
-			// runManager->ReinitializeGeometry(true);
-			// runManager->Initialize();
-
-			// G4UImanager* ui = G4UImanager::GetUIpointer(); 
-			// ui->ApplyCommand("/vis/scene/clear");
-			// ui->ApplyCommand("/vis/scene/add/volume worldVOL_PV"); 
-			// ui->ApplyCommand("/vis/scene/rebuild");
-			// ui->ApplyCommand("/vis/viewer/rebuild");
-			// ui->ApplyCommand("/vis/viewer/flush");
 		}
 
 		void SetShellType(G4int type) {
@@ -216,19 +190,19 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 		G4Tubs *solidGeDet, *solidSiDet, *solidTargetCyl, *solidGeMount, 
 		*solidSiAperture, *solidPbBackShield, *solidNBSR;
 		G4Sphere *solidIsoSphere;	
-		G4TessellatedSolid* solidBesselTarget;	
+		G4TessellatedSolid* solidBesselTarget = nullptr;	
 		
 		G4LogicalVolume *logicWorld, *logicGeDet, *logicTarget, *logicSiAperture, *logicTargetCyl, 
-		*logicSiDet, *logicGeMount, *logicPbBackShield, *logicNBSR, *logicIsoSphere = nullptr, *logicBesselTarget;
+		*logicSiDet, *logicGeMount, *logicPbBackShield, *logicNBSR, *logicIsoSphere = nullptr, *logicBesselTarget = nullptr;
 
 		G4VPhysicalVolume *physWorld, *physGeDet, *physSiDet, *physTarget, *physTargetCyl, 
-		*physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere, *physNBSR, *physBesselTarget;
+		*physGeMount, *physSiAperture, *physPbBackShield, *physIsoSphere, *physNBSR, *physBesselTarget = nullptr;
 
 		G4GenericMessenger *fMessenger = nullptr, *fMessengerShell = nullptr, *fMessengerAperture = nullptr;
 		G4NistManager *man;
 		G4GDMLParser* fParser;
-		MySiDet* sensDetSi;
-		MyGeDet* sensDetGe;
+		// MySiDet* sensDetSi;
+		// MyGeDet* sensDetGe;
 
 		std::set<G4LogicalVolume*> GeDets, SiDets;
 		std::vector<G4Box*> solidAtmosphere;

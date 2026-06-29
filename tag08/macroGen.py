@@ -60,8 +60,36 @@ def CountsDracula():
     file.write("/run/verbose 0\n\n")
     file.write("/tracking/verbose 0\n\n")
 
-    printProgress = 200000
-    beamOn = 10000000
+    printProgress = 200
+    beamOn = 10000
+    bessels = [(0, 1), (0, 2), (0, 3),
+               (1, 1), (1, 2), (1, 3),
+               (2, 1), (2, 2), (2, 3),
+               (3, 1), (3, 2), (3, 3)]
+    thickness = ["thin", "thick"]
+
+    count = 0
+    for i in bessels:
+        for j in thickness:
+            filenum = f"{count}"
+            if count < 10: filenum = "0" + filenum
+            file.write(f"/target/setThickness {j}\n")
+            file.write(f"/target/setBesselNu {i[0]} {i[1]}\n")
+            file.write(f"/analysis/setFileName ../rootFiles/AGMACRO_{j}_{i[0]}_{i[1]}\n")
+            file.write(f"/run/printProgress {printProgress}\n")
+            file.write(f"/run/beamOn {beamOn}\n\n")
+            count += 1
+
+    # for i in bessels:
+    #     filenum = f"{count}"
+    #     if count < 10: filenum = "0" + filenum
+    #     file.write(f"/target/setBesselNu {i[0]} {i[1]}\n")
+    #     file.write(f"/analysis/setFileName ../rootFiles/AGMACRO_{count}_{i[0]}_{i[1]}\n")
+    #     file.write(f"/run/printProgress {printProgress}\n")
+    #     file.write(f"/run/beamOn {beamOn}\n\n")
+    #     count += 1
+
+CountsDracula()
 
 # /control/cout/ignoreThreadsExcept 0
 # /control/verbose 0

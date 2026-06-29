@@ -3,11 +3,11 @@
 /run/verbose 0
 /tracking/verbose 0
 
-/geometry/test/run
-/target/setThickness thick
+#/geometry/test/run
 
+/target/setThickness thin
+/target/setBesselNu 0 2
+/analysis/setFileName ../rootFiles/AGMACRO_thin_0_2_test
 /run/printProgress 200000
-/run/initialize
-/analysis/setFileName ../rootFiles/AGMACROThickB4C1mm
 /run/beamOn 10000000
 

@@ -22,9 +22,6 @@ class MySiDet : public G4VSensitiveDetector {
     private:
         virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
         G4int firstSiDetIdx;
-        G4RunManager* runManager;
-		const DetectorConstruction* detectorConstruction;
-        EventAction* fEventAction;
 		std::set<G4LogicalVolume*> fGeScoringVolumes;
 		std::set<G4LogicalVolume*> fSiScoringVolumes;
 
@@ -38,9 +35,6 @@ class MyGeDet : public G4VSensitiveDetector {
     
     private:
         virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-        G4RunManager* runManager;
-		const DetectorConstruction* detectorConstruction;
-        EventAction* fEventAction;
 		std::set<G4LogicalVolume*> fGeScoringVolumes;
 		std::set<G4LogicalVolume*> fSiScoringVolumes;
 

@@ -44,13 +44,7 @@ DetectorConstruction::DetectorConstruction() {
 	DefineMaterials();
 }
 
-DetectorConstruction::~DetectorConstruction() {
-	delete fMessenger;
-	delete fMessengerShell;
-
-	delete sensDetGe;
-	delete sensDetSi;
-}
+DetectorConstruction::~DetectorConstruction() {}
 
 void DetectorConstruction::DefineParameters() {
 
@@ -222,9 +216,9 @@ void DetectorConstruction::ConstructSiDetector(G4RotateY3D rotTheta, G4RotateZ3D
 
 	G4Translate3D shiftZSiDet(0, 0, distDetSi + zSi / 2);
 	G4Transform3D transformSiDet = rotPhi * rotTheta * shiftZSiDet;
-	solidSiDet = new G4Tubs("solidSiDet" + std::to_string(cpyNo), 0, dSi / 2, zSi / 2, 0*deg, 360*deg);
-	logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet" + std::to_string(cpyNo));
-	physSiDet = new G4PVPlacement(
+	auto* solidSiDet = new G4Tubs("solidSiDet" + std::to_string(cpyNo), 0, dSi / 2, zSi / 2, 0*deg, 360*deg);
+	auto* logicSiDet = new G4LogicalVolume(solidSiDet, Si, "logicSiDet" + std::to_string(cpyNo));
+	auto* physSiDet = new G4PVPlacement(
 		transformSiDet, logicSiDet, "physSiDet" + std::to_string(cpyNo), logicWorld, false, SiDetCpyNo, false);
 	SiDets.insert(logicSiDet);
 	logicSiDet->SetVisAttributes(G4VisAttributes(G4Color::Cyan()));
@@ -434,25 +428,25 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
 	std::vector<std::vector<G4double>> alpha = 
 	{	// n-th (n = 1, 2, 3) zero of J_nu for nu = 0, 1, 2, ... 19
-		{2.40482556, 3.83170597, 5.1356223, 6.3801619, 7.58834243, 
+		{ 2.40482556, 3.83170597, 5.1356223, 6.3801619, 7.58834243, 
 		8.77148382, 9.93610952, 11.08637002, 12.22509226, 13.35430048, 
 		14.47550069, 15.58984788, 16.69824993, 17.80143515, 18.89999795, 
-		19.99443063, 21.08514611, 22.17249462, 23.25677609, 24.33824962},
+		19.99443063, 21.08514611, 22.17249462, 23.25677609, 24.33824962 },
 		{ 5.52007811, 7.01558667, 8.41724414, 9.76102313, 11.06470949, 
 		12.3386042, 13.58929017, 14.82126873, 16.03777419, 17.24122038, 
 		18.43346367, 19.6159669, 20.78990636, 21.95624407, 23.11577835, 
-		24.26918003, 25.41701901, 26.55978414, 27.69789835, 28.83173035},
+		24.26918003, 25.41701901, 26.55978414, 27.69789835, 28.83173035 },
 		{ 8.65372791, 10.17346814, 11.61984117, 13.01520072, 14.37253667, 
 		15.70017408, 17.00381967, 18.28758283, 19.55453643, 20.80704779, 
 		22.04698536, 23.27585373, 24.49488504, 25.70510305, 26.90736898, 
-		28.10241523, 29.2908707, 30.47327995, 31.65011815, 32.82180276}
+		28.10241523, 29.2908707, 30.47327995, 31.65011815, 32.82180276 }
 	};
 
 	solidBesselTarget = new G4TessellatedSolid("BesselTarget");
 
 	// set-up grid
-	int Nr = 175;
-	int Ntheta = 175;
+	int Nr = 128;
+	int Ntheta = 128;
 
 	std::vector<G4double> rs(Nr);
 	for (int i = 1; i <= Nr; i++) {
@@ -504,13 +498,27 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 		xyzgrid.push_back(ring);
 	}
 
-	// special case for connecting to center point with no degeneracy
+	// special case for connecting to center'
+
+	// original method: connect each point on inner ring to center with triangle
+	// This works normally, but for Bessel 2 1, you get consistent errors, so another approach is needed
 	G4ThreeVector targetCenter(0, 0, A*std::cyl_bessel_j(nu, 0));
 	for (int j = 0; j < Ntheta; j++) {
 		G4ThreeVector p1 = xyzgrid[0][j];
-		G4ThreeVector p2 = xyzgrid[0][(j+1)%Ntheta];
+		G4ThreeVector p2 = xyzgrid[0][(j+1) % Ntheta];
 		solidBesselTarget->AddFacet(new G4TriangularFacet(p1, p2, targetCenter, ABSOLUTE));
 	}
+
+	// new method: center patch
+	// Step 1: make polygon center
+	// G4int core_sides = 8; 
+	// G4double core_radius = 10*um;
+	// std::vector<G4double> core_theta(core_sides);
+	// for (int j = 0; j < core_sides; j++) {
+	// 	core_theta[j] = (2.0 * M_PI * j) / core_sides;
+	// 	G4cout << core_theta[j] << " ";
+	// }
+
 
 	G4double buffer = 1*nm;
 	G4ThreeVector closurePoint = G4ThreeVector(0, 0, -abs(xyzgrid[minIndex.first][minIndex.second].z()) - buffer);
@@ -539,22 +547,28 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
 	solidBesselTarget->SetSolidClosed(true);
 
-	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
-	logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
-	physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
+	if (!logicBesselTarget) {
+		logicBesselTarget = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
+		logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
+	} else {
+		logicBesselTarget->SetSolid(solidBesselTarget);
+	}
+	if (!physBesselTarget) {
+		physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
+	}
 	
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
-	// G4PhysicalVolumeStore::GetInstance()->Clean();
-	// G4LogicalVolumeStore::GetInstance()->Clean();
-	// G4SolidStore::GetInstance()->Clean();
-	// if (!GeDets.empty()) GeDets.clear();
-	// if (!SiDets.empty()) SiDets.clear();
-
 	G4cout << "-------------------------------" << G4endl;
 	G4cout << "Constructing Geometry . . ." << G4endl;
+
+	if (solidBesselTarget) {
+        G4SolidStore::GetInstance()->DeRegister(solidBesselTarget);
+        delete solidBesselTarget; 
+		solidBesselTarget = nullptr;
+    }
 
 	auto fParser = new G4GDMLParser();
 	fParser->Read("../Rebirth3.gdml", false);
@@ -705,17 +719,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
 void DetectorConstruction::ConstructSDandField() {
 	
-	sensDetSi = new MySiDet("SiSensDet");
-	sensDetGe = new MyGeDet("GeSensDet");
 
 	if (!GeDets.empty()) {
+		int GeIdx = 0;
 		for (auto& GeDet : GeDets) {
+			MyGeDet* sensDetGe = new MyGeDet("GeSensDet" + std::to_string(GeIdx));
 			GeDet->SetSensitiveDetector(sensDetGe);
+			GeIdx++;
 		}
 	}
 	if (!SiDets.empty()) {
+		int SiIdx = 0;
 		for (auto& SiDet : SiDets) {
+			MySiDet* sensDetSi = new MySiDet("SiSensDet" + std::to_string(SiIdx));
 			SiDet->SetSensitiveDetector(sensDetSi);
+			SiIdx++;
 		}
 	}
 }

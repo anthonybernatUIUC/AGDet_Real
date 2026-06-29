@@ -29,19 +29,14 @@
 #include "EventAction.hh"
 
 
-EventAction::EventAction() : G4UserEventAction(), fEvisTot(0.) {
-	man = G4AnalysisManager::Instance();
-}
+EventAction::EventAction() : G4UserEventAction() {}
 
 EventAction::~EventAction() {}
 
 void EventAction::BeginOfEventAction(const G4Event*) {
  
 	fDecayChain = G4String(" ");
-
-	runAction = static_cast<const RunAction*>(G4RunManager::GetRunManager()->GetUserRunAction());
-	run = static_cast<Run*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-
+	detMap.clear();
 }
 
 void EventAction::EndOfEventAction(const G4Event* evt) {
@@ -53,19 +48,21 @@ void EventAction::EndOfEventAction(const G4Event* evt) {
 		<< G4endl << G4endl;
 	}
 
-	run->EvisEvent(fEvisTot);
-
 	G4double tol = 0.01;
 	G4AnalysisManager* man = G4AnalysisManager::Instance();
-	for (size_t i = 0; i < man->GetNofNtuples(); ++i) {
-		if (map[i] > tol) {
-			man->FillNtupleDColumn(i, 0, map[i]);
-			man->AddNtupleRow(i);
-		} else {
-		}
-	}
-	map.clear();
-
+	// for (size_t i = 0; i < man->GetNofNtuples(); ++i) {
+    //     auto it = detMap.find(i); 
+    //     if (it != detMap.end() && it->second > tol) {
+    //         man->FillNtupleDColumn(i, 0, it->second);
+    //         man->AddNtupleRow(i);
+    //     }
+    // }
+	for (auto const& [idx, edep] : detMap) {
+        if (edep > tol) {
+            man->FillNtupleDColumn(idx, 0, edep);
+            man->AddNtupleRow(idx);
+        }
+    }
 }
 
 
