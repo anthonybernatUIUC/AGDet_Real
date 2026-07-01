@@ -51,6 +51,18 @@ set(
   pyrootAllSiHist.py pyrootGeHist.py macroGen.py BesselDecomp.py)
 set(CMAKE_PREFIX_PATH "/home/anthony/software/geant4/geant4-v11.4.1-mt-install/bin/geant4-config")
 
+foreach(script_file ${rdecay01_SCRIPTS})
+    # Extract just the filename (e.g., "AllHist.C" out of "rootMacros/AllHist.C")
+    get_filename_component(file_name ${script_file} NAME)
+    
+    # Copy it directly to the root of the build directory
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/${script_file}
+        ${CMAKE_CURRENT_BINARY_DIR}/${file_name}
+        COPYONLY
+    )
+endforeach()
+
 foreach(_script ${rdecay01_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}

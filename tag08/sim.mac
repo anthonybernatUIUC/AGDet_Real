@@ -7,7 +7,7 @@
 
 /target/setThickness thin
 /target/setBesselNu 0 2
-/analysis/setFileName ../rootFiles/AGMACRO_thin_0_2_test
+/analysis/setFileName ../rootFiles/AGMACRO
 /run/printProgress 200000
 /run/beamOn 10000000
 

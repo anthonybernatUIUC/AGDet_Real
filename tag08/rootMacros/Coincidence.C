@@ -42,8 +42,10 @@ void Coincidence(std::string file_thin, std::string file_thick, int n) {
 
     std::vector<int> gammaCountsThin(6, 0);
     std::vector<int> gammaCountsThick(6, 0);
+    std::vector<int> gammaPhotopeakCountsThin(6, 0);
+    std::vector<int> gammaPhotopeakCountsThick(6, 0);
     std::vector<int> alphaCountsThin(6, 0);
-
+    
     for (int i = 1; i < 7; ++i) {
         TTree* treeThin = (TTree*)input_thin->Get(Form("GammaDet%d", i));
         TTree* treeThick = (TTree*)input_thick->Get(Form("GammaDet%d", i));
@@ -52,34 +54,39 @@ void Coincidence(std::string file_thin, std::string file_thick, int n) {
         gammaCountsThin[i-1] = treeThin->GetEntries();
         gammaCountsThick[i-1] = treeThick->GetEntries();
         alphaCountsThin[i-1] = treeAlphaThin->GetEntries();
+        gammaPhotopeakCountsThin[i-1] = treeThin->Draw("fEdepGamma", "fEdepGamma >= 0.47 && fEdepGamma <= 0.48", "goff");
+        gammaPhotopeakCountsThick[i-1] = treeThick->Draw("fEdepGamma", "fEdepGamma >= 0.47 && fEdepGamma <= 0.48", "goff");
     }
     std::vector<std::string> SiDetLocations = { "MR", "TL", "BL", "ML", "TR", "BR" };
-    std::cout << "Alpha Counts (Thin) ========================== " << std::endl;
+    std::cout << "Alpha Counts (Thin) ============================================ " << std::endl;
     for (int i = 0; i < 6; ++i) {
         std::cout << "\tAlpha Counts (" << SiDetLocations[i] << "): " << alphaCountsThin[i] << std::endl;
     }
     int r_alphathin = std::accumulate(alphaCountsThin.begin(), alphaCountsThin.end(), 0);
-    std::cout << "Total Counts: " << r_alphathin << std::endl << std::endl;
+    std::cout << "Total Alpha Counts: " << r_alphathin << std::endl << std::endl;
     for (int i = 0; i < 6; ++i) {
         if (i == 0) {
-            std::cout << "Front Ge Dets ==========================" << std::endl;
+            std::cout << "Front Ge Dets ============================================ " << std::endl;
         }
         if (i == 3) {
-            std::cout << "Back Ge Dets  ==========================" << std::endl;
+            std::cout << "Back Ge Dets  ============================================ " << std::endl;
         }
-        std::cout << "\tGamma Counts (Thin,  " << i+1 << "): " << gammaCountsThin[i] << std::endl;
-        std::cout << "\tGamma Counts (Thick, " << i+1 << "): " << gammaCountsThick[i] << std::endl;
+        std::cout << "\tGamma | Photopeak Counts  (Thin, " << i+1 << "): " << gammaCountsThin[i] << " | " << gammaPhotopeakCountsThin[i] << std::endl;
+        std::cout << "\tGamma | Photopeak Counts (Thick, " << i+1 << "): " << gammaCountsThick[i] << " | " << gammaPhotopeakCountsThick[i] << std::endl;
     }
     int r_gammathin = std::accumulate(gammaCountsThin.begin(), gammaCountsThin.end(), 0);
     int r_gammathick = std::accumulate(gammaCountsThick.begin(), gammaCountsThick.end(), 0);
-    std::cout << "Total Gamma Counts  (Thin): " << r_gammathin << std::endl;
-    std::cout << "Total Gamma Counts (Thick): " << r_gammathick << std::endl << std::endl;
+    int r_gammathin_photopeak = std::accumulate(gammaPhotopeakCountsThin.begin(), gammaPhotopeakCountsThin.end(), 0);
+    int r_gammathick_photopeak = std::accumulate(gammaPhotopeakCountsThick.begin(), gammaPhotopeakCountsThick.end(), 0);
+    std::cout << "Total Gamma | Photopeak Counts   (Thin): " << r_gammathin << " | " << r_gammathin_photopeak << std::endl;
+    std::cout << "Total Gamma | Photopeak  Counts (Thick): " << r_gammathick << " | " << r_gammathick_photopeak << std::endl << std::endl;
 
     int AG_SolidAngle = 1;
 
     // std::cout << "Absolute Neutron Flux: " << r_alphathin * r_gammathick / (r_gammathin * AG_SolidAngle) 
     //     << "*(the time r_gammathick needs to integrate to " << r_gammathick << " counts)" << std::endl;
-    std::cout << "Absolute Neutron Flux R_n = " << n << "/t, \n\twhere t is time r_gammathick needs to integrate " << r_gammathick << " counts with 6 detectors" << std::endl;
+    std::cout << "Absolute Neutron Flux R_n = " << n << "/t, \n\twhere t is time r_gammathick needs to integrate " 
+    << r_gammathick << " counts with 6 detectors" << std::endl << std::endl;    
 
     delete[] cfile_thin;
     delete[] cfile_thick;

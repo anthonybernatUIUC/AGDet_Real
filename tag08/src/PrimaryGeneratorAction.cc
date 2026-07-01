@@ -175,6 +175,7 @@ void PrimaryGeneratorAction::generateConstDrift(G4ThreeVector drift) {
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
+	// generateInUniformDisk(5*mm);
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 

@@ -85,11 +85,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 				G4cout << "Target thickness set to thin: " << zTarget / nm << " nm" << G4endl;
 			} else if (type == "thick" || type == "Thick") {
 				zTarget = 1*mm;
-				targetMat = BC;
+				targetMat = B10;
 				G4cout << "Target thickness set to thick: " << zTarget / um << " um" << G4endl;
 			} else if (type == "demo" || type == "Demo") {
 				zTarget = 1*cm;
-				targetMat = BC;
+				targetMat = B10;
 				G4cout << "Target thickness set to demo: " << zTarget / cm << " cm" << G4endl;
 			} else {
 				zTarget = 106*nm;

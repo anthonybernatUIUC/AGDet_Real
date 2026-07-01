@@ -75,7 +75,7 @@ def CountsDracula():
             if count < 10: filenum = "0" + filenum
             file.write(f"/target/setThickness {j}\n")
             file.write(f"/target/setBesselNu {i[0]} {i[1]}\n")
-            file.write(f"/analysis/setFileName ../rootFiles/AGMACRO_{j}_{i[0]}_{i[1]}\n")
+            file.write(f"/analysis/setFileName test_{j}_{i[0]}_{i[1]}\n")
             file.write(f"/run/printProgress {printProgress}\n")
             file.write(f"/run/beamOn {beamOn}\n\n")
             count += 1

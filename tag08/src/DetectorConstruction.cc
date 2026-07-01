@@ -53,6 +53,7 @@ void DetectorConstruction::DefineParameters() {
 	fWorldSize = 5*m;
 	dTarget = 10*cm;
 	zTarget = 106*nm;
+	// zTarget = 1*cm;
 	dGe = 8*cm;
 	// dSi = 2.8*cm; // based on irl specs (I think?)
 	dSi = 3.49*cm;   // based on CAD model, not that it matters too much (I think?), both cover the collimator shadow
@@ -519,7 +520,6 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 	// 	G4cout << core_theta[j] << " ";
 	// }
 
-
 	G4double buffer = 1*nm;
 	G4ThreeVector closurePoint = G4ThreeVector(0, 0, -abs(xyzgrid[minIndex.first][minIndex.second].z()) - buffer);
 	G4cout << "Closure point: " << closurePoint / nm << " nm" << G4endl;
@@ -547,15 +547,20 @@ void DetectorConstruction::ConstructBesselTarget(G4int nu, G4int radial_n) {
 
 	solidBesselTarget->SetSolidClosed(true);
 
-	if (!logicBesselTarget) {
-		logicBesselTarget = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
-		logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
-	} else {
-		logicBesselTarget->SetSolid(solidBesselTarget);
-	}
+	// if (!logicBesselTarget) {
+	// 	logicBesselTarget = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
+	// 	logicBesselTarget->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
+	// } else {
+	// 	logicBesselTarget->SetSolid(solidBesselTarget);
+	// }
+	auto help = new G4LogicalVolume(solidBesselTarget, targetMat, "logicBesselTarget");
+	help->SetVisAttributes(G4VisAttributes(G4Color(0.7, 0.4, 0.2, 1)));  // Bronze
 	if (!physBesselTarget) {
-		physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicBesselTarget, "physBesselTarget", logicWorld, false, 0, false);
+		physBesselTarget = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), help, "physBesselTarget", logicWorld, false, 0, false);
+	} else {
+		physBesselTarget->SetLogicalVolume(help);
 	}
+	// new G4PVPlacement(0, G4ThreeVector(0, 0, 0), help, "physBesselTarget", logicWorld, false, 0, false);
 	
 }
 
@@ -687,6 +692,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 	// ConstructNBSR(rotThetaNBSR, rotPhiNBSR, cpyNo);
 
 	ConstructBesselTarget(nu, radial_n);
+	// ConstructTarget(0, 0, cpyNo);
 
 	// Something to keep in mind to make visualization faster
 	// // High-res mesh for tracking
