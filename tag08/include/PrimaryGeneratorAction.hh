@@ -55,6 +55,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 		void generateAlphaSource();
 		void generateDefaultSource();
 		void generateInUniformDisk(G4double rad);
+		void generateInUniformDiskFromCone(G4double rad);
 		void generateConstDrift(G4ThreeVector drift);
 
 		void SwitchGun(G4String mode) { 
@@ -91,6 +92,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 		bool generateBackground;
 		bool generateCosmicRay;
 		bool generateNBSR;
+		G4double initZ;
 };
 
 #endif

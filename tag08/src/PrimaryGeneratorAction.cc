@@ -42,6 +42,7 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 	generateBackground = false;
 	generateCosmicRay = false;
 	generateNBSR = true;
+	initZ = 50*cm;
 
 	particleTable = G4ParticleTable::GetParticleTable();
 
@@ -49,7 +50,7 @@ G4VUserPrimaryGeneratorAction(), fParticleGun(0) {
 	fParticleGun->SetParticleDefinition(particleTable->FindParticle("neutron"));
 	fParticleGun->SetParticleEnergy(0.0001*eV);
 
-	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, 40*cm));
+	fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, initZ));
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
 
 	fMessengerGun = new G4GenericMessenger(this, "/gun/", "Gun control");
@@ -168,6 +169,13 @@ void PrimaryGeneratorAction::generateInUniformDisk(G4double rad) {
 	fParticleGun->SetParticlePosition(G4ThreeVector(r*std::cos(phi), r*std::sin(phi), 40*cm));
 }
 
+void PrimaryGeneratorAction::generateInUniformDiskFromCone(G4double rad) {
+
+	G4double r = rad * std::sqrt(G4UniformRand());
+    G4double phi = 2 * M_PI * G4UniformRand();
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(r*std::cos(phi), r*std::sin(phi), 0) - G4ThreeVector(0, 0, initZ));
+}
+
 void PrimaryGeneratorAction::generateConstDrift(G4ThreeVector drift) {
 	
 	fParticleGun->SetParticlePosition(drift);
@@ -175,7 +183,7 @@ void PrimaryGeneratorAction::generateConstDrift(G4ThreeVector drift) {
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
-	// generateInUniformDisk(5*mm);
+	generateInUniformDiskFromCone(30*mm/2);
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 
 
