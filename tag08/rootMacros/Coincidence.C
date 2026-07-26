@@ -82,7 +82,7 @@ void Coincidence(std::string file_thin, std::string file_thick, int n) {
     std::cout << "Total Gamma | Photopeak  Counts (Thick): " << r_gammathick << " | " << r_gammathick_photopeak << std::endl << std::endl;
 
     std::cout << "Absolute Neutron Flux R_n = " << n << "/t, \n\twhere t is time r_gammathick needs to integrate " 
-    << r_gammathick << " counts with 6 detectors" << std::endl << std::endl;  
+    << r_gammathick_photopeak << " counts with 6 detectors" << std::endl << std::endl;  
     
     double AG_SolidAngle = (double)r_alphathin * r_gammathick_photopeak / ((double)r_gammathin_photopeak * n);
     std::cout << "Total Solid Angle of Si Detectors: " << AG_SolidAngle  << " sr" << std::endl << std::endl;

@@ -51,7 +51,8 @@ void DetectorConstruction::DefineParameters() {
 	// Origin centered on sphere/target center
 
 	fWorldSize = 5*m;
-	dTarget = 10*cm;
+	// dTarget = 10*cm;
+	dTarget = 6.35*cm;
 	zTarget = 106*nm;
 	// zTarget = 1*cm;
 	dGe = 8*cm;
